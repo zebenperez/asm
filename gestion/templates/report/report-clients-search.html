@@ -3,7 +3,7 @@
 <form class="form m-0 pt-2" method="GET" action="{% url "report-clients-search" %}" id="form-search">
     {%csrf_token%}
     <div class="row">
-        <div class="col-lg-3 col-5">
+        <div class="col-4">
             <div class="row"> 
                 <div class="col-lg-2 col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Fecha:" %}</span> </div>
                 <div class="col-lg-5 col-6 p-0"> <input type="date" class="autosearch form-control form-control-dark w-100 py-2"
@@ -12,7 +12,7 @@
                     name="s_rep_edate" id="s_rep_edate" value="{{request.session.s_rep_edate}}"/> </div>
             </div>
         </div>
-        <div class="col-lg-8 col-6 b-search">
+        <div class="col-5">
             <div class="row">
                 <div class="col-lg-4 col-4 py-2 text-end d-none d-lg-block"> <span>{% trans "Cliente:" %}</span> </div>
                 <div class="col-lg-8 col-8"> 
@@ -25,7 +25,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-1 col-1 p-0">
+        <div class="col-2 b-search">
+            <div class="row">
+                <div class="col-4 pt-2 text-end"><span>{% trans "Activo:" %}</span></div>
+                <div class="col-8 pt-2">
+                    <select class="form-control" id="s_rep_cli_active" name="s_rep_cli_active">
+                        <option value="">{% trans "-- Todos --" %}</option>
+                        <option value="1" {%if request.session.s_rep_cli_active == "1"%}selected{%endif%}>{% trans "SI" %}</option>
+                        <option value="0" {%if request.session.s_rep_cli_active == "0"%}selected{%endif%}>{% trans "NO" %}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-1 p-0">
             <button class="btn btn-default saveform w-100" data-form="form-search" data-target="emp-list">
                 <i class="fas fa-search"></i> </button>
         </div>

@@ -44,6 +44,7 @@ class Zone(models.Model):
     EMPLOYEE
 '''
 class EmployeeType(models.Model):
+    amount = models.FloatField(default=0, verbose_name=_('Cuantia'));
     name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
 
     def __str__(self):
@@ -55,6 +56,7 @@ class EmployeeType(models.Model):
         ordering = ["name"]
 
 class Employee(models.Model):
+    inactive = models.BooleanField(default=False, verbose_name=_('Desactivado'));
     pin = models.CharField(max_length=20, verbose_name = _('PIN'), default="")
     dni = models.CharField(max_length=20, verbose_name = _('DNI'), default="")
     name = models.CharField(max_length=200, verbose_name = _('Razón Social'), default="")
@@ -164,10 +166,25 @@ class Employee(models.Model):
                 mins += 0
         return hours_mins(mins)
  
+    def get_categories(self):
+        return [item.employee_type for item in self.categories.all()]
+
     class Meta:
         verbose_name = _('Empleado')
         verbose_name_plural = _('Empleados')
         ordering = ["name"]
+
+class EmployeeCategory(models.Model):
+    employee = models.ForeignKey(Employee,verbose_name=_('Empleado'),on_delete=models.CASCADE,null=True,related_name="categories")
+    employee_type=models.ForeignKey(EmployeeType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True,related_name="categories")
+
+    #def __str__(self):
+    #    return self.name
+
+    class Meta:
+        verbose_name = _('Categoría empleado')
+        verbose_name_plural = _('Categorías empleados')
+
 
 '''
     CLIENTS

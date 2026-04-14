@@ -3,10 +3,8 @@
 <div class="row toolbar-search p-2 m-0">
     <div class="col-11">{% include "report/report-employees-search.html" %} </div>
     <div class="col-1"> 
-        {%comment%}
-        <a class="btn btn-xs exp w-75" href="{% url "report-export" %}" title="{% trans 'Exportar a CSV' %}" target="_blank">
+        <a class="btn btn-xs exp w-75" href="{% url "report-export-emp" %}" title="{% trans 'Exportar a CSV' %}" target="_blank">
             <i class="fas fa-file-csv"></i> <span class="d-none d-lg-block">{% trans "Exportar" %}</span></a>
-        {%endcomment%}
     </div>
 </div>
 

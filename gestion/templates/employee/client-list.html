@@ -23,7 +23,8 @@
                 <div class="card-header">
                     <div class="row client">
                         <div class="col-1 col-1 text-center py-1"><i class="fas fa-map-marker orange"></i> </div>
-                        <div class="col-11 col-1 text-center py-1">{{key}}</div>
+                        <div class="col-11 col-1 text-center py-1">
+                            <a href="{% url "clients-timetable" value.0.client %}" target="_blank">{{key}}</a></div>
                     </div>
                     <div class="row py-2" style="border-bottom: 1px solid #ccc;">
 			            <div class="col-5 text-center"> Trabajado: <br/> <strong>

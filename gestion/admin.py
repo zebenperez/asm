@@ -9,7 +9,7 @@ class ClientTypeAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
 class EmployeeTypeAdmin(admin.ModelAdmin):
-    list_display = ["name",]
+    list_display = ["name", "amount"]
 
 class TimetableStatusAdmin(admin.ModelAdmin):
     list_display = ["name", "code", "color"]

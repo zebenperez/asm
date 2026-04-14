@@ -64,6 +64,7 @@ def assistances_form(request):
 def assistances_form_save(request):
     from datetime import datetime
     from zoneinfo import ZoneInfo
+
     obj = get_or_none(Assistance, get_param(request.GET, "obj_id"))
     if obj == None:
         obj = Assistance.objects.create()
@@ -200,6 +201,18 @@ def employees_save_email(request):
         return HttpResponse("Error: {}".format(e))
 
 @group_required("Administradores",)
+def employees_save_cat(request):
+    obj = get_or_none(Employee, get_param(request.GET, "obj_id"))
+    emp_type = get_or_none(EmployeeType, get_param(request.GET, "type"))
+    add = get_param(request.GET, "add")
+    if obj != None:
+        if add == "True":
+            obj, created = EmployeeCategory.objects.get_or_create(employee=obj, employee_type=emp_type)
+        else:
+            EmployeeCategory.objects.filter(employee=obj, employee_type=emp_type).first().delete()
+    return HttpResponse("Saved!")
+
+@group_required("Administradores",)
 def employees_export(request):
     header = ['Nombre', 'Teléfono', 'Email', 'PIN', 'DNI', 'Horas trabajadas', 'Minutos trabajados']
     values = []
@@ -307,13 +320,13 @@ def clients_form_save(request):
     img_data = ContentFile(generate_qr(url, path))
     obj.qr.save('qr_{}.png'.format(obj.id), img_data, save=True)
 
-    context = {'obj': obj, 'emp_list': Employee.objects.all(), 'type_list': ClientType.objects.all()}
+    context = {'obj': obj, 'emp_list': Employee.objects.all(), 'type_list': ClientType.objects.all(), 'today': datetime.today()}
     return render(request, "clients/clients-details.html", context)
 
 @group_required("Administradores",)
 def clients_details(request, obj_id):
     obj = get_or_none(Client, obj_id)
-    context = {'obj': obj, 'emp_list': Employee.objects.all(), 'type_list': ClientType.objects.all()}
+    context = {'obj': obj, 'emp_list': Employee.objects.all(), 'type_list': ClientType.objects.all(), 'today': datetime.today()}
     return render(request, "clients/clients-details.html", context)
 
 @group_required("Administradores",)
@@ -556,7 +569,7 @@ def clients_type_add(request):
     try:
         obj = get_or_none(Client, get_param(request.GET, "obj_id"))
         client_type = get_or_none(ClientType, get_param(request.GET, "type"))
-        amount = get_param(request.GET, "amount")
+        amount = get_param(request.GET, "amount").replace(",", ".")
         
         if obj != None:
             cta, created = ClientTypeAmount.objects.get_or_create(client=obj, client_type=client_type)
@@ -589,7 +602,7 @@ def clients_inactive_add(request):
         if obj != None:
             ci = ClientInactive.objects.create(client=obj, date=date, obs=obs)
 
-        return render(request, "clients/clients-details-inactive.html", {'obj': obj,})
+        return render(request, "clients/clients-details-inactive.html", {'obj': obj, 'today': datetime.today(),})
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
 
@@ -601,7 +614,7 @@ def clients_inactive_remove(request):
             client = obj.client
             obj.delete()
 
-        return render(request, "clients/clients-details-inactive.html", {'obj': client,})
+        return render(request, "clients/clients-details-inactive.html", {'obj': client, 'today': datetime.today(),})
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
 
@@ -617,13 +630,17 @@ def get_total_duration(item_list):
 
 def get_report(request):
     cli = get_session(request, "s_rep_cli")
+    cli_active = get_session(request, "s_rep_cli_active")
     #emp = get_session(request, "s_rep_emp")
     i_date = datetime.strptime("{} 00:00".format(get_session(request, "s_rep_idate")), "%Y-%m-%d %H:%M")
     e_date = datetime.strptime("{} 23:59".format(get_session(request, "s_rep_edate")), "%Y-%m-%d %H:%M")
 
-    kwargs = {"inactive": False}
+    #kwargs = {"inactive": False}
+    kwargs = {}
     if cli != "":
         kwargs["name__unaccent__icontains"] = cli
+    if cli_active != "":
+        kwargs["inactive"] = True if cli_active == "0" else False
     return Client.objects.filter(**kwargs)
 
     #kwargs = {"ini_date__range": (i_date, e_date)}
@@ -654,10 +671,12 @@ def get_assistances_report(request):
 def get_employees_report(request):
     emp = get_session(request, "s_rep_emp")
     emp_type = get_session(request, "s_rep_emp_type")
+    emp_status = get_session(request, "s_rep_emp_status")
     #i_date = datetime.strptime("{} 00:00".format(get_session(request, "s_rep_idate")), "%Y-%m-%d %H:%M")
     #e_date = datetime.strptime("{} 23:59".format(get_session(request, "s_rep_edate")), "%Y-%m-%d %H:%M")
     i_date = get_session(request, "s_rep_emp_idate")
     e_date = get_session(request, "s_rep_emp_edate")
+    active = get_session(request, "s_rep_emp_active")
 
     #kwargs = {"ini_date__range": (i_date, e_date)}
     kwargs = {}
@@ -665,6 +684,8 @@ def get_employees_report(request):
         kwargs["name__unaccent__icontains"] = emp
     if emp_type != "":
         kwargs["employee_type"] = emp_type
+    if active != "":
+        kwargs["inactive"] = True if active == "0" else False
 
     res = []
     emp_list = Employee.objects.filter(**kwargs)
@@ -674,10 +695,11 @@ def get_employees_report(request):
         append = False
         res_dic["status"] = []
         for s in status:
-            hours, minutes = emp.assigned_by_type(i_date, e_date, s)
-            if hours > 0 or minutes > 0:
-                res_dic["status"].append({"name": s.name, "hours": hours, "minutes": minutes})
-                append = True
+            if (emp_status == "") or (emp_status == str(s.id)):
+                hours, minutes = emp.assigned_by_type(i_date, e_date, s)
+                if hours > 0 or minutes > 0:
+                    res_dic["status"].append({"name": s.name, "hours": hours, "minutes": minutes})
+                    append = True
         if append:
             h, m = emp.assigned_by_type(i_date, e_date)
             res_dic["total_hours"] = h
@@ -721,6 +743,7 @@ def report_clients_search(request, clients=""):
     set_session(request, "s_rep_cli", get_param(request.GET, "s_rep_cli"))
     set_session(request, "s_rep_idate", get_param(request.GET, "s_rep_idate"))
     set_session(request, "s_rep_edate", get_param(request.GET, "s_rep_edate"))
+    set_session(request, "s_rep_cli_active", get_param(request.GET, "s_rep_cli_active"))
     item_list = get_report(request)
     return render(request, "report/report-clients-list.html", {"items": item_list,})
 
@@ -755,6 +778,20 @@ def report_export(request):
     return csv_export(header, values, "empleados")
 
 @group_required("Administradores",)
+def report_export_emp(request):
+    header = ['Empleado', 'DNI', 'Tipo', 'Horas asignadas', 'Horas totales']
+    values = []
+    items = get_employees_report(request)
+    for item in items:
+        emp = item["name"]
+        dni = item["dni"]
+        total = item["total_hours"]
+        for s in item["status"]:
+            row = [emp, dni, s["name"], f'{s["hours"]} horas y {s["minutes"]} minutos', total]
+            values.append(row)
+    return csv_export(header, values, "empleados")
+
+@group_required("Administradores",)
 def report_search_emp(request):
     try:
         value = get_param(request.GET, "value")
@@ -778,7 +815,8 @@ def report_employees(request):
     init_session_date(request, "s_rep_emp_edate")
     set_session(request, "s_rep_emp", "")
     set_session(request, "s_rep_emp_type", "")
-    return render(request, "report/report-employees.html", {"items": [], 'emp_types': EmployeeType.objects.all()})
+    context = {"items": [], 'emp_types': EmployeeType.objects.all(), 'status': TimetableStatus.objects.all()}
+    return render(request, "report/report-employees.html", context)
 
 @group_required("Administradores",)
 def report_employees_list(request):
@@ -789,8 +827,10 @@ def report_employees_list(request):
 def report_employees_search(request, clients=""):
     set_session(request, "s_rep_emp", get_param(request.GET, "s_rep_emp"))
     set_session(request, "s_rep_emp_type", get_param(request.GET, "s_rep_emp_type"))
+    set_session(request, "s_rep_emp_status", get_param(request.GET, "s_rep_emp_status"))
     set_session(request, "s_rep_emp_idate", get_param(request.GET, "s_rep_emp_idate"))
     set_session(request, "s_rep_emp_edate", get_param(request.GET, "s_rep_emp_edate"))
+    set_session(request, "s_rep_emp_active", get_param(request.GET, "s_rep_emp_active"))
     item_list = get_employees_report(request)
     return render(request, "report/report-employees-list.html", {"items": item_list, 'status': TimetableStatus.objects.all()})
  
