@@ -8,6 +8,9 @@ class ClientAdmin(admin.ModelAdmin):
 class ClientTypeAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
+class EmployeeAdmin(admin.ModelAdmin):
+    list_display = ["name", "dni", "pin"]
+
 class EmployeeTypeAdmin(admin.ModelAdmin):
     list_display = ["name", "amount"]
 
@@ -17,7 +20,7 @@ class TimetableStatusAdmin(admin.ModelAdmin):
 
 admin.site.register(Client, ClientAdmin)
 admin.site.register(ClientType, ClientTypeAdmin)
-admin.site.register(Employee)
+admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EmployeeType, EmployeeTypeAdmin)
 admin.site.register(Assistance)
 admin.site.register(Incident)
