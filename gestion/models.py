@@ -136,18 +136,19 @@ class Employee(models.Model):
                 mins += 0
         return hours_mins(mins)
  
-    def clients_timetable(self):
+    def clients_timetable(self, idate, edate):
         dic = {}
-        for item in self.timetables.all():
+        #for item in self.timetables.all():
+        for item in self.timetables.filter(date__range = (idate, edate)):
             if item.client.name not in dic.keys():
                 dic[item.client.name] = []
             dic[item.client.name].append({"day":item.week_day, "ini":item.ini, "end":item.end, "id":item.id, "client":item.client.id})
         return dic
 
-    def client_list(self, qr_access=""):
-        if qr_access != "":
-            return self.timetables.filter(client__qr_access=qr_access).order_by("client").distinct("client")
-        return self.timetables.all().order_by("client").distinct("client")
+    def client_list(self, qr_access=False):
+        #if qr_access:
+        #    return self.timetables.filter(client__qr_access=qr_access).order_by("client").distinct("client")
+        return self.timetables.filter(date__gte=datetime.datetime.today(), client__qr_access=qr_access).order_by("client").distinct("client")
 
     def assigned_by_type(self, ini_date, end_date, status=None):
         idate = "{}".format(ini_date)
@@ -216,6 +217,7 @@ class Client(models.Model):
     phone = models.CharField(max_length=50, verbose_name = _('Teléfono de contacto'), null=True, default='0000000000')
     email = models.EmailField(verbose_name = _('Email de contacto'), default="", null=True)
     address = models.TextField(verbose_name = _('Dirección'), null=True, default='')
+    city = models.TextField(verbose_name = _('Municipio'), null=True, default='')
     observations = models.TextField(verbose_name = _('Observaciones'), null=True, default='')
     date = models.DateField(default=timezone.now, null=True, verbose_name=_('Inicio'))
     date_inactive = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))

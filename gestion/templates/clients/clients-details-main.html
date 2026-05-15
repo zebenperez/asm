@@ -43,7 +43,7 @@
 </div>
 
 <div class="row justify-center">
-    <div class="col-lg-3 col-6 my-2">
+    <div class="col-6 my-2">
         <div class="greybox-sm p-1">
             {% trans "Nombre" %}
             <input type="text" class="form-control autosave" id="name" name="name" value="{{obj.name|default:""}}" 
@@ -51,6 +51,48 @@
                 data-target="div-notification" placeholder="Nombre..." /> <span id="name__msg"></span>
         </div>
     </div>
+    <div class="col-6 my-2">
+        <div class="greybox-sm p-1">
+            {% trans "Correo electrónico" %}
+            <input type="text" class="form-control autosave" id="email" name="email" value="{{obj.email|default:""}}" 
+                title="{{obj.email}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
+                data-target="div-notification" placeholder="Correo electrónico..." /> <span id="email__msg"></span>
+        </div>
+    </div>
+</div>
+<div class="row justify-center">
+    <div class="col-6 my-2">
+        <div class="greybox-sm p-1">
+            {% trans "Dirección" %}
+            <input type="text" class="form-control autosave" id="address" name="address" value="{{obj.address|default:""}}" 
+                title="{{obj.address}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" 
+                data-url="{%url "autosave_field"%}" data-target="div-notification" placeholder="Dirección..." /> 
+            <span id="address__msg"></span>
+        </div>
+    </div>
+    <div class="col-6 my-2">
+        <div class="greybox-sm p-1">
+            {% trans "Municipio" %}
+            <input type="text" class="form-control autosave" id="city" name="city" value="{{obj.city|default:""}}" 
+                title="{{obj.city}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" 
+                data-url="{%url "autosave_field"%}" data-target="div-notification" placeholder="Municipio..." /> 
+            <span id="city__msg"></span>
+        </div>
+    </div>
+</div>
+    
+<div class="row justify-center">
+    <div class="co-lg-12 col-12 my-2">
+        <div class="greybox-sm p-1">
+            {% trans "Observaciones" %}
+            <textarea class="form-control autosave" id="observations" name="observations" title="{{obj.observations}}" 
+                data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
+                data-target="div-notification" placeholder="Observaciones...">{{obj.observations|default:""}} </textarea>
+            <span id="observations__msg"></span>
+        </div>
+    </div>
+</div>
+
     {%comment%}
     <div class="col-4">
         <div class="greybox-sm p-1">
@@ -75,33 +117,4 @@
     </div>
     {%endcomment%}
 
-    <div class="col-lg-3 col-6 my-2">
-        <div class="greybox-sm p-1">
-            {% trans "Correo electrónico" %}
-            <input type="text" class="form-control autosave" id="email" name="email" value="{{obj.email|default:""}}" 
-                title="{{obj.email}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-                data-target="div-notification" placeholder="Correo electrónico..." /> <span id="email__msg"></span>
-        </div>
-    </div>
-    <div class="col-lg-4 col-12 my-2">
-        <div class="greybox-sm p-1">
-            {% trans "Dirección" %}
-            <input type="text" class="form-control autosave" id="address" name="address" value="{{obj.address|default:""}}" 
-                title="{{obj.address}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" 
-                data-url="{%url "autosave_field"%}" data-target="div-notification" placeholder="Dirección..." /> 
-            <span id="address__msg"></span>
-        </div>
-    </div>
-</div>
-    
-<div class="row justify-center">
-    <div class="co-lg-12 col-12 my-2">
-        <div class="greybox-sm p-1">
-            {% trans "Observaciones" %}
-            <textarea class="form-control autosave" id="observations" name="observations" title="{{obj.observations}}" 
-                data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-                data-target="div-notification" placeholder="Observaciones...">{{obj.observations|default:""}} </textarea>
-            <span id="observations__msg"></span>
-        </div>
-    </div>
-</div>
+

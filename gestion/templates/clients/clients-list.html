@@ -23,7 +23,12 @@
                     <div class="col-4"><strong><i class='fas fa-user orange'></i> 
                         {% trans "Tipo" %}<br /></strong> {{ item.client_type.name|default:"---" }}</div>
                     <div class="col-4"><strong><i class='fas fa-user orange'></i> 
-                        {% trans "Cuantía" %}<br /></strong> {{ item.amount }} €</div>
+                        {#{% trans "Cuantía" %}<br /></strong> {{ item.amount }} €#}
+                        {% trans "Cuantías" %}</strong><br/>
+                        {% for it in item.types.all %}
+                            {{it.client_type}}: {{it.amount}} € <br/>
+                        {% endfor %}
+                    </div>
                 </div>
                 <br/>
                 <div class="row">
@@ -34,8 +39,10 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-8"><strong><i class='fas fa-map-marker orange'></i> 
+                    <div class="col-4"><strong><i class='fas fa-map-marker orange'></i> 
                         {% trans "Dirección" %}<br /></strong> {{ item.address|default:"" }}</div>
+                    <div class="col-4"><strong><i class='fas fa-map-marker orange'></i> 
+                        {% trans "Municipio" %}<br /></strong> {{ item.city|default:"" }}</div>
                     <div class="col-4"><strong><i class='fas fa-map-marker orange'></i> 
                         {% trans "Horas asignadas" %}<br /></strong> {% get_client_assigned_work item %}</div>
                         {#{% trans "Horas asignadas" %}<br /></strong> {{ item.assigned_work }}</div>#}
