@@ -17,7 +17,8 @@
 {#<div id="step2" class="hide"> {% include "employee/timetable-form.html" %} </div>#}
 
 <div class="row mt-3">
-    {% for key, value in obj.clients_timetable.items %}
+    {#{% for key, value in obj.clients_timetable.items %}#}
+    {% for key, value in client_list.items %}
         <div class="col-lg-4 col-12">
             <div class="card mb-4 text-bg-info">
                 <div class="card-header">
