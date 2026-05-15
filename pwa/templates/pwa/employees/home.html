@@ -16,6 +16,7 @@
                     <a class="btn btn-success asm w-100 py-3" href="{%url 'pwa-qr-scan'%}">Entrar con QR</a>
                 {% endif %}
             {% else %}
+		<div class="alert">¡ENTRADA REALIZADA!</div>
                 <p class="info text-center p-2">{%trans "Actualmente se encuentra con el/la usuario/a: "%}</p>
                 <p class="name text-center py-5">{{obj.client.name}}</p>
                 <p class="date text-center">

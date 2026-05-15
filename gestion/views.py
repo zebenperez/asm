@@ -395,6 +395,7 @@ def clients_import(request):
                 obj.phone = l[3]
                 obj.email = l[4]
                 obj.amount = get_float(l[5])
+                obj.city = l[6]
                 obj.save()
             i += 1
         return redirect("clients")
@@ -847,7 +848,8 @@ def employee(request, obj_id):
     if "s_employee_edate" not in request.session:
         set_session(request, "s_employee_edate", edate.strftime("%Y-%m-%d"))
     emp = get_or_none(Employee, obj_id)
-    return render(request, "employee/clients.html", {"obj": emp})
+    client_list = emp.clients_timetable(idate, edate)
+    return render(request, "employee/clients.html", {"obj": emp, "client_list": client_list})
 
 @group_required("Administradores",)
 def employee_search(request):
