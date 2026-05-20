@@ -140,9 +140,10 @@ class Employee(models.Model):
         dic = {}
         #for item in self.timetables.all():
         for item in self.timetables.filter(date__range = (idate, edate)):
-            if item.client.name not in dic.keys():
-                dic[item.client.name] = []
-            dic[item.client.name].append({"day":item.week_day, "ini":item.ini, "end":item.end, "id":item.id, "client":item.client.id})
+            if item.client != None:
+                if item.client.name not in dic.keys():
+                    dic[item.client.name] = []
+                dic[item.client.name].append({"day":item.week_day,"ini":item.ini,"end":item.end,"id":item.id,"client":item.client.id})
         return dic
 
     def client_list(self, qr_access=False):
@@ -377,9 +378,17 @@ class ClientTypeAmount(models.Model):
         verbose_name = "Tipo de cliente"
         verbose_name_plural = "Tipos de clientes"
 
+class ClientInactiveType(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+
+    class Meta:
+        verbose_name = _('Motivo baja')
+        verbose_name_plural = _('Motivos baja')
+
 class ClientInactive(models.Model):
     date = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))
     obs = models.TextField(verbose_name = _('Observaciones inactivo'), null=True, default='')
+    itype = models.ForeignKey(ClientInactiveType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True)
     client = models.ForeignKey(Client,verbose_name=_('Cliente'),on_delete=models.SET_NULL,null=True,related_name="inactives")
 
     class Meta:
