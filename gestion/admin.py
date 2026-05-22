@@ -19,6 +19,7 @@ class TimetableStatusAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Client, ClientAdmin)
+admin.site.register(ClientInactiveType)
 admin.site.register(ClientType, ClientTypeAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EmployeeType, EmployeeTypeAdmin)

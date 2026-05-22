@@ -21,12 +21,16 @@
                     <div class="col-4"><strong><i class='fas fa-user orange'></i> 
                         {% trans "Nombre" %}<br /></strong> {{ item.name|default:"---" }}</div>
                     <div class="col-4"><strong><i class='fas fa-user orange'></i> 
-                        {% trans "Tipo" %}<br /></strong> {{ item.client_type.name|default:"---" }}</div>
+                        {% trans "Tipo" %}<br /></strong> {#{{ item.client_type.name|default:"---" }}#}
+                        {% for it in item.types.all %}
+                            {{it.client_type}} <br/>
+                        {% endfor %}
+                    </div>
                     <div class="col-4"><strong><i class='fas fa-user orange'></i> 
                         {#{% trans "Cuantía" %}<br /></strong> {{ item.amount }} €#}
                         {% trans "Cuantías" %}</strong><br/>
                         {% for it in item.types.all %}
-                            {{it.client_type}}: {{it.amount}} € <br/>
+                            {#{{it.client_type}}:#} {{it.amount}} € <br/>
                         {% endfor %}
                     </div>
                 </div>

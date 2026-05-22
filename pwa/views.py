@@ -147,7 +147,10 @@ def employee_client(request, obj_id):
         if client == None:
             return render(request, "pwa/employees/qr-error.html", {})
 
-        obj = Assistance.objects.create(client=client, employee=request.user.employee, ini_date=datetime.now())
+        obj = Assistance.objects.filter(employee=request.user.employee, finish=False).first()
+        if obj == None: 
+            obj = Assistance.objects.create(client=client, employee=request.user.employee, ini_date=datetime.now())
+
         if client.observations != "":
             return render(request, "pwa/employees/client-obs.html", {"client": client})
         return redirect("pwa-home")

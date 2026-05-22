@@ -4,17 +4,21 @@
 {% block content%}
     <div class="col-12 p-2 mt-3">
         <div class="text-start my-2">
+	    <div class="row m-0 mt-2">
+	    <div class="col-12 mb-2 text-dark"><small>{% trans "Pulsa para entrar al cliente" %}</small></div>
             {% if obj == None %}
                 {% if sad_list|length > 0 %}
                     {% for item in sad_list %}
-                        <a class="btn btn-secondary asm w-100 mb-4" href="{% url "pwa-employee-client" item.client.id %}">
-                            {% trans "Entrar al cliente" %}: {{item.client}} </a>
+			<div class="col-6 p-2">
+                        	<a class="btn btn-secondary asm-client w-100 " href="{% url "pwa-employee-client" item.client.id %}"> {{item.client}} </a>
+			</div>
                     {% endfor %}
                 {% endif %}
                 {#{% else %}#}
                 {% if qr_list|length > 0 %}
                     <a class="btn btn-success asm w-100 py-3" href="{%url 'pwa-qr-scan'%}">Entrar con QR</a>
                 {% endif %}
+		</div>
             {% else %}
 		<div class="alert">¡ENTRADA REALIZADA!</div>
                 <p class="info text-center p-2">{%trans "Actualmente se encuentra con el/la usuario/a: "%}</p>

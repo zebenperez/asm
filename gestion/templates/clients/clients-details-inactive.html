@@ -12,21 +12,6 @@
     </div>
 </div>
 <div class="{%if not obj.inactive%}hide{%endif%}" id="div-date-inactive">
-    {%comment%}
-    <div class="col-12 mt2-2 mb-3"> {% trans "Fecha de desactivación" %} 
-        <input type="date" class="form-control autosave" id="date_inactive" name="date_inactive" data-model-name="gestion.client" 
-            data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" 
-            data-value="{{obj.date_inactive}}" value="{{obj.date_inactive|date:"Y-m-d"}}"/> 
-        <span id="date_inactive__msg"></span>
-    </div>
-    <div class="col-12 my-2"> {% trans "Observaciones" %}
-        <textarea class="form-control autosave" id="obs_inactive" name="obs_inactive" title="{{obj.obs_inactive}}" 
-            data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-            data-target="div-notification" placeholder="Observaciones...">{{obj.obs_inactive|default:""}} </textarea>
-        <span id="obs_inactive__msg"></span>
-    </div>
-    {%endcomment%}
-
     <form class="form m-0" method="GET" action="{% url "clients-inactive-add" %}" id="form-save-inactive">
         {%csrf_token%}
         <input type="hidden" id="obj_id" name="obj_id" value="{{obj.id}}" />
@@ -37,6 +22,16 @@
             <div class="col-2"> 
                 <button class="btn btn-primary-add saveform" data-bs-dismiss="modal" data-form="form-save-inactive" 
                     data-target="div-inactive"> <i class="fas fa-plus"></i>  {% trans "Añadir" %}</button>
+            </div>
+        </div>
+        <div class="row mb-4 mt-2">
+            <div class="col-12">
+                <select class="form-control form-control-dark w-100 py-2" name="itype" id="itype">
+                    <option value="">{% trans "Seleccione un motivo de la baja" %}</option>
+                    {% for item in itype_list %}
+                        <option value="{{item.id}}">{{item.name}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
         <div class="row mb-4 mt-2">
@@ -60,9 +55,26 @@
 		    <i class="fas fa-times"></i></a>
 	    </div>
 	</div>
+	<div class="col-12"><strong>{% trans "Motivo de la baja" %}:</strong> {{item.itype.name}}</div>
 	<div class="col-12"><strong>{% trans "Observaciones" %}:</strong> {{item.obs}}</div>
     </div>
     <hr class="orange"/>
  {% endfor %}
 
 </div>
+    {%comment%}
+    <div class="col-12 mt2-2 mb-3"> {% trans "Fecha de desactivación" %} 
+        <input type="date" class="form-control autosave" id="date_inactive" name="date_inactive" data-model-name="gestion.client" 
+            data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" 
+            data-value="{{obj.date_inactive}}" value="{{obj.date_inactive|date:"Y-m-d"}}"/> 
+        <span id="date_inactive__msg"></span>
+    </div>
+    <div class="col-12 my-2"> {% trans "Observaciones" %}
+        <textarea class="form-control autosave" id="obs_inactive" name="obs_inactive" title="{{obj.obs_inactive}}" 
+            data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
+            data-target="div-notification" placeholder="Observaciones...">{{obj.obs_inactive|default:""}} </textarea>
+        <span id="obs_inactive__msg"></span>
+    </div>
+    {%endcomment%}
+
+
