@@ -265,12 +265,24 @@ def employees_copy_pin(request):
 '''
 def get_clients(request):
     name = get_session(request, "s_cli_name").lstrip()
-    cif  = get_session(request, "s_cli_cif").lstrip()
+    cif = get_session(request, "s_cli_cif").lstrip()
+    ctype = get_session(request, "s_cli_type")
+    active = get_session(request, "s_cli_active")
+    city = get_session(request, "s_cli_city")
+
     kwargs = {}
     if name != "":
         kwargs["name__unaccent__icontains"] = name 
     if cif != "":
         kwargs["code__icontains"] = cif
+    if city != "":
+        kwargs["city__icontains"] = city
+    if active != "":
+        kwargs["inactive"] = True if active == "0" else False
+    if ctype != "":
+        client_ids = [item.client.id for item in ClientTypeAmount.objects.filter(client_type__id=ctype)]
+        kwargs["id__in"] = client_ids
+
     return Client.objects.filter(**kwargs).order_by("-id")[:50]
     #filters_to_search = ["name__unaccent__icontains",]
     #full_query = Q()
@@ -282,7 +294,8 @@ def get_clients(request):
 
 @group_required("Administradores",)
 def clients(request):
-    return render(request, "clients/clients.html", {"items": get_clients(request)})
+    type_list = ClientType.objects.all()
+    return render(request, "clients/clients.html", {"items": get_clients(request), 'type_list': type_list})
 
 @group_required("Administradores",)
 def clients_list(request):
@@ -292,6 +305,9 @@ def clients_list(request):
 def clients_search(request):
     set_session(request, "s_cli_name", get_param(request.GET, "s_cli_name"))
     set_session(request, "s_cli_cif", get_param(request.GET, "s_cli_cif"))
+    set_session(request, "s_cli_type", get_param(request.GET, "s_cli_type"))
+    set_session(request, "s_cli_active", get_param(request.GET, "s_cli_active"))
+    set_session(request, "s_cli_city", get_param(request.GET, "s_cli_city"))
     return render(request, "clients/clients-list.html", {"items": get_clients(request)})
 
 @group_required("Administradores",)
@@ -326,7 +342,13 @@ def clients_form_save(request):
 @group_required("Administradores",)
 def clients_details(request, obj_id):
     obj = get_or_none(Client, obj_id)
-    context = {'obj': obj, 'emp_list': Employee.objects.all(), 'type_list': ClientType.objects.all(), 'today': datetime.today()}
+    context = {
+        'obj': obj, 
+        'emp_list': Employee.objects.all(), 
+        'type_list': ClientType.objects.all(), 
+        'itype_list': ClientInactiveType.objects.all(), 
+        'today': datetime.today()
+    }
     return render(request, "clients/clients-details.html", context)
 
 @group_required("Administradores",)
@@ -597,11 +619,12 @@ def clients_type_remove(request):
 def clients_inactive_add(request):
     try:
         obj = get_or_none(Client, get_param(request.GET, "obj_id"))
+        itype = get_or_none(ClientInactiveType, get_param(request.GET, "itype"))
         date = get_param(request.GET, "date")
         obs = get_param(request.GET, "obs")
         
         if obj != None:
-            ci = ClientInactive.objects.create(client=obj, date=date, obs=obs)
+            ci = ClientInactive.objects.create(client=obj, date=date, obs=obs, itype=itype)
 
         return render(request, "clients/clients-details-inactive.html", {'obj': obj, 'today': datetime.today(),})
     except Exception as e:
@@ -780,7 +803,7 @@ def report_export(request):
 
 @group_required("Administradores",)
 def report_export_emp(request):
-    header = ['Empleado', 'DNI', 'Tipo', 'Horas asignadas', 'Horas totales']
+    header = ['Empleado', 'DNI', 'Tipo', 'Horas asignadas', 'Horas', 'Minutos']
     values = []
     items = get_employees_report(request)
     for item in items:
@@ -788,7 +811,8 @@ def report_export_emp(request):
         dni = item["dni"]
         total = item["total_hours"]
         for s in item["status"]:
-            row = [emp, dni, s["name"], f'{s["hours"]} horas y {s["minutes"]} minutos', total]
+            row = [emp, dni, s["name"], f'{s["hours"]} horas y {s["minutes"]} minutos', s['hours'], s["minutes"]]
+            #row = [emp, dni, s["name"], f'{s["hours"]} horas y {s["minutes"]} minutos', total]
             values.append(row)
     return csv_export(header, values, "empleados")
 

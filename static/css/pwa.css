@@ -93,6 +93,19 @@ input#code.form-control.btn.asm.w-50 {
     background: #fdf4ef;
 }
 
+.btn.btn-secondary.asm-client {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #e35000;
+    border: 1px solid #e35000;
+    background: #fff;
+    align-items: center;
+    display: grid;
+    min-height: 75px;
+}
+
+
 
 /*********** END BUTTONS *************/
 
@@ -230,7 +243,7 @@ span.html5-qrcode-element {
     color: #e35000;
 }
 
-  .alert {
+.alert {
       width: 100%;
       max-width: 400px;
       padding: 16px;
@@ -241,7 +254,7 @@ span.html5-qrcode-element {
       background-color: #d4edda;
       border: 1px solid #c3e6cb;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+}
 
 p.info {
     background-color: #f8d8b9;

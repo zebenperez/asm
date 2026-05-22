@@ -6,14 +6,34 @@
         <div class="col-11 b-search">
             <div class="row">
                 <div class="col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar cliente:" %}</span> </div>
-                <div class="col-5">
+                <div class="col-2">
                     <input type="text" class="form-control form-control-dark w-100 py-2" 
                         name="s_cli_name" id="s_cli_name" placeholder="Nombre cliente" value="{{request.session.s_cli_name}}"/>
                 </div>
-                <div class="col-5">
+                <div class="col-2">
                     <input type="text" class="form-control form-control-dark w-100 py-2" 
                         name="s_cli_cif" id="s_cli_cif" placeholder="NIF/CIF" value="{{request.session.s_cli_cif}}"/>
                 </div>
+                <div class="col-2">
+                    <input type="text" class="form-control form-control-dark w-100 py-2" 
+                        name="s_cli_city" id="s_cli_city" placeholder="Municipio" value="{{request.session.s_cli_city}}"/>
+                </div>
+                <div class="col-2">
+                    <select class="form-control form-control-dark w-100 py-2" name="s_cli_type" id="s_cli_type">
+                        <option value="">{% trans "Seleccione un tipo" %}</option>
+                        {% for item in type_list %}
+                            <option value="{{item.id}}">{{item.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-2">
+                    <select class="form-control form-control-dark w-100 py-2" name="s_cli_active" id="s_cli_active">
+                        <option value="">{% trans "Todos" %}</option>
+                        <option value="1">{% trans "Activos" %}</option>
+                        <option value="0">{% trans "No Activos" %}</option>
+                    </select>
+                </div>
+
             </div>
         </div>
         <div class="col-1 p-0">
