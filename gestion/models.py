@@ -260,7 +260,7 @@ class Client(models.Model):
     qr = models.ImageField(upload_to=upload_form_qr, blank=True, verbose_name="QR", help_text="Select file to upload")
     city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     client_type = models.ForeignKey(ClientType, verbose_name=_('Tipo'), on_delete=models.SET_NULL, null=True)
-    grade = models.ForeignKey(ClientGrade, verbose_name=_('Grado'), on_delete=models.SET_NULL, null=True)
+    #grade = models.ForeignKey(ClientGrade, verbose_name=_('Grado'), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
