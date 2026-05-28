@@ -54,6 +54,7 @@ urlpatterns = [
     path('clients/type-remove/', views.clients_type_remove, name='clients-type-remove'),
     path('clients/inactive-add/', views.clients_inactive_add, name='clients-inactive-add'),
     path('clients/inactive-remove/', views.clients_inactive_remove, name='clients-inactive-remove'),
+    path('clients/search-city', views.clients_search_city, name='clients-search-city'),
 
     path('clients/timetable/<int:obj_id>', views.clients_timetable, name='clients-timetable'),
     path('clients/timetable/employees-add', views.clients_timetable_employees_add, name='clients-timetable-employees-add'),

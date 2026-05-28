@@ -2,43 +2,116 @@
 
 <form class="form m-0" method="GET" action="{% url "clients-search" %}" id="form-search">
     {%csrf_token%}
-    <div class="row">
-        <div class="col-11 b-search">
-            <div class="row">
-                <div class="col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar cliente:" %}</span> </div>
-                <div class="col-2">
-                    <input type="text" class="form-control form-control-dark w-100 py-2" 
-                        name="s_cli_name" id="s_cli_name" placeholder="Nombre cliente" value="{{request.session.s_cli_name}}"/>
-                </div>
-                <div class="col-2">
-                    <input type="text" class="form-control form-control-dark w-100 py-2" 
-                        name="s_cli_cif" id="s_cli_cif" placeholder="NIF/CIF" value="{{request.session.s_cli_cif}}"/>
-                </div>
-                <div class="col-2">
-                    <input type="text" class="form-control form-control-dark w-100 py-2" 
-                        name="s_cli_city" id="s_cli_city" placeholder="Municipio" value="{{request.session.s_cli_city}}"/>
-                </div>
-                <div class="col-2">
-                    <select class="form-control form-control-dark w-100 py-2" name="s_cli_type" id="s_cli_type">
-                        <option value="">{% trans "Seleccione un tipo" %}</option>
-                        {% for item in type_list %}
-                            <option value="{{item.id}}">{{item.name}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-2">
-                    <select class="form-control form-control-dark w-100 py-2" name="s_cli_active" id="s_cli_active">
-                        <option value="">{% trans "Todos" %}</option>
-                        <option value="1">{% trans "Activos" %}</option>
-                        <option value="0">{% trans "No Activos" %}</option>
-                    </select>
-                </div>
-
-            </div>
+    <div class="card border-none">
+        <div class="card-header pointer" 
+            onclick="$('#card-body-client').slideToggle();$('#ico-shead').toggleClass('fa-minus fa-plus')">
+            <h2>{% trans "Opciones de búsqueda" %} <i id="ico-shead" class="fas fa-minus"></i></h2>
         </div>
-        <div class="col-1 p-0">
-            <button class="btn btn-default saveform w-100" data-form="form-search" data-target="client-list">
-                <i class="fas fa-search"></i> </button>
+        <div class="card-body p-0" id="card-body-client">
+            <div class="inner-card p-2">
+                <div class="row">
+                    <div class="col-3">{% trans "Nombre cliente" %}</div>
+                    <div class="col-3">{% trans "NIF/CIF" %}</div>
+                    <div class="col-3">{% trans "Municipio" %}</div>
+                    <div class="col-3">{% trans "Tipo cliente" %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <input type="text" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_name" id="s_cli_name" placeholder="Nombre cliente" value="{{request.session.s_cli_name}}"/>
+                    </div>
+                    <div class="col-3">
+                        <input type="text" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_cif" id="s_cli_cif" placeholder="NIF/CIF" value="{{request.session.s_cli_cif}}"/>
+                    </div>
+                    <div class="col-3">
+                        {%comment%}
+                        <input type="text" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_city" id="s_cli_city" placeholder="Municipio" value="{{request.session.s_cli_city}}"/>
+                        {%endcomment%}
+                        <select class="form-control form-control-dark w-100 py-2" name="s_cli_city" id="s_cli_city">
+                            <option value="">{% trans "Seleccione un municipio" %}</option>
+                            {% for item in city_list %} <option value="{{item.id}}">{{item.name}}</option> {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <select class="form-control form-control-dark w-100 py-2" name="s_cli_type" id="s_cli_type">
+                            <option value="">{% trans "Seleccione un tipo" %}</option>
+                            {% for item in type_list %} <option value="{{item.id}}">{{item.name}}</option> {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {# ----------------------------- ACTIVO / INACTIVO ---------------------------------#}
+            <div class="inner-card p-2 my-3">
+                <div class="row mt-1">
+                    <div class="col-2">{% trans "Activo" %}</div>
+                    <div class="col-6">{% trans "Desactivado entre" %}</div>
+                    <div class="col-4">{% trans "Motivo" %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-2">
+                        <select class="form-control form-control-dark w-100 py-2" name="s_cli_active" id="s_cli_active">
+                            <option value="">{% trans "Todos" %}</option>
+                            <option value="1">{% trans "Activos" %}</option>
+                            <option value="0">{% trans "No Activos" %}</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <input type="date" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_date_ini" id="s_cli_date_ini" value="{{request.session.s_cli_date_ini}}"/>
+                    </div>
+                    <div class="col-3">
+                        <input type="date" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_date_end" id="s_cli_date_end" value="{{request.session.s_cli_date_end}}"/>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-control form-control-dark w-100 py-2" name="s_cli_itype" id="s_cli_itype">
+                            <option value="">{% trans "Seleccione un motivo" %}</option>
+                            {% for item in itype_list %} <option value="{{item.id}}">{{item.name}}</option> {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {# ----------------------------- TRABAJADOR ASIGNADO ---------------------------------#}
+            <div class="inner-card p-2">
+                <div class="row mt-1">
+                    <div class="col-4">{% trans "Trabajador asignado" %}</div>
+                    <div class="col-8">{% trans "Asignado entre" %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <select class="form-control form-control-dark w-100 py-2" name="s_cli_assigned" id="s_cli_assigned">
+                            <option value="">{% trans "Todos" %}</option>
+                            <option value="1" {%if request.session.s_cli_assigned == "1"%}selected{%endif%}>
+                                {% trans "Con trabajador asignado" %}</option>
+                            <option value="0" {%if request.session.s_cli_assigned == "0"%}selected{%endif%}>
+                                {% trans "Sin trabajador asignado" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <input type="date" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_adate_ini" id="s_cli_adate_ini" value="{{request.session.s_cli_adate_ini}}"/>
+                    </div>
+                    <div class="col-4">
+                        <input type="date" class="form-control form-control-dark w-100 py-2" 
+                            name="s_cli_adate_end" id="s_cli_adate_end" value="{{request.session.s_cli_adate_end}}"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-lg-2 offset-lg-3 col-6 p-0">
+                    <button class="btn btn-default saveform w-100" data-form="form-search" data-target="client-list">
+                        <i class="fas fa-search"></i><strong> {% trans "Buscar" %}</strong></button>
+                </div>
+                <div class="col-lg-2 offset-lg-2 col-6 p-0">
+                    <button type="button" class="btn btn-outline-default w-100" onclick="$('.form-control').val('')">
+                        <i class="fas fa-times"></i> <strong>{% trans "Limpiar" %}</strong></button>
+                </div>
+            </div>
         </div>
     </div>
 </form>

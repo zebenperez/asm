@@ -68,9 +68,11 @@
                         <a class="btn btn-xs ark" data-url="{% url "clients-form" %}" data-target-modal="common-modal" 
                             data-obj_id="{{item.id}}" title="{% trans 'Editar' %}"><i class="fas fa-edit"></i></a> 
                         {%endcomment%}
-                        <a class="btn btn-xs ark" data-url="{% url "clients-remove" %}" data-target="client-list" 
-                            data-obj_id="{{item.id}}" title="{% trans 'Borrar' %}" 
-                            data-confirm="{% trans "Are you sure to remove this element?" %}"><i class="fas fa-trash"></i></a> 
+                        {% if not item.emp_assigned %}
+                            <a class="btn btn-xs ark" data-url="{% url "clients-remove" %}" data-target="client-list" 
+                                data-obj_id="{{item.id}}" title="{% trans 'Borrar' %}" 
+                                data-confirm="{% trans "Are you sure to remove this element?" %}"><i class="fas fa-trash"></i></a> 
+                        {% endif %}
                     </div>
                 </div>
             </div>
