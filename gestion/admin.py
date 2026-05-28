@@ -3,7 +3,8 @@ from .models import *
 
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ["name", "island"]
+    list_display = ["name"]
+    #list_display = ["name", "island"]
 
 class ClientAdmin(admin.ModelAdmin):
     list_per_page = 500
