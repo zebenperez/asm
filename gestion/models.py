@@ -53,7 +53,7 @@ class Island(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
-    island = models.ForeignKey(Island, verbose_name=_('Isla'), on_delete=models.SET_NULL, null=True, related_name="cities")
+    #island = models.ForeignKey(Island, verbose_name=_('Isla'), on_delete=models.SET_NULL, null=True, related_name="cities")
 
     def __str__(self):
         return self.name
