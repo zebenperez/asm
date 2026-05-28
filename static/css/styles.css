@@ -25,6 +25,12 @@ h1 {
 	line-height: 50px;
 }
 
+h2 {
+	color: #e35000;
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
 .navbar-brand {
 	text-align: center;
 }
@@ -269,9 +275,6 @@ button.btn.btn-timetable:hover {
 	border:1px solid #e35000 !important;
 }
 
-
-
-
 .btn.btn-sm.new,
 .btn.btn-sm.ark.new,
 .btn.btn-xs.exp {
@@ -311,9 +314,23 @@ label.btn-tools.tools-primary:hover {
     color: #ae6317;
 }
 
+.btn.btn-default {
+	background: #e35000; 
+	color: white;
+}
+.btn.btn-default i {
+	color: white;
+}
+.btn.btn-outline-default {
+	background: white; 
+	border: 1px solid #e35000; 
+	color: #e35000;
+
+}
+
 i.fas.fa-upload, 
 i.fas.fa-plus { 
-	color: #f2902d; 
+	color: #e35000; 
 }
 i.fas.fa-upload:hover { color: #ae6317; }
 
@@ -360,8 +377,15 @@ img.img-fluid {
 	align-items: center;
 	display: flex;
 	flex-direction: row;
-
 }
+
+.inner-card {
+	background-color: #f9f5f1; border:1px solid #dfdfdf; border-radius:5px;}
+
+.border-none {
+	border:none;
+}
+
 .b-search {
 	border-right:1px solid #f2902d;
 }
@@ -372,6 +396,7 @@ img.img-fluid {
        font-style: italic;
        letter-spacing: 0;
 }
+.toolbar-search select,
 .toolbar-search input {
 	border:1px solid #ced4da !important;
 }
@@ -502,7 +527,6 @@ h2.pathway a {
 	text-decoration: none;
 	color: #36abfc !important;
 }
-h2,  
 h2.pathway.b-right  {
 	font-size: 0.875rem !important;
 }

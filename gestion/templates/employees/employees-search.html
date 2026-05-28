@@ -2,74 +2,62 @@
 
 <form class="form m-0" method="GET" action="{% url "employees-search" %}" id="form-search">
     {%csrf_token%}
-    <div class="row">
-        {%comment%}
-        <div class="col-5">
-            <div class="row"> 
-                <div class="col-lg-4 col-4 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar por fecha:" %}</span> </div>
-                <div class="col-lg-4 col-6 p-0">
-                    <input type="date" class="autosearch form-control form-control-dark w-100 py-2"
-                        name="s_emp_idate" id="s_emp_idate" value="{{request.session.s_emp_idate}}"/>
+
+    <div class="card border-none">
+        <div class="card-header"><h2>{% trans "Opciones de búsqueda" %}</h2></div>
+        <div class="card-body p-0">
+            <div class="inner-card p-2">
+                <div class="row">
+                    <div class="col-6">{% trans "Nombre trabajador" %}</div>
+                    <div class="col-6">{% trans "Empresa" %}</div>
                 </div>
-                <div class="col-lg-4 col-6 p-0">
-                    <input type="date" class="autosearch form-control form-control-dark w-100 py-2" 
-                        name="s_emp_edate" id="s_emp_edate" value="{{request.session.s_emp_edate}}"/>
-                </div>
-            </div>
-        </div>
-        {%endcomment%}
-        <div class="col-6 b-search">
-            <div class="row">
-                <div class="col-lg-5 col-5 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar trabajador/a:" %}</span> </div>
-                <div class="col-lg-7 col-12">
-                    <input type="text" class="form-control form-control-dark w-100 py-2" 
-                        name="s_emp_name" id="s_emp_name" placeholder="Nombre trabajador/a" value="{{request.session.s_emp_name}}"/>
+                <div class="row">
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-dark w-100 py-2" 
+                            name="s_emp_name" id="s_emp_name" placeholder="Nombre trabajador/a" value="{{request.session.s_emp_name}}"/>
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-dark w-100 py-2" 
+                            name="s_emp_comp" id="s_emp_comp" placeholder="Nombre empresa" value="{{request.session.s_emp_comp}}"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-5 b-search">
-            <div class="row">
-                <div class="col-lg-5 col-5 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar empresa:" %}</span> </div>
-                <div class="col-lg-7 col-12">
-                    <input type="text" class="form-control form-control-dark w-100 py-2" 
-                        name="s_emp_comp" id="s_emp_comp" placeholder="Nombre empresa" value="{{request.session.s_emp_comp}}"/>
+
+            {# ----------------------------- TRABAJADOR ASIGNADO ---------------------------------#}
+            <div class="inner-card p-2 my-3">
+                <div class="row mt-1">
+                    <div class="col-4">{% trans "Cliente asignado" %}</div>
+                    <div class="col-8">{% trans "Asignado entre" %}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <select class="form-control form-control-dark w-100 py-2" name="s_emp_assigned" id="s_emp_assigned">
+                            <option value="">{% trans "Todos" %}</option>
+                            <option value="1" {%if request.session.s_emp_assigned == "1"%}selected{%endif%}>
+                                {% trans "Con cliente asignado" %}</option>
+                            <option value="0" {%if request.session.s_emp_assigned == "0"%}selected{%endif%}>
+                                {% trans "Sin cliente asignado" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-4">
+                        <input type="date" class="form-control form-control-dark w-100 py-2" 
+                            name="s_emp_adate_ini" id="s_emp_adate_ini" value="{{request.session.s_emp_adate_ini}}"/>
+                    </div>
+                    <div class="col-4">
+                        <input type="date" class="form-control form-control-dark w-100 py-2" 
+                            name="s_emp_adate_end" id="s_emp_adate_end" value="{{request.session.s_emp_adate_end}}"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-1 col-1 p-0">
-            <button class="btn btn-default saveform w-100" data-form="form-search" data-target="emp-list">
-                <i class="fas fa-search"></i> </button>
+ 
+            <div class="row mt-1">
+                <div class="col-lg-2 offset-lg-5 col-12 p-0 text-center">
+                    <button class="btn btn-default saveform w-100" data-form="form-search" data-target="emp-list">
+                        <i class="fas fa-search"></i> {% trans "Buscar" %}</button>
+                </div>
+            </div>
         </div>
     </div>
 </form>
      
-    {%comment%}
-<div class="row">
-    <div class="col-lg-1 col-1 b-search"><i class="fas fa-search"></i></div>
-    <div class="col-lg-5 col-11">
-	    <div class="row">
-		    <div class="col-4 py-2 text-end"> <span>{% trans "Buscar otra fecha:" %}</span> </div>
-        	<div class="col-4">
-        	    <input type="date" class="autosearch form-control form-control-dark w-100 py-2" name="s-idate" id="s-idate" 
-	                data-url="{%url "assistances-search"%}" data-target="item-list" data-related="s-name,s-idate,s-edate" 
-                    value="{{request.session.s_idate}}"/>
-            </div>
-        	<div class="col-4">
-        	    <input type="date" class="autosearch form-control form-control-dark w-100 py-2" name="s-edate" id="s-edate" 
-	                data-url="{%url "assistances-search"%}" data-target="item-list" data-related="s-name,s-idate,s-edate"
-                    value="{{request.session.s_edate}}"/>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-11">
-	    <div class="row">
-		    <div class="col-5 py-2 text-end"> <span>{% trans "Buscar trabajador/a:" %}</span> </div>
-        	<div class="col-7">
-        	    <input type="text" class="autosearch form-control form-control-dark w-100 py-2" name="s-name" id="s-name" 
-	                data-url="{% url "assistances-search" %}" data-target="item-list" data-related="s-name,s-idate,s-edate"
-                    value="{{request.session.s_name}}"/>
-            </div>
-        </div>
-    </div>
-</div>
-    {%endcomment%}

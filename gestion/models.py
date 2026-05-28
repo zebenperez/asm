@@ -40,6 +40,29 @@ class Zone(models.Model):
         verbose_name_plural = _('Zonas')
         ordering = ["name"]
 
+class Island(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Isla')
+        verbose_name_plural = _('Islas')
+        ordering = ["name"]
+
+class City(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+    island = models.ForeignKey(Island, verbose_name=_('Isla'), on_delete=models.SET_NULL, null=True, related_name="cities")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Municipio')
+        verbose_name_plural = _('Municipios')
+        ordering = ["name"]
+
 '''
     EMPLOYEE
 '''
@@ -202,6 +225,17 @@ class ClientType(models.Model):
         verbose_name_plural = _('Tipos de cliente')
         ordering = ["name"]
 
+class ClientGrade(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Grado')
+        verbose_name_plural = _('Grados')
+        ordering = ["name"]
+
 def upload_form_qr(instance, filename):
     ascii_filename = str(filename.encode('ascii', 'ignore'))
     instance.filename = ascii_filename
@@ -218,16 +252,22 @@ class Client(models.Model):
     phone = models.CharField(max_length=50, verbose_name = _('Teléfono de contacto'), null=True, default='0000000000')
     email = models.EmailField(verbose_name = _('Email de contacto'), default="", null=True)
     address = models.TextField(verbose_name = _('Dirección'), null=True, default='')
-    city = models.TextField(verbose_name = _('Municipio'), null=True, default='')
+    #city = models.TextField(verbose_name = _('Municipio'), null=True, default='')
     observations = models.TextField(verbose_name = _('Observaciones'), null=True, default='')
     date = models.DateField(default=timezone.now, null=True, verbose_name=_('Inicio'))
     date_inactive = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))
     obs_inactive = models.TextField(verbose_name = _('Observaciones inactivo'), null=True, default='')
     qr = models.ImageField(upload_to=upload_form_qr, blank=True, verbose_name="QR", help_text="Select file to upload")
+    city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     client_type = models.ForeignKey(ClientType, verbose_name=_('Tipo'), on_delete=models.SET_NULL, null=True)
+    grade = models.ForeignKey(ClientGrade, verbose_name=_('Grado'), on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def emp_assigned(self):
+        return (self.timetables.count() > 0)
 
     def assigned_work(self):
         item_list = self.timetables.filter(client__id=self.id)

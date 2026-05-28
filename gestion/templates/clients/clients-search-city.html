@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="suggest-guest">
+    {% for item in items %}
+        <div class="row item-row pt-1 pb-1 pointer" data-id="{{item.id}}" data-name="{{item.name}}">
+            <div class="col-10"> {{item.name}} </div>
+            <div class="col-2 text-right"> <i class="far fa-check-circle"></i> </div>
+        </div>
+    {% endfor%} 
+</div>
+<script>
+    $(".item-row").click(function(){
+        $('#city').val($(this).data("id"));
+        $('#city').change();
+        $('#span-city').html($(this).data("name"));
+        $('#clients-search-city').html('');
+        $('#div-change-city').hide();
+    });
+</script>

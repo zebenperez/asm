@@ -3,7 +3,7 @@
 <div id="div-notification"></div>
 
 <div class="row justify-center mt-4">
-    <div class="col-lg-3 col-6 my-2">
+    <div class="col-3 my-2">
         <div class="greybox-sm p-1">
             {% trans "NIF/NIE" %}
             <input type="text" class="form-control autosave" id="code" name="code" value="{{obj.code|default:""}}" 
@@ -11,7 +11,7 @@
                 data-target="div-notification" placeholder="Código..." /> <span id="code__msg"></span>
         </div>
     </div>
-    <div class="col-lg-3 col-6 my-2">
+    <div class="col-3 my-2">
         <div class="greybox-sm p-1">
             {% trans "Número de expediente" %}
             <input type="text" class="form-control autosave" id="exp" name="exp" value="{{obj.exp|default:""}}" 
@@ -19,7 +19,7 @@
                 data-target="div-notification" placeholder="Código..." /> <span id="exp__msg"></span>
         </div>
     </div>
-    <div class="col-lg-2 col-6 my-2">
+    <div class="col-3 my-2">
         <div class="greybox-sm p-1">
             {% trans "Fecha de contrato" %}
             <input type="date" class="form-control autosave" id="date" name="date" value="{{obj.date|date:"Y-m-d"}}" 
@@ -27,15 +27,7 @@
                 data-target="div-notification" placeholder="Código..." /> <span id="exp__msg"></span>
         </div>
     </div>
-    <div class="col-lg-2 col-6 my-2">
-        <div class="greybox-sm p-1">
-            {% trans "Teléfono" %}
-            <input type="text" class="form-control autosave" id="phone" name="phone" value="{{obj.phone|default:""}}" 
-                title="{{obj.phone}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-                data-target="div-notification" placeholder="Teléfono..." /> <span id="phone__msg"></span>
-        </div>
-    </div>
-    <div class="col-lg-2 col-12 text-end my-2">{% trans "Acceso QR" %}
+    <div class="col-3 text-end my-2">{% trans "Acceso QR" %}
         <input type="checkbox" class="form-check-input autosave" id="qr_access" name="qr_access"  data-model-name="gestion.client" 
             data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" data-bool="True"
             {%if obj.qr_access%}checked{%endif%}/> <span id="qr_access__msg"></span>
@@ -53,10 +45,34 @@
     </div>
     <div class="col-6 my-2">
         <div class="greybox-sm p-1">
+            {% trans "Grado" %}
+            <select class="form-control autosave" id="grade" name="grade" data-model-name="gestion.client" data-obj-id="{{obj.id}}" 
+                data-url="{%url "autosave_field"%}" data-target="div-notification"> 
+                <option value="">{% trans "Seleccione un grado" %}</option>
+                {% for g in grade_list %}
+                    <option value="{{g.id}}" {%if g.id == obj.grade.id%}selected{%endif%}>{{g.name}}</option>
+                {% endfor %}
+            </select>
+            <span id="grade__msg"></span>
+        </div>
+    </div>
+
+</div>
+<div class="row justify-center">
+    <div class="col-6 my-2">
+        <div class="greybox-sm p-1">
             {% trans "Correo electrónico" %}
             <input type="text" class="form-control autosave" id="email" name="email" value="{{obj.email|default:""}}" 
                 title="{{obj.email}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
                 data-target="div-notification" placeholder="Correo electrónico..." /> <span id="email__msg"></span>
+        </div>
+    </div>
+    <div class="col-6 my-2">
+        <div class="greybox-sm p-1">
+            {% trans "Teléfono" %}
+            <input type="text" class="form-control autosave" id="phone" name="phone" value="{{obj.phone|default:""}}" 
+                title="{{obj.phone}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
+                data-target="div-notification" placeholder="Teléfono..." /> <span id="phone__msg"></span>
         </div>
     </div>
 </div>
@@ -72,11 +88,22 @@
     </div>
     <div class="col-6 my-2">
         <div class="greybox-sm p-1">
-            {% trans "Municipio" %}
-            <input type="text" class="form-control autosave" id="city" name="city" value="{{obj.city|default:""}}" 
+            <input type="text" class="form-control hide autosave" id="city" name="city" value="{{obj.city|default:""}}" 
                 title="{{obj.city}}" data-model-name="gestion.client" data-obj-id="{{obj.id}}" 
                 data-url="{%url "autosave_field"%}" data-target="div-notification" placeholder="Municipio..." /> 
             <span id="city__msg"></span>
+            {% trans "Municipio" %}:             
+            {%if obj%}<a class="btn btn-sm" onclick="$('#div-change-city').toggle()">{%trans "Cambiar"%}</a>{%endif%}
+            <br/>
+            <span id="span-city">{{obj.city.name}}</span>
+
+            <div id="div-change-city" class="{%if obj%}hide{%endif%}">
+                {#<input type="hidden" class="form-control input" id="city" name="city" value="{{obj.city.id}}"/>#}
+                <input class="form-control input autocomplete" id="search_city" name="search_city" placeholder="Municipio"
+                    value="" data-url="{%url "clients-search-city"%}" data-target="clients-search-city"/>
+                <div id="clients-search-city"></div>
+            </div>
+
         </div>
     </div>
 </div>

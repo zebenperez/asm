@@ -112,23 +112,33 @@ def assistances_search_emp(request):
     EMPLOYEES
 '''
 def get_employees(request):
-
     search_value = get_session(request, "s_emp_name")
     search_comp = get_session(request, "s_emp_comp")
+    assigned = get_session(request, "s_emp_assign")
+    adate_ini = get_session(request, "s_emp_adate_ini")
+    adate_end = get_session(request, "s_emp_adate_end")
+
     kwargs = {}
     if search_value != "" or search_comp != "":
         if search_value != "":
             kwargs["name__unaccent__icontains"] = search_value
         if search_comp != "":
             kwargs["timetables__client__name__unaccent__icontains"] = search_comp
-        return Employee.objects.filter(**kwargs)
-    return Employee.objects.all()
-    #filters_to_search = ["name__icontains",]
-    #full_query = Q()
-    #if search_value != "":
-    #    for myfilter in filters_to_search:
-    #        full_query |= Q(**{myfilter: search_value})
-    #return Employee.objects.filter(full_query)
+    emp_list = Employee.objects.filter(**kwargs)
+
+    if assigned != "":
+        kwargs2 = {}
+        if adate_ini != "":
+            kwargs2["date__gte"] = adate_ini
+        if adate_end != "":
+            kwargs2["date__lte"] = adate_end
+        emp_ids = list(ClientTimetable.objects.filter(**kwargs2).values_list('employee_id', flat=True).distinct())
+        if assigned == "1":
+            emp_list = emp_list.filter(id__in = emp_ids)
+        else:
+            emp_list = emp_list.exclude(id__in = emp_ids)
+
+    return emp_list
 
 @group_required("Administradores",)
 def employees(request):
@@ -144,8 +154,11 @@ def employees_list(request):
 def employees_search(request):
     set_session(request, "s_emp_name", get_param(request.GET, "s_emp_name"))
     set_session(request, "s_emp_comp", get_param(request.GET, "s_emp_comp"))
-    set_session(request, "s_emp_idate", get_param(request.GET, "s_emp_idate"))
-    set_session(request, "s_emp_edate", get_param(request.GET, "s_emp_edate"))
+    #set_session(request, "s_emp_idate", get_param(request.GET, "s_emp_idate"))
+    #set_session(request, "s_emp_edate", get_param(request.GET, "s_emp_edate"))
+    set_session(request, "s_emp_assign", get_param(request.GET, "s_emp_assign"))
+    set_session(request, "s_emp_adate_ini", get_param(request.GET, "s_emp_adate_ini"))
+    set_session(request, "s_emp_adate_end", get_param(request.GET, "s_emp_adate_end"))
     return render(request, "employees/employees-list.html", {"items": get_employees(request)})
 
 @group_required("Administradores",)
@@ -267,8 +280,14 @@ def get_clients(request):
     name = get_session(request, "s_cli_name").lstrip()
     cif = get_session(request, "s_cli_cif").lstrip()
     ctype = get_session(request, "s_cli_type")
-    active = get_session(request, "s_cli_active")
     city = get_session(request, "s_cli_city")
+    active = get_session(request, "s_cli_active")
+    date_ini = get_session(request, "s_cli_date_ini")
+    date_end = get_session(request, "s_cli_date_end")
+    itype = get_session(request, "s_cli_itype")
+    assigned = get_session(request, "s_cli_assigned")
+    adate_ini = get_session(request, "s_cli_adate_ini")
+    adate_end = get_session(request, "s_cli_adate_end")
 
     kwargs = {}
     if name != "":
@@ -276,14 +295,40 @@ def get_clients(request):
     if cif != "":
         kwargs["code__icontains"] = cif
     if city != "":
-        kwargs["city__icontains"] = city
+        kwargs["city__id"] = city
+        #kwargs["city__icontains"] = city
     if active != "":
         kwargs["inactive"] = True if active == "0" else False
     if ctype != "":
         client_ids = [item.client.id for item in ClientTypeAmount.objects.filter(client_type__id=ctype)]
         kwargs["id__in"] = client_ids
+    if itype != "" or date_ini != "" or date_end != "":
+        kwargs2 = {}
+        if itype != "":
+            kwargs2["itype__id"] = itype
+        if date_ini != "":
+            kwargs2["date__gte"] = date_ini
+        if date_end != "":
+            kwargs2["date__lte"] = date_end
+        #client_ids = [item.client.id for item in ClientInactive.objects.filter(**kwargs2)]
+        client_ids = list(ClientInactive.objects.filter(**kwargs2).values_list('client_id', flat=True).distinct())
+        kwargs["id__in"] = client_ids
 
-    return Client.objects.filter(**kwargs).order_by("-id")[:50]
+    client_list = Client.objects.filter(**kwargs)
+
+    if assigned != "":
+        kwargs2 = {}
+        if adate_ini != "":
+            kwargs2["date__gte"] = adate_ini
+        if adate_end != "":
+            kwargs2["date__lte"] = adate_end
+        client_ids = list(ClientTimetable.objects.filter(**kwargs2).values_list('client_id', flat=True).distinct())
+        if assigned == "1":
+            client_list = client_list.filter(id__in = client_ids)
+        else:
+            client_list = client_list.exclude(id__in = client_ids)
+
+    return client_list.order_by("-id")[:50]
     #filters_to_search = ["name__unaccent__icontains",]
     #full_query = Q()
     #if search_value != "":
@@ -295,7 +340,10 @@ def get_clients(request):
 @group_required("Administradores",)
 def clients(request):
     type_list = ClientType.objects.all()
-    return render(request, "clients/clients.html", {"items": get_clients(request), 'type_list': type_list})
+    itype_list = ClientInactiveType.objects.all()
+    city_list = City.objects.all()
+    context = {"items": get_clients(request), 'type_list': type_list, 'city_list': city_list, 'itype_list': itype_list}
+    return render(request, "clients/clients.html", context)
 
 @group_required("Administradores",)
 def clients_list(request):
@@ -306,8 +354,14 @@ def clients_search(request):
     set_session(request, "s_cli_name", get_param(request.GET, "s_cli_name"))
     set_session(request, "s_cli_cif", get_param(request.GET, "s_cli_cif"))
     set_session(request, "s_cli_type", get_param(request.GET, "s_cli_type"))
-    set_session(request, "s_cli_active", get_param(request.GET, "s_cli_active"))
     set_session(request, "s_cli_city", get_param(request.GET, "s_cli_city"))
+    set_session(request, "s_cli_active", get_param(request.GET, "s_cli_active"))
+    set_session(request, "s_cli_date_ini", get_param(request.GET, "s_cli_date_ini"))
+    set_session(request, "s_cli_date_end", get_param(request.GET, "s_cli_date_end"))
+    set_session(request, "s_cli_itype", get_param(request.GET, "s_cli_itype"))
+    set_session(request, "s_cli_assigned", get_param(request.GET, "s_cli_assignes"))
+    set_session(request, "s_cli_adate_ini", get_param(request.GET, "s_cli_adate_ini"))
+    set_session(request, "s_cli_adate_end", get_param(request.GET, "s_cli_adate_end"))
     return render(request, "clients/clients-list.html", {"items": get_clients(request)})
 
 @group_required("Administradores",)
@@ -347,6 +401,7 @@ def clients_details(request, obj_id):
         'emp_list': Employee.objects.all(), 
         'type_list': ClientType.objects.all(), 
         'itype_list': ClientInactiveType.objects.all(), 
+        'grade_list': ClientGrade.objects.all(), 
         'today': datetime.today()
     }
     return render(request, "clients/clients-details.html", context)
@@ -641,6 +696,15 @@ def clients_inactive_remove(request):
         return render(request, "clients/clients-details-inactive.html", {'obj': client, 'today': datetime.today(),})
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
+
+@group_required("Administradores",)
+def clients_search_city(request):
+    try:
+        value = get_param(request.GET, "value")
+        items = City.objects.filter(name__unaccent__icontains=value) if value != "" else []
+        return render(request, "clients/clients-search-city.html", {'items': items, 'value':value})
+    except Exception as e:
+        return render(request, "error_exception.html", {'exc':show_exc(e)})
 
 
 '''
