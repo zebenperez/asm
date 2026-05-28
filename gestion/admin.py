@@ -2,8 +2,8 @@ from django.contrib import admin
 from .models import *
 
 
-#class CityAdmin(admin.ModelAdmin):
-    #list_display = ["name", "island"]
+class CityAdmin(admin.ModelAdmin):
+    list_display = ["name", "island"]
 
 class ClientAdmin(admin.ModelAdmin):
     list_per_page = 500
@@ -30,7 +30,7 @@ class TimetableStatusAdmin(admin.ModelAdmin):
     list_display = ["name", "code", "color"]
 
 
-#admin.site.register(City, CityAdmin)
+admin.site.register(City, CityAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(ClientGrade, ClientGradeAdmin)
 admin.site.register(ClientInactiveType, ClientInactiveTypeAdmin)
