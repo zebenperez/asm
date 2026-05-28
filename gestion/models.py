@@ -258,7 +258,7 @@ class Client(models.Model):
     date_inactive = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))
     obs_inactive = models.TextField(verbose_name = _('Observaciones inactivo'), null=True, default='')
     qr = models.ImageField(upload_to=upload_form_qr, blank=True, verbose_name="QR", help_text="Select file to upload")
-    city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
+    #city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     client_type = models.ForeignKey(ClientType, verbose_name=_('Tipo'), on_delete=models.SET_NULL, null=True)
     #grade = models.ForeignKey(ClientGrade, verbose_name=_('Grado'), on_delete=models.SET_NULL, null=True)
 
