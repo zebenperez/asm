@@ -51,17 +51,17 @@ class Island(models.Model):
         verbose_name_plural = _('Islas')
         ordering = ["name"]
 
-#class City(models.Model):
-#    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
-    #island = models.ForeignKey(Island, verbose_name=_('Isla'), on_delete=models.SET_NULL, null=True, related_name="cities")
+class City(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+    island = models.ForeignKey(Island, verbose_name=_('Isla'), on_delete=models.SET_NULL, null=True, related_name="cities")
 
-#    def __str__(self):
-#        return self.name
+    def __str__(self):
+        return self.name
 
-#    class Meta:
-#        verbose_name = _('Municipio')
-#        verbose_name_plural = _('Municipios')
-#        ordering = ["name"]
+    class Meta:
+        verbose_name = _('Municipio')
+        verbose_name_plural = _('Municipios')
+        ordering = ["name"]
 
 '''
     EMPLOYEE
