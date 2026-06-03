@@ -928,14 +928,22 @@ def report_employees_search(request, clients=""):
 '''
 @group_required("Administradores",)
 def employee(request, obj_id):
-    idate = datetime.today().replace(day=1)
-    last_day = calendar.monthrange(idate.year, idate.month)[1]
-    edate = idate.replace(day=last_day)
     if "s_employee_idate" not in request.session:
+        idate = datetime.today().replace(day=1)
         set_session(request, "s_employee_idate", idate.strftime("%Y-%m-%d"))
+    else:
+        idate = get_session(request, "s_employee_idate")
     if "s_employee_edate" not in request.session:
+        idate = datetime.today().replace(day=1)
+        last_day = calendar.monthrange(idate.year, idate.month)[1]
+        edate = idate.replace(day=last_day)
         set_session(request, "s_employee_edate", edate.strftime("%Y-%m-%d"))
+    else:
+        edate = get_session(request, "s_employee_edate")
     emp = get_or_none(Employee, obj_id)
+    print("--1--")
+    print(idate)
+    print(edate)
     client_list = emp.clients_timetable(idate, edate)
     return render(request, "employee/clients.html", {"obj": emp, "client_list": client_list})
 
