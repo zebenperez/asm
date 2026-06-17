@@ -146,6 +146,8 @@ button.btn.btn-emp.w-100.my-2.active {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 10px;
+    overflow-y: scroll;
+    max-height: 500px;
 }
 
 .day-header {

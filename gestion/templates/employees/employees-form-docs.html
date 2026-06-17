@@ -1,0 +1,30 @@
+{% load i18n gestion_tags %}
+
+<div class="row spd-tab">
+    <div class="col-lg-3 offset-lg-9 col-5 offset-7 text-end">
+	<label for ="id_employee_files_{{ obj.id }}" class="btn-tools tools-primary btn-labeled btn-sm async-load">
+            <i class="fas fa-upload"></i> {%trans "Subir"%}&nbsp;{%trans "Archivos"%}</label>
+        <input type="file" class="multiupload d-none" name="employee_file" id="id_employee_files_{{ obj.id }}" 
+            data-url="{% url 'employees-doc-add' %}" data-target="div-files" data-obj-id="{{obj.id}}"
+            data-csrf-token="{{ csrf_token }}" multiple/>
+    </div>
+</div>
+
+{% for item in obj.docs.all %}
+	<div class="row doc-item pt-2">
+		<div class="col-lg-10 col-10"> 
+		    {% if item.doc %} 
+			<a href="{{item.doc.url}}" alt="{{item.doc.filename}}" class="doc-name" target="_blank">
+			    {{item.doc.name|substr:27}}</a> 
+		    {% endif %}
+		</div>
+		<div class="col-lg-2 col-2 text-end">
+		    <div class="tools flex space-between">
+			<a class="btn btn-xs ark delete-btn" id="btn-photo-{{item.pk}}" title="{% trans "Borrar fichero" %}" 
+			    data-confirm="{% trans "Esta seguro/a de que desea borrar este fichero?" %}" 
+			    data-url="{%url "employees-doc-remove"%}" data-target="div-files" data-obj_id="{{item.id}}"> 
+			    <i class="fas fa-times"></i></a>
+		    </div>
+		</div>
+    </div>
+{% endfor %}

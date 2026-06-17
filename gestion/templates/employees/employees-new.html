@@ -1,0 +1,25 @@
+{% load i18n %}
+
+
+<div class="row modal-head m-0">
+    <div class="col-11"><i class="fa fa-medkit orange"></i>&nbsp; {% trans 'Nuevo empleado' %} </div>
+    <div class="col-1">
+        <div class="d-flex justify-content-end"> 
+            <button type="button" class="btn btn-lg" data-bs-dismiss="modal" title="{% trans "Close" %}">
+            <i class="fas fa-times"></i></button> </div>
+    </div>
+</div>
+
+<div class="row justify-center">
+    <div class="col-10">
+        <div class="greybox-sm p-1"> {% trans "DNI" %}
+            <input type="text" class="form-control ark_change" id="dni" name="dni" value="{{obj.dni|default:""}}" 
+                title="{{obj.dni}}" data-url="{%url "employees-check-dni"%}" data-target="div-notification" data-obj_id="{{obj.id}}"
+                placeholder="DNI..." required/> <span id="dni__msg"></span>
+        </div>
+    </div>
+    <div class="col-2"> <button class="btn btn-sm btn-info">{% trans "Comprobar DNI" %}</button> </div>
+</div>
+<div id="div-notification"></div>
+
+

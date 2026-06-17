@@ -7,17 +7,6 @@ def group_required(*group_names):
             if request.user.is_authenticated:
                 if bool(request.user.groups.filter(name__in=group_names)) or request.user.is_superuser:
                     return f(request, *args, **kwargs)
-#                    adviser = get_adviser(request.user)
-#                    if adviser != None:
-#                        request.adviser = adviser
-#                        return f(request, *args, **kwargs)
-#                    else:
-#                        client = get_client(request.user)
-#                        if client != None:
-#                            request.client = client
-#                            return f(request, *args, **kwargs)
-#                        else:
-#                            return (render(request, "generic/error_exception.html", {'exc':"This user is not adviser"}))
                 else:
                 	return (render(request, "error_exception.html", {'exc':"This user have not permission to access to this section"}))
             return redirect('auth_login')

@@ -4,12 +4,13 @@
 
 <div class="d-none d-lg-block"> 
     <div class="row main-th py-3 m-0">
-        <div class="col-3"> {% trans 'Nombre' %} </div>
+        <div class="col-2"> {% trans 'Nombre' %} </div>
         <div class="col-1"> {% trans 'Teléfono' %} </div>
-        <div class="col-2"> {% trans 'Email' %} </div>
         <div class="col-1"> {% trans 'PIN' %} </div>
         <div class="col-1"> {% trans 'DNI' %} </div>
+        <div class="col-2"> {% trans 'Tipo' %} </div>
         <div class="col-1"> {% trans 'Zona' %} </div>
+        <div class="col-1"> {% trans 'Municipio' %} </div>
         <div class="col-1"> {% trans 'Tiempo trabajado' %} </div>
         <div class="col-2"></div>
     </div>
@@ -17,26 +18,28 @@
     {% for item in items %}
         <div class="row list-item pt-2 pb-2 m-0 {%if item.inactive%}inactive{%elif item.email == ""%}alert alert-warning{%endif%}" 
             id="row_{{item.id}}">
-            <div class="col-3">{{ item.name|default:"---" }} <br/> {{item.employee_type.name}}</div>
+            <div class="col-2">{{ item.name|default:"---" }} {#<br/> {{item.employee_type.name}}#}</div>
             <div class="col-1">{{ item.phone|default:"" }}</div>
-            <div class="col-2">
-                {% if item.email != "" %}{{ item.email }}{% else %}
-                    <span class="text-danger">{%trans "Debe rellenar el correo electrónico para poder realizar los servicios"%}</span>
+            <div class="col-1">{{ item.pin|default:"" }}</div>
+            <div class="col-1"> {#{{ item.dni|default:"" }}#}
+                {% if item.dni != "" %}{{ item.dni }}{% else %}
+                    <span class="text-danger">{%trans "Debe rellenar el DNI para poder realizar los servicios"%}</span>
                 {% endif %}
             </div>
-            <div class="col-1">{{ item.pin|default:"" }}</div>
-            <div class="col-1">{{ item.dni|default:"" }}</div>
+            <div class="col-2">{{ item.employee_type.name|default:"" }}</div>
             <div class="col-1">{{ item.zone|default:"" }}</div>
-            {#<div class="col-2"> {{request.session.s_emp_idate}} {{request.session.s_emp_edate}}</div>#}
+            <div class="col-1">{{ item.city.name|default:"" }}</div>
             <div class="col-1">{% get_worked_time item request.session.s_emp_idate request.session.s_emp_edate %}</div>
             <div class="col-2 text-right">
                 <a class="btn btn-xs" href="{%url "employee" item.id %}" title="{% trans 'Clientes' %}">
                     <i class="fas fa-users"></i></a> 
                 <a class="btn btn-xs ark" data-url="{%url "employees-form"%}" data-target-modal="common-modal" 
                     data-obj_id="{{item.id}}" title="{% trans 'Editar' %}"><i class="fas fa-edit"></i></a> 
-                <a class="btn btn-xs ark" data-url="{% url "employees-remove" %}" data-target="emp-list" data-obj_id="{{item.id}}" 
-                    title="{% trans 'Borrar' %}" data-confirm="{% trans "Are you sure to remove this element?" %}">
-                    <i class="fas fa-trash"></i></a> 
+                {% if item.timetables.count == 0 %}
+                    <a class="btn btn-xs ark" data-url="{% url "employees-remove" %}" data-target="emp-list" data-obj_id="{{item.id}}" 
+                        title="{% trans 'Borrar' %}" data-confirm="{% trans "Are you sure to remove this element?" %}">
+                        <i class="fas fa-trash"></i></a> 
+                {% endif %}
             </div>
         </div>
     {% endfor %}

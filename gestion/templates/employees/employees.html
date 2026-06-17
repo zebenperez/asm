@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-lg-2"><a class="btn btn-sm new ark" data-url="{% url "employees-import-csv" %}" 
                     data-target-modal="common-modal"> <i class="fas fa-file-import"></i> {%trans "Importar"%}</a></div>
-                <div class="col-lg-2"> <button type="button" class="btn btn-sm ark new w-100" data-url="{%url "employees-form"%}" 
+                <div class="col-lg-2"> <button type="button" class="btn btn-sm ark new w-100" data-url="{%url "employees-new"%}" 
                     data-target-modal="common-modal"> <i class="fas fa-plus"></i> {% trans 'Nuevo Empleado' %}</button></div>
             </div>
         </div>
@@ -35,5 +35,6 @@
         </div>
         <div id="emp-list" class="ml-list">{% include "employees/employees-list.html" %}</div>
     </div>
+    {% include "foot_paginator.html" with items=items page_url=page_url columns=12 %}
     {% include "common-modal.html" %}
 {% endblock central_content %}

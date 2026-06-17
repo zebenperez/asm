@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load i18n static gestion_tags%}
+
+{% block central_content %}
+	<div class="row">	
+	    <div class="col-12 pl-0">
+		<div class="toolbar-content py-3 px-0 ml-0">
+		    <h2 class="pathway">
+			{%trans 'Cliente'%}: <span class="badge badge-secondary"> {{obj.name}}</span></h2>
+		    <a class="btn btn-sm new" href="{%url 'clients'%}"><i class="fa fa-arrow-left"></i> {% trans 'Volver' %}</a>
+		</div>
+	    </div>
+	</div>
+
+    <div class="alert alert-danger"> Ya hay un cliente dado de alta con el DNI indicado <br/> {{obj.name}} - {{obj.code}}</div>
+{% endblock central_content %}

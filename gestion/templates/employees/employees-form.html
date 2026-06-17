@@ -13,7 +13,14 @@
 <div id="div-notification"></div>
 
 <div class="row justify-center">
-    <div class="col-4">
+    <div class="col-12">
+        <div class="greybox-sm p-1"> {% trans "DNI" %}
+            <input type="text" class="form-control" id="dni" name="dni" value="{{obj.dni|default:""}}" title="{{obj.dni}}" 
+                disabled/> 
+        </div>
+    </div>
+
+    <div class="col-5">
         <div class="greybox-sm p-1">
             {% trans "Nombre" %}
             <input type="text" class="form-control autosave" id="name" name="name" value="{{obj.name|default:""}}" 
@@ -33,7 +40,7 @@
             </select>
         </div>
     </div>
-    <div class="col-2">
+    <div class="col-3">
         <div class="greybox-sm p-1">
             {% trans "PIN" %}
             <input type="text" class="form-control autosave" id="pin" name="pin" value="{{obj.pin|default:""}}" 
@@ -41,14 +48,6 @@
                 data-target="div-notification" placeholder="PIN..." /> <span id="pin__msg"></span>
             <button class="btn btn-xs" onclick="$('#pin').val($('#dni').val());$('#pin').change()" 
                 title="{%trans "Cargar DNI"%}"><i class="fas fa-sync"></i> <small>{%trans "Copiar DNI"%}</small></button>
-        </div>
-    </div>
-    <div class="col-2">
-        <div class="greybox-sm p-1">
-            {% trans "DNI" %}
-            <input type="text" class="form-control autosave" id="dni" name="dni" value="{{obj.dni|default:""}}" 
-                title="{{obj.dni}}" data-model-name="gestion.employee" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-                data-target="div-notification" placeholder="DNI..." /> <span id="dni__msg"></span>
         </div>
     </div>
     <div class="col-1">
@@ -63,17 +62,17 @@
     <div class="col-6">
         <div class="greybox-sm p-1">
             {% trans "Correo electrónico" %}
+            {%comment%}
             <input type="text" class="form-control ark_change" id="email" name="email" value="{{obj.email|default:""}}" 
                 title="{{obj.email}}" data-url="{%url "employees-save-email"%}" data-target="div-notification" data-obj_id="{{obj.id}}"
                 placeholder="Correo electrónico..." required/> <span id="email__msg"></span>
-            {%comment%}
+            {%endcomment%}
             <input type="text" class="form-control autosave" id="email" name="email" value="{{obj.email|default:""}}" 
                 title="{{obj.email}}" data-model-name="gestion.employee" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
                 data-target="div-notification" placeholder="Correo electrónico..." required/> <span id="email__msg"></span>
-            {%endcomment%}
         </div>
     </div>
-    <div class="col-3">
+    <div class="col-6">
         <div class="greybox-sm p-1">
             {% trans "Teléfono" %}
             <input type="text" class="form-control autosave" id="phone" name="phone" value="{{obj.phone|default:""}}" 
@@ -81,7 +80,8 @@
                 data-target="div-notification" placeholder="Teléfono..." /> <span id="phone__msg"></span>
         </div>
     </div>
-    <div class="col-3">
+
+    <div class="col-6">
         <div class="greybox-sm p-1">
             {% trans "Zona" %}
             <select class="form-control autosave" id="zone" name="zone" title="{{obj.zone}}" data-model-name="gestion.employee" 
@@ -92,6 +92,24 @@
                     <option value="{{zone.id}}" {%if zone.id == obj.zone.id%}selected{%endif%}>{{zone.name}}</option>
                 {% endfor %}
             </select>
+        </div>
+    </div>
+    <div class="col-6 my-2">
+        <div class="greybox-sm p-1">
+            <input type="text" class="form-control hide autosave" id="city" name="city" value="{{obj.city|default:""}}" 
+                title="{{obj.city}}" data-model-name="gestion.employee" data-obj-id="{{obj.id}}" 
+                data-url="{%url "autosave_field"%}" data-target="div-notification" placeholder="Municipio..." /> 
+            <span id="city__msg"></span>
+            {% trans "Municipio" %}:             
+            {%if obj%}<a class="btn btn-sm" onclick="$('#div-change-city').toggle()">{%trans "Cambiar"%}</a>{%endif%}
+            <br/>
+            <span id="span-city">{{obj.city.name}}</span>
+
+            <div id="div-change-city" class="{%if obj%}hide{%endif%}">
+                <input class="form-control input autocomplete" id="search_city" name="search_city" placeholder="Municipio"
+                    value="" data-url="{%url "employees-search-city"%}" data-target="employees-search-city"/>
+                <div id="employees-search-city"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -113,17 +131,27 @@
     {% endfor %}
 </div>
 
-{%comment%}
-<div class="row modal-head m-0"><div class="col-11"><i class="fas fa-clock orange"></i>&nbsp; {% trans 'Horarios de:' %} {{obj.name|default:""}}</div></div>
-<div id="div-timetable"> {% include "employees/employees-form-timetable.html" %} </div>
-{%endcomment%}
+<hr/>
+<strong class="m-4">{% trans "Documentos" %}</strong><br/>
+<div class="row m-4">
+    <div class="col-12">
+	    <div id="div-files"> {% include "employees/employees-form-docs.html" %} </div> </div>
+    </div>
+</div>
 
 <div class="d-flex justify-content-end p-2">
+    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
     <button type="button" class="btn btn-primary ark" data-bs-dismiss="modal" data-url="{% url "employees-list" %}"
         data-target="emp-list">{% trans "Guardar" %}</button>
     {%comment%}
-    <button type="button" class="btn btn-sm ark cancel" data-bs-dismiss="modal" data-url="{% url "guest-remove" %}" data-target="guest-list"
-        data-obj_id="{{obj.id}}" data-confirm="{% trans "Are you sure to remove this element?" %}">{% trans "Remove" %}</button>
+    {% if obj %}
+        <button type="button" class="btn btn-primary ark" data-bs-dismiss="modal" data-url="{% url "employees-list" %}"
+            data-target="emp-list">{% trans "Guardar" %}</button>
+    {% else %}
+        <button type="button" class="btn btn-sm btn-primary ark_new_obj" data-bs-dismiss="modal" data-url="{%url "employees-list"%}"
+            data-target="emp-list" data-url-save="{% url "autosave_fields" %}" data-model-name="gestion.employee"
+            data-args-save="name,employee_type,pin,dni,inactive,email,phone,zone,city" disabled> {% trans "Guardar" %}</button>
+    {% endif %}
     {%endcomment%}
 </div>
 
