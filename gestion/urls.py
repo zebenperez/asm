@@ -15,16 +15,24 @@ urlpatterns = [
     path('employees', views.employees, name='employees'),
     path('employees/list', views.employees_list, name='employees-list'),
     path('employees/search', views.employees_search, name='employees-search'),
+    path('employees/page-rows/<int:page>/', views.employees_page_rows, name='employees-page-rows'),
+    path('employees/page-rows/<int:page>/<int:rows>', views.employees_page_rows, name='employees-page-rows'),
     path('employees/form', views.employees_form, name='employees-form'),
     path('employees/remove', views.employees_remove, name='employees-remove'),
+    path('employees/new', views.employees_new, name='employees-new'),
+    path('employees/check-dni', views.employees_check_dni, name='employees-check-dni'),
     path('employees/save-email', views.employees_save_email, name='employees-save-email'),
     path('employees/save-cat', views.employees_save_cat, name='employees-save-cat'),
+    path('employees/save-dni', views.employees_save_dni, name='employees-save-dni'),
     path('employees/form/timetable', views.employees_form_timetable, name='employees-form-timetable'),
     path('employees/form/timetable/remove', views.employees_form_timetable_remove, name='employees-form-timetable-remove'),
     path('employees/export', views.employees_export, name='employees-export'),
     path('employees/import-csv', views.employees_import_csv, name='employees-import-csv'),
     path('employees/import', views.employees_import, name='employees-import'),
     path('employees/copy-pin', views.employees_copy_pin, name='employees-copy-pin'),
+    path('employees/doc-add/', views.employees_doc_add, name='employees-doc-add'),
+    path('employees/doc-remove/', views.employees_doc_remove, name='employees-doc-remove'),
+    path('employees/search-city', views.employees_search_city, name='employees-search-city'),
 
     #---------------------- EMPLOYEE -----------------------
     path('employee/<int:obj_id>', views.employee, name='employee'),
@@ -52,8 +60,12 @@ urlpatterns = [
     path('clients/doc-remove/', views.clients_doc_remove, name='clients-doc-remove'),
     path('clients/type-add/', views.clients_type_add, name='clients-type-add'),
     path('clients/type-remove/', views.clients_type_remove, name='clients-type-remove'),
+    path('clients/inactive-confirm/', views.clients_inactive_confirm, name='clients-inactive-confirm'),
+    path('clients/inactive-set/', views.clients_inactive_set, name='clients-inactive-set'),
     path('clients/inactive-add/', views.clients_inactive_add, name='clients-inactive-add'),
     path('clients/inactive-remove/', views.clients_inactive_remove, name='clients-inactive-remove'),
+    path('clients/stopped-add/', views.clients_stopped_add, name='clients-stopped-add'),
+    path('clients/stopped-remove/', views.clients_stopped_remove, name='clients-stopped-remove'),
     path('clients/search-city', views.clients_search_city, name='clients-search-city'),
 
     path('clients/timetable/<int:obj_id>', views.clients_timetable, name='clients-timetable'),
@@ -90,6 +102,7 @@ urlpatterns = [
 
     #---------------------- AUTO -----------------------
     path('autosave_field/', auto_views.autosave_field, name='autosave_field'),
+    path('autosave_fields/', auto_views.autosave_fields, name='autosave_fields'),
     path('autoremove_obj/', auto_views.autoremove_obj, name='autoremove_obj'),
 ]
 

@@ -2,11 +2,14 @@
 
 
 <div class="row pwa-menu-footer p-0 m-0">
-    <div class="col-6 text-center nav-item {% if "incidents" not in request.path %}active{% endif %} p-1">
+    <div class="col-4 text-center nav-item {% if "incidents" not in request.path %}active{% endif %} p-1">
         <a class="nav-link" href="{%url 'pwa-home'%}"><i class="fas fa-home"></i><br />Acceso</a>
     </div>
-    <div class="col-6 text-center nav-item {% if "incidents" in request.path %}active{% endif %} p-1">
+    <div class="col-4 text-center nav-item {% if "incidents" in request.path %}active{% endif %} p-1">
         <a class="nav-link" href="{%url 'pwa-incidents'%}"><i class="fas fa-cog"></i><br />Incidencias</a>
+    </div>
+    <div class="col-4 text-center nav-item {% if "clients" in request.path %}active{% endif %} p-1">
+        <a class="nav-link" href="{%url 'pwa-employee-client-list'%}"><i class="fas fa-cog"></i><br />Usuarios</a>
     </div>
 </div>
 

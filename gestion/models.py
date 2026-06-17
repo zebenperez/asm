@@ -51,9 +51,11 @@ class Island(models.Model):
         verbose_name_plural = _('Islas')
         ordering = ["name"]
 
+
 class City(models.Model):
     name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
     island = models.ForeignKey(Island, verbose_name=_('Isla'), on_delete=models.SET_NULL, null=True, related_name="cities")
+    zone = models.ForeignKey(Zone, verbose_name=_('Zona'), on_delete=models.SET_NULL, null=True, related_name="cities")
 
     def __str__(self):
         return self.name
@@ -86,6 +88,7 @@ class Employee(models.Model):
     phone = models.CharField(max_length=50, verbose_name = _('Teléfono de contacto'), null=True, default = '0000000000')
     email = models.EmailField(verbose_name = _('Email de contacto'), default="", null=True)
     user = models.OneToOneField(User, verbose_name='Usuario', on_delete=models.CASCADE, null=True, blank=True, related_name='employee')
+    city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     zone = models.ForeignKey(Zone, verbose_name=_('Zona'), on_delete=models.SET_NULL, null=True, related_name="employees")
     employee_type = models.ForeignKey(EmployeeType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True,related_name="employees")
 
@@ -100,6 +103,16 @@ class Employee(models.Model):
             group.user_set.add(self.user)
         else:
             self.user.username = self.email
+            self.user.save()
+
+    def save_user_dni(self):
+        if self.user == None:
+            self.user = User.objects.create_user(username=self.dni,)
+            self.save()
+            group = Group.objects.get(name='employees') 
+            group.user_set.add(self.user)
+        else:
+            self.user.username = self.dni
             self.user.save()
 
     def worked_time(self, ini_date, end_date):
@@ -210,6 +223,20 @@ class EmployeeCategory(models.Model):
         verbose_name = _('Categoría empleado')
         verbose_name_plural = _('Categorías empleados')
 
+def upload_emp_file(instance, filename):
+    ascii_filename = str(filename.encode('ascii', 'ignore'))
+    instance.filename = ascii_filename
+    folder = "employees/%s" % (instance.id)
+    return '/'.join(['%s' % (folder), datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ascii_filename])
+
+class EmployeeDoc(models.Model):
+    doc = models.FileField(upload_to=upload_emp_file, blank=True, verbose_name="Fichero", help_text="Select file to upload")
+    employee = models.ForeignKey(Employee, verbose_name="Documento", on_delete=models.CASCADE, null=True, related_name="docs")
+
+    class Meta:
+        verbose_name = "Documento de client"
+        verbose_name_plural = "Documentos de cliente"
+
 
 '''
     CLIENTS
@@ -245,6 +272,7 @@ def upload_form_qr(instance, filename):
 class Client(models.Model):
     qr_access = models.BooleanField(default=False, verbose_name=_('Acceso QR'));
     inactive = models.BooleanField(default=False, verbose_name=_('Desactivado'));
+    stopped = models.BooleanField(default=False, verbose_name=_('Paralizado'));
     amount = models.FloatField(default=0, verbose_name=_('Cuantia'));
     exp = models.CharField(max_length=200, verbose_name = _('Número de expediente'), default="")
     code = models.CharField(max_length=200, verbose_name = _('Code'), default="")
@@ -347,6 +375,10 @@ class Client(models.Model):
                 assigments[item.date.strftime("%Y-%m-%d")] = [dic]
         return assigments
 
+    def remove_timetable_from_date(self, date):
+        timetable_list = self.timetables.filter(date__gte = date)
+        timetable_list.delete()
+
     class Meta:
         verbose_name = _('Cliente')
         verbose_name_plural = _('Clientes')
@@ -426,10 +458,27 @@ class ClientInactiveType(models.Model):
         verbose_name_plural = _('Motivos baja')
 
 class ClientInactive(models.Model):
-    date = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))
+    date = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Fecha'))
     obs = models.TextField(verbose_name = _('Observaciones inactivo'), null=True, default='')
     itype = models.ForeignKey(ClientInactiveType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True)
     client = models.ForeignKey(Client,verbose_name=_('Cliente'),on_delete=models.SET_NULL,null=True,related_name="inactives")
+
+    class Meta:
+        verbose_name = _('Inactivo')
+        verbose_name_plural = _('Inactivos')
+
+class ClientStoppedType(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+
+    class Meta:
+        verbose_name = _('Motivo paralización')
+        verbose_name_plural = _('Motivos paralización')
+
+class ClientStopped(models.Model):
+    date = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Fecha'))
+    obs = models.TextField(verbose_name = _('Observaciones paralizado'), null=True, default='')
+    stype = models.ForeignKey(ClientStoppedType, verbose_name=_('Tipo'), on_delete=models.SET_NULL, null=True)
+    client = models.ForeignKey(Client,verbose_name=_('Cliente'),on_delete=models.SET_NULL,null=True,related_name="stoppeds")
 
     class Meta:
         verbose_name = _('Inactivo')

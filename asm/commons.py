@@ -37,6 +37,14 @@ def get_or_none_str(app_name, model_name, value, field="pk"):
         #logger.error("(get_object): %s" % e)
         return None
 
+def create_obj_str(app_name, model_name):
+    try:
+        model = apps.get_model(app_name, model_name)
+        obj = model.objects.create()
+        return obj
+    except Exception as e:
+        return None
+
 def set_obj_field(obj, field, value):
     obj_field = obj._meta.get_field(field)
     if obj_field.get_internal_type() == "ManyToManyField":

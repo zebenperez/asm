@@ -3,7 +3,7 @@ from .models import *
 
 
 class CityAdmin(admin.ModelAdmin):
-    list_display = ["name", "island"]
+    list_display = ["name", "island", "zone"]
 
 class ClientAdmin(admin.ModelAdmin):
     list_per_page = 500
@@ -15,6 +15,9 @@ class ClientTypeAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
 class ClientInactiveTypeAdmin(admin.ModelAdmin):
+    list_display = ["name",]
+
+class ClientStoppedTypeAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
 class EmployeeAdmin(admin.ModelAdmin):
@@ -35,6 +38,7 @@ admin.site.register(Client, ClientAdmin)
 admin.site.register(ClientGrade, ClientGradeAdmin)
 admin.site.register(ClientInactiveType, ClientInactiveTypeAdmin)
 admin.site.register(ClientType, ClientTypeAdmin)
+admin.site.register(ClientStoppedType, ClientStoppedTypeAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EmployeeType, EmployeeTypeAdmin)
 admin.site.register(Assistance)

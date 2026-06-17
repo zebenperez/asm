@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
-from asm.commons import get_or_none_str, set_obj_field, show_exc
+from asm.commons import get_or_none_str, set_obj_field, show_exc, create_obj_str
 
 #import logging
 #logger = logging.getLogger(__name__)
@@ -35,6 +35,31 @@ def autosave_field(request):
         print(show_exc(e))
         return render(request, 'simple-error-plane.html', {'msg': str(e)})
         return render(request, 'simple-error.html', {'msg': str(e)})
+
+def autosave_fields(request):
+    try:
+        app = request.GET["model_name"].split(".")[0]
+        model = request.GET["model_name"].split(".")[1]
+        obj_id = request.GET["obj_id"] if "obj_id" in request.GET else ""
+
+        fields = []
+        for key in request.GET:
+            if "field_" in key:
+                fields.append(key.split("_")[1])
+
+        if obj_id == "":
+            obj = create_obj_str(app, model)
+        else:
+            obj = get_or_none_str(app, model, obj_id, field="pk")
+
+        for field in fields:
+            value = request.GET[f"field_{field}"]
+            set_obj_field(obj, field, value)
+        obj.save()
+        return HttpResponse("Saved!")
+    except Exception as e:
+        #print(show_exc(e))
+        return HttpResponse("Not saved, some error is happened!")
 
 #@login_required
 def autoremove_obj(request):

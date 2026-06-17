@@ -7,7 +7,9 @@ from datetime import datetime
 
 from asm.decorators import group_required_pwa
 from asm.commons import user_in_group, get_or_none, get_param, show_exc, get_random_str
-from gestion.models import Employee, Client, Assistance, Incident
+from gestion.models import Employee, Client, Assistance, Incident, ClientTimetable
+
+import calendar
 
 
 @group_required_pwa("employees")
@@ -173,6 +175,18 @@ def employee_client_finish(request, obj_id):
     except Exception as e:
         return render(request, "pwa/employees/qr-error.html", {})
  
+@group_required_pwa("employees")
+def employee_client_list(request):
+    #now = datetime.now()
+    #last_day = calendar.monthrange(now.year, now.month)[1]
+    #idate = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    #edate = now.replace( day=last_day, hour=23, minute=59, second=59, microsecond=999999)
+
+    #item_list = ClientTimetable.objects.filter(date__range=(idate, edate), employee__user=request.user).order_by("client").distinct("client")
+    item_list = ClientTimetable.objects.filter(employee__user=request.user).order_by("client").distinct("client")
+    return render(request, "pwa/employees/client-list.html", {"item_list": item_list})
+
+
 '''
     INCIDENTS
 '''
@@ -198,4 +212,5 @@ def incidents_save(request):
         return redirect("pwa-incidents")
     except Exception as e:
         return (render(request, "error_exception.html", {'exc':show_exc(e)}))
+
 
