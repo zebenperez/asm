@@ -1,0 +1,14 @@
+{% load i18n %}
+
+
+{% if obj %}
+    <div class="alert alert-danger text-center">El DNI indicado está asignado a otro usuario ({{obj.name}}). Pruebe con otro DNI.</div>
+{% else %}
+    <div class="alert alert-success text-center">
+        El DNI indicado no está dado de alta<br/>
+        <button class="btn btn-success ark" data-bs-dismiss="modal" data-url="{%url "employees-form"%}" 
+            data-target-modal="common-modal" data-dni="{{dni}}">{% trans "Crear el usuario y continuar" %}</button>
+    </div>
+{% endif %}
+
+
