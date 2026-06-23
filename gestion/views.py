@@ -384,8 +384,11 @@ def get_clients(request):
     adate_end = get_session(request, "s_cli_adate_end")
 
     kwargs = {}
+    name_query = Q()
     if name != "":
-        kwargs["name__unaccent__icontains"] = name 
+        #kwargs["name__unaccent__icontains"] = name 
+        for n in name.split():
+            name_query &= Q(name__unaccent__icontains = n)
     if cif != "":
         kwargs["code__icontains"] = cif
     if city != "":
@@ -408,7 +411,7 @@ def get_clients(request):
         client_ids = list(ClientInactive.objects.filter(**kwargs2).values_list('client_id', flat=True).distinct())
         kwargs["id__in"] = client_ids
 
-    client_list = Client.objects.filter(**kwargs)
+    client_list = Client.objects.filter(name_query, **kwargs)
 
     if assigned != "":
         kwargs2 = {}
