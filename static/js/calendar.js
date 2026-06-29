@@ -135,11 +135,13 @@ $(document).ready(function() {
     // Eliminar asignación
     $(document).on('click', '.remove-btn', function(e) {
         e.stopPropagation();
-        const assignment = $(this).closest('.assigned-employee');
-        const timetableId = assignment.data('timetable-id');
-        const dateStr = assignment.closest('.day-cell').data('date');
-        ajaxGet(URL_REMOVE, {"id": timetableId}, "day-cell-"+dateStr, "")
-        //ajaxGet("/gestion/clients/timetable/assign-remove", {"id": timetableId}, "day-cell-"+dateStr, "")
+        if (confirm("¿Esta seguro/a de que desea borrar este elemento?")){
+            const assignment = $(this).closest('.assigned-employee');
+            const timetableId = assignment.data('timetable-id');
+            const dateStr = assignment.closest('.day-cell').data('date');
+            ajaxGet(URL_REMOVE, {"id": timetableId}, "day-cell-"+dateStr, "")
+            //ajaxGet("/gestion/clients/timetable/assign-remove", {"id": timetableId}, "day-cell-"+dateStr, "")
+        }
     });
 
     // Navegación de meses

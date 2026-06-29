@@ -17,11 +17,21 @@
     <input type="hidden" id="obj_id" name="obj_id" value="{{obj.id}}" />
     <div class="row justify-center">
         <div class="col-5"> <div class="greybox-sm p-1"> {% trans "Cliente" %}
+            {% trans "Cliente" %}: {{obj.client.name}}
+            {%if obj%}<a class="btn btn-sm" onclick="$('#div-change-cli').toggle()">{%trans "Cambiar"%}</a>{%endif%}
+            <div id="div-change-cli" class="{%if obj%}hide{%endif%}">
+                <input type="hidden" class="form-control input" id="client" name="client" value="{{obj.client.id}}"/> 
+                <input class="form-control input autocomplete" id="search_cli" name="search_cli" placeholder="Nombre del cliente"
+                    value="" data-url="{%url "assistances-search-cli"%}" data-target="assistant-search-cli"/> 
+                <div id="assistant-search-cli"></div>
+            </div>
+                {%comment%}
             <select class="form-control" id="client" name="client"> 
                 {% for cl in client_list %}
                     <option value="{{cl.id}}" {%if cl == obj.client%}selected{%endif%}>{{cl.name}}</option>
                 {% endfor %}
             </select>
+                {%endcomment%}
         </div></div>
         <div class="col-5"> <div class="greybox-sm p-1"> 
             {% trans "Empleado" %}: {{obj.employee.name}}

@@ -10,6 +10,7 @@ urlpatterns = [
     path('assistances/remove', views.assistances_remove, name='assistances-remove'),
     path('assistances/client/<int:client_id>/', views.assistances_client, name='assistances-client'),
     path('assistances/search-emp', views.assistances_search_emp, name='assistances-search-emp'),
+    path('assistances/search-cli', views.assistances_search_cli, name='assistances-search-cli'),
 
     #---------------------- EMPLOYEES -----------------------
     path('employees', views.employees, name='employees'),
