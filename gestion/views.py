@@ -108,6 +108,15 @@ def assistances_search_emp(request):
     except Exception as e:
         return render(request, "error_exception.html", {'exc':show_exc(e)})
 
+@group_required("admins",)
+def assistances_search_cli(request):
+    try:
+        value = get_param(request.GET, "value")
+        items = Client.objects.filter(name__unaccent__icontains=value) if value != "" else []
+        return render(request, "assistances-search-cli.html", {'items': items, 'value':value})
+    except Exception as e:
+        return render(request, "error_exception.html", {'exc':show_exc(e)})
+
 
 '''
     EMPLOYEES
@@ -491,7 +500,7 @@ def clients_form_save(request):
     img_data = ContentFile(generate_qr(url, path))
     obj.qr.save('qr_{}.png'.format(obj.id), img_data, save=True)
 
-    return redirect(reverse('employees-details', kwargs={'obj_id': obj_id}))
+    return redirect(reverse('clients-details', kwargs={'obj_id': obj.id}))
     #context = {'obj': obj, 'emp_list': Employee.objects.all(), 'type_list': ClientType.objects.all(), 'today': datetime.today()}
     #return render(request, "clients/clients-details.html", context)
 

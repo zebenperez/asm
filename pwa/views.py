@@ -177,13 +177,13 @@ def employee_client_finish(request, obj_id):
  
 @group_required_pwa("employees")
 def employee_client_list(request):
-    #now = datetime.now()
-    #last_day = calendar.monthrange(now.year, now.month)[1]
-    #idate = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    #edate = now.replace( day=last_day, hour=23, minute=59, second=59, microsecond=999999)
+    now = datetime.now()
+    last_day = calendar.monthrange(now.year, now.month)[1]
+    idate = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    edate = now.replace(day=last_day, hour=23, minute=59, second=59, microsecond=999999)
 
-    #item_list = ClientTimetable.objects.filter(date__range=(idate, edate), employee__user=request.user).order_by("client").distinct("client")
-    item_list = ClientTimetable.objects.filter(employee__user=request.user).order_by("client").distinct("client")
+    item_list = ClientTimetable.objects.filter(date__range=(idate, edate), employee__user=request.user).order_by("client").distinct("client")
+    #item_list = ClientTimetable.objects.filter(employee__user=request.user).order_by("client").distinct("client")
     return render(request, "pwa/employees/client-list.html", {"item_list": item_list})
 
 
