@@ -192,9 +192,9 @@ class Employee(models.Model):
         edate = "{}".format(end_date)
 
         if status is not None:
-            item_list = self.timetables.filter(status=status, date__range=(idate, edate))
+            item_list = self.timetables.filter(status=status, date__range=(idate, edate)).exclude(client=None)
         else:
-            item_list = self.timetables.filter(date__range=(idate, edate))
+            item_list = self.timetables.filter(date__range=(idate, edate)).exclude(client=None)
 
         mins = 0
         for item in item_list:

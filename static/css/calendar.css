@@ -40,12 +40,13 @@
     font-size: 1.4em;
 }
 
+.client-list,
 .employee-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
+.client,
 .employee {
     background: white;
     padding: 15px;
@@ -56,17 +57,24 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
+.client:hover,
 .employee:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
+.client-name {
+   font-weight: bold;
+    color: #495057;
+    font-size: 1em;
+}
 .employee-name {
     font-weight: bold;
     color: #495057;
     font-size: 1.1em;
 }
 
+.clieny-role,
 .employee-role {
     color: #6c757d;
     font-size: 0.9em;

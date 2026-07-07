@@ -9,7 +9,6 @@
 </div>
 
 <div class="row m-0 p-2">
-    {%comment%}
 	<div class="col-1 p-2">
         <label for="monday">Lunes</label>
         <input type="checkbox" id="monday" class="border p-2 w-100 form-checkbox">
@@ -39,8 +38,6 @@
         <input type="checkbox" id="sunday" class="border p-2 w-100">
     </div>
 	<div class="col-2 offset-1 p-2">
-    {%endcomment%}
-	<div class="col-6 p-2">
         <label for="startTime">Hora de inicio:</label><br />
         <input type="time" id="startTime" value="{{timetable.ini|date:"H:i"|default:"09:00"}}" class="border p-2 w-100">
         <input type="hidden" id="startPrev" value="{{timetable.ini|date:"H:i"|default:"09:00"}}" />

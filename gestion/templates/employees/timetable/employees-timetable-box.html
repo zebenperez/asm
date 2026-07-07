@@ -1,0 +1,14 @@
+{% for item in timetable_list %}
+    <div class="assigned-client statusClass" 
+         style="color:{{item.status.color}};border-color:{{item.status.color}}"
+        data-employee-name="{{item.client.name}}" 
+        data-timetable-id="{{item.id}}" 
+        data-start="{{item.ini|date:'h:i:s'}}" 
+        data-end="{{item.end|date:'h:i:s'}}"
+        data-status="status">
+        {#<button class="remove-btn">×</button>#}
+        <div>{{item.client.name}}</div>
+        <div class="time-display">{{item.ini|date:'H:i:s'}} - {{item.end|date:'H:i:s'}}</div>
+    </div>
+{% endfor %}
+

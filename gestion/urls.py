@@ -35,6 +35,9 @@ urlpatterns = [
     path('employees/doc-remove/', views.employees_doc_remove, name='employees-doc-remove'),
     path('employees/search-city', views.employees_search_city, name='employees-search-city'),
 
+    path('employees/timetable/<int:obj_id>', views.employees_timetable, name='employees-timetable'),
+    path('employees/timetable/load', views.employees_timetable_load, name='employees-timetable-load'),
+
     #---------------------- EMPLOYEE -----------------------
     path('employee/<int:obj_id>', views.employee, name='employee'),
     path('employee/search', views.employee_search, name='employee-search'),

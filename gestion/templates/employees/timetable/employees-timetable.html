@@ -4,14 +4,14 @@
 {% block central_content %}
     <link rel="stylesheet" href="{% static 'css/calendar.css' %}" >
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="{% static "js/calendar.js" %}"></script>
+    <script src="{% static "js/calendar_emp.js" %}"></script>
 
 	<div class="row">	
 		<div class="col-12">
 			<div class="toolbar-content p-3">
 		        <h2 class="pathway">
-                	{%trans 'Cliente'%}: <span class="badge badge-secondary"> {{obj.name}}</span></h2>
-	            <a class="btn btn-sm new" href="{%url 'clients'%}"><i class="fa fa-arrow-left"></i> {% trans 'Volver' %}</a>
+                	{%trans 'Empleado'%}: <span class="badge badge-secondary"> {{obj.name}}</span></h2>
+	            <a class="btn btn-sm new" href="{%url 'employees'%}"><i class="fa fa-arrow-left"></i> {% trans 'Volver' %}</a>
         	</div>
 		</div>
 	</div>
@@ -19,22 +19,24 @@
     <div class="content">
         <div class="sidebar">
             <div class="row">
-                <div class="col-7"><h2 class="pt-2">👥 Empleados</h2></div>
+                <div class="col-7"><h2 class="pt-2">👥 Clientes</h2></div>
                 <div class="col-5 text-end">
+                    {%comment%}
                     <button class="btn btn-sm new ark" data-url="{% url "clients-timetable-employees-add" %}" 
                         data-target-modal="common-modal" data-obj_id="{{obj.id}}"> <i class="fas fa-plus"></i> Añadir</button>
+                    {%endcomment%}
                 </div>
             </div>
-            <div id="employee-list" class="employee-list">{% include "clients/timetable/clients-timetable-employees.html" %}</div>
+            <div id="client-list" class="client-list">{% include "employees/timetable/employees-timetable-clients.html" %}</div>
         </div>
 
         <div class="calendar-container">
             <div class="calendar-header">
-                <h2 id="currentMonth">Diciembre 2025</h2>
+                <h2 id="currentMonth"></h2>
                 <div class="month-navigation">
-                    <button class="nav-btn" id="prevMonth" data-client="{{obj.id}}">◀</button>
-                    <button class="btn btn-secondary" id="todayBtn" data-client="{{obj.id}}">Hoy</button>
-                    <button class="nav-btn" id="nextMonth" data-client="{{obj.id}}">▶</button>
+                    <button class="nav-btn" id="prevMonth" data-employee="{{obj.id}}">◀</button>
+                    <button class="btn btn-secondary" id="todayBtn" data-employee="{{obj.id}}">Hoy</button>
+                    <button class="nav-btn" id="nextMonth" data-employee="{{obj.id}}">▶</button>
                 </div>
             </div>
 
@@ -52,8 +54,7 @@
 
     {% include "common-modal.html" %}
 
-    {#{{ obj.assigments|json_script:"assigments-data" }}#}
-    <button id="btn-start" data-client="{{obj.id}}" style="border:none"></button>
+    <button id="btn-start" data-employee="{{obj.id}}" style="border:none"></button>
     <script> setTimeout(()=>{$("#btn-start").click();}, 500); </script>
 
 
