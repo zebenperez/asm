@@ -14,6 +14,7 @@
 						{% for emp in emp_list %} <option value="{{emp.id}}">{{emp.name}}</option> {% endfor %}
 					</select>
 				</div>
+                {%comment%}
 				<div class="col-lg-1 col-3 text-center p-2"><div class="day-box p-2">{%trans "Lunes"%}<br />
 		                    <input type="checkbox" class="form-checkbox" name="day" value="0"/></div></div>
 				<div class="col-lg-1 col-3 text-center p-2"><div class="day-box p-2">{%trans "Martes"%}<br />
@@ -28,6 +29,7 @@
                 		    <input type="checkbox" class="form-checkbox" name="day" value="5"/></div></div>
 				<div class="col-lg-1 col-3 text-center p-2"><div class="day-box p-2">{%trans "Domingo"%}<br />
 		                    <input type="checkbox" class="form-checkbox" name="day" value="6"/></div></div>
+                {%endcomment%}
 				<div class="col-lg-2 offset-lg-1 col-6 text-center p-2">{%trans "Hora de inicio"%} 
                 		    <input type="time" class="form-control border py-1" id="ini" name="ini"/></div> 
 				<div class="col-lg-2 col-6 text-center p-2">{%trans "Hora de fin"%} 
