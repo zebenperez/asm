@@ -375,6 +375,21 @@ def employees_search_city(request):
     except Exception as e:
         return render(request, "error_exception.html", {'exc':show_exc(e)})
 
+@group_required("admins",)
+def employees_timetable(request, obj_id):
+    return render(request, "employees/timetable/employees-timetable.html", {"obj": get_or_none(Employee, obj_id)})
+
+@group_required("admins",)
+def employees_timetable_load(request):
+    date = get_param(request.GET, "date")
+    employee = get_param(request.GET, "employee")
+    try:
+        timetable_list = ClientTimetable.objects.filter(employee__id=employee, date=date).exclude(client=None)
+    except:
+        timetable_list = []
+    #print(timetable_list)
+    return render(request, "employees/timetable/employees-timetable-box.html", {"timetable_list": timetable_list})
+
 
 '''
     CLIENTS
@@ -1147,21 +1162,6 @@ def employee_form_timetable_remove(request, obj_id):
         emp = obj.employee
         obj.delete()
     return redirect(reverse('employee', kwargs={'obj_id': emp.id}))
-
-@group_required("admins",)
-def employees_timetable(request, obj_id):
-    return render(request, "employees/timetable/employees-timetable.html", {"obj": get_or_none(Employee, obj_id)})
-
-@group_required("admins",)
-def employees_timetable_load(request):
-    date = get_param(request.GET, "date")
-    employee = get_param(request.GET, "employee")
-    try:
-        timetable_list = ClientTimetable.objects.filter(employee__id=employee, date=date)
-    except:
-        timetable_list = []
-    print(timetable_list)
-    return render(request, "employees/timetable/employees-timetable-box.html", {"timetable_list": timetable_list})
 
 
 '''
