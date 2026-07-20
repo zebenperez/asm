@@ -17,6 +17,8 @@
                 {%trans 'Clientes'%} {#<span id="items-counter" class="badge badge-secondary">{{items|length}}</span>#}</h2>
             <a class="btn btn-sm new" href="{% url "clients-print-all-qr" %}" title="{% trans 'Imprimir' %}" target="_blank"> 
                 <i class="fas fa-print"></i> {% trans "Imprimir QRs" %}</a> 
+            <a class="btn btn-sm new" href="{% url "clients-export-csv" %}" title="{% trans 'Exportar' %}" target="_blank"> 
+                <i class="fas fa-download"></i> {% trans "Exportar CSV" %}</a> 
             <a class="btn btn-sm new ark" data-url="{% url "clients-import-csv" %}" data-target-modal="common-modal">
                 <i class="fas fa-file-import"></i> {%trans "Importar clientes"%}</a>
             <button type="button" class="btn btn-sm ark new" data-url="{%url "clients-form"%}" data-target-modal="common-modal"> 

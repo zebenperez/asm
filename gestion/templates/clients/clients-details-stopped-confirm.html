@@ -1,0 +1,53 @@
+{% load i18n %}
+
+
+<div class="row modal-head m-0">
+    <div class="col-11"><i class="fas fa-users orange"></i>&nbsp; {% trans 'Confirmar' %} </div>
+    <div class="col-1"> <div class="d-flex justify-content-end"> 
+        <button type="button" class="btn btn-lg" data-bs-dismiss="modal" title="{% trans "Close" %}">
+        <i class="fas fa-times"></i></button> </div> </div>
+</div>
+
+<div id="div-notification"></div>
+
+{% if not obj.stopped %}
+    <div class="m-4 p-2">
+        <h3>¿Esta seguro/a de que desea paralizar este cliente?</h3>
+        <br/>
+        {% if emp_list|length > 0%}
+            <p>Tiene los siguientes empleados asignados, durante el periodo de paralización se pasaran esos empleados al estado indicado FUERA del calculo de horas:</p>
+            <ul> {% for emp in emp_list %} <li>{{emp.name}}</li> {% endfor %} </ul>
+        {% endif %}
+    </div>
+
+    <div class="d-flex justify-content-end p-2">
+        <button type="button" class="btn btn-danger mx-2" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+        <button type="button" class="btn btn-warning ark mx-2" data-bs-dismiss="modal" data-url="{% url "clients-stopped-set" %}"
+            data-target="div-stopped" data-obj_id="{{obj.id}}">{% trans "Confirmar" %}</button>
+    </div>
+{% else %}
+    <div class="m-4 p-2">
+        <h3>Va a reactivar este cliente</h3>
+        <br/>
+        {% if emp_list|length > 0%}
+            <p>Tiene los siguientes empleados asignados, una vez reactivado se pasaran esos empleados al estado indicado:</p>
+            <ul> {% for emp in emp_list %} <li>{{emp.name}}</li> {% endfor %} </ul>
+        {% endif %}
+    </div>
+    <div class="row mb-4 mt-2"> <div class="col-12">
+        <select class="form-control form-control-dark w-100 py-2" name="timetable_status" id="timetable_status" 
+            onchange="$('#btn-confirm').data('ts', $(this).val())">
+            {% for item in ts_list %}
+                <option value="{{item.id}}">{{item.name}}</option>
+            {% endfor %}
+        </select>
+    </div> </div>
+
+    <div class="d-flex justify-content-end p-2">
+        <button type="button" class="btn btn-danger mx-2" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+        <button type="button" id="btn-confirm" class="btn btn-warning ark mx-2" data-bs-dismiss="modal" 
+            data-url="{% url "clients-stopped-set" %}" data-target="div-stopped" data-obj_id="{{obj.id}}" 
+            data-ts="{{ts_list.first.id}}">{% trans "Confirmar" %}</button>
+    </div>
+
+{% endif %}

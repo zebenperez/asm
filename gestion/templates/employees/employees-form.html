@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <div class="col-5">
+    <div class="col-6">
         <div class="greybox-sm p-1">
             {% trans "Nombre" %}
             <input type="text" class="form-control autosave" id="name" name="name" value="{{obj.name|default:""}}" 
@@ -28,19 +28,7 @@
                 data-target="div-notification" placeholder="Nombre..." /> <span id="name__msg"></span>
         </div>
     </div>
-    <div class="col-3">
-        <div class="greybox-sm p-1">
-            {% trans "Tipo" %}
-            <select class="form-control autosave" id="employee_type" name="employee_type" data-model-name="gestion.employee" 
-                data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" /> 
-                <option value="">{% trans "-- Seleccione un tipo --" %}</option>
-                {% for t in type_list %}
-                    <option value="{{t.id}}" {%if t.id == obj.employee_type.id%}selected{%endif%}>{{t.name}}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-    <div class="col-3">
+    <div class="col-4">
         <div class="greybox-sm p-1">
             {% trans "PIN" %}
             <input type="text" class="form-control autosave" id="pin" name="pin" value="{{obj.pin|default:""}}" 
@@ -50,7 +38,7 @@
                 title="{%trans "Cargar DNI"%}"><i class="fas fa-sync"></i> <small>{%trans "Copiar DNI"%}</small></button>
         </div>
     </div>
-    <div class="col-1">
+    <div class="col-2">
         <div class="greybox-sm p-1">
             {% trans "Desactivar" %}
             <input type="checkbox" class="form-checkbox autosave" id="inactive" name="inactive" data-model-name="gestion.employee" 
@@ -60,6 +48,31 @@
     </div>
 
     <div class="col-6">
+        <div class="greybox-sm p-1">
+            {% trans "Puesto" %}
+            <select class="form-control autosave" id="employee_type" name="employee_type" data-model-name="gestion.employee" 
+                data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" /> 
+                <option value="">{% trans "-- Seleccione un tipo --" %}</option>
+                {% for t in type_list %}
+                    <option value="{{t.id}}" {%if t.id == obj.employee_type.id%}selected{%endif%}>{{t.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="greybox-sm p-1">
+            {% trans "Tipo de auntónomo" %}
+            <select class="form-control autosave" id="self_employed_type" name="self_employed_type" data-model-name="gestion.employee" 
+                data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" /> 
+                <option value="">{% trans "-- Seleccione un tipo de autónomo--" %}</option>
+                {% for t in self_type_list %}
+                    <option value="{{t.id}}" {%if t.id == obj.self_employed_type.id%}selected{%endif%}>{{t.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="col-6 mt-2">
         <div class="greybox-sm p-1">
             {% trans "Correo electrónico" %}
             {%comment%}
@@ -72,7 +85,7 @@
                 data-target="div-notification" placeholder="Correo electrónico..." required/> <span id="email__msg"></span>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-6 mt-2">
         <div class="greybox-sm p-1">
             {% trans "Teléfono" %}
             <input type="text" class="form-control autosave" id="phone" name="phone" value="{{obj.phone|default:""}}" 
@@ -81,7 +94,7 @@
         </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-6 mt-2">
         <div class="greybox-sm p-1">
             {% trans "Zona" %}
             <select class="form-control autosave" id="zone" name="zone" title="{{obj.zone}}" data-model-name="gestion.employee" 
@@ -94,7 +107,7 @@
             </select>
         </div>
     </div>
-    <div class="col-6 my-2">
+    <div class="col-6 mt-2 my-2">
         <div class="greybox-sm p-1">
             <input type="text" class="form-control hide autosave" id="city" name="city" value="{{obj.city|default:""}}" 
                 title="{{obj.city}}" data-model-name="gestion.employee" data-obj-id="{{obj.id}}" 

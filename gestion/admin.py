@@ -29,8 +29,11 @@ class EmployeeTypeAdmin(admin.ModelAdmin):
 class IslandAdmin(admin.ModelAdmin):
     list_display = ["name",]
 
+class SelfEmployedTypeAdmin(admin.ModelAdmin):
+    list_display = ["name",]
+
 class TimetableStatusAdmin(admin.ModelAdmin):
-    list_display = ["name", "code", "color"]
+    list_display = ["name", "code", "color", "calc"]
 
 
 admin.site.register(City, CityAdmin)
@@ -44,6 +47,7 @@ admin.site.register(EmployeeType, EmployeeTypeAdmin)
 admin.site.register(Assistance)
 admin.site.register(Incident)
 admin.site.register(Island, IslandAdmin)
+admin.site.register(SelfEmployedType, SelfEmployedTypeAdmin)
 admin.site.register(TimetableStatus, TimetableStatusAdmin)
 admin.site.register(Zone)
 

@@ -68,6 +68,17 @@ class City(models.Model):
 '''
     EMPLOYEE
 '''
+class SelfEmployedType(models.Model):
+    name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Tipo de autónomo')
+        verbose_name_plural = _('Tipos de autónomo')
+        ordering = ["name"]
+
 class EmployeeType(models.Model):
     amount = models.FloatField(default=0, verbose_name=_('Cuantia'));
     name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
@@ -91,6 +102,7 @@ class Employee(models.Model):
     city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     zone = models.ForeignKey(Zone, verbose_name=_('Zona'), on_delete=models.SET_NULL, null=True, related_name="employees")
     employee_type = models.ForeignKey(EmployeeType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True,related_name="employees")
+    self_employed_type = models.ForeignKey(SelfEmployedType,verbose_name=_('Tipo de autónomo'),on_delete=models.SET_NULL,null=True)
 
     def __str__(self):
         return self.name
@@ -378,6 +390,9 @@ class Client(models.Model):
     def remove_timetable_from_date(self, date):
         timetable_list = self.timetables.filter(date__gte = date)
         timetable_list.delete()
+
+    def set_timetable_status_from_date(self, date, status):
+        self.timetables.filter(date__gte = date).update(status=status)
 
     class Meta:
         verbose_name = _('Cliente')

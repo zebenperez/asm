@@ -3,11 +3,20 @@
 <div class="row justify-center">
     <div class="col-lg-2 col-2 my-2">
         <div class="form-check form-switch">
+            {%comment%}
             <input type="checkbox" class="form-check-input autosave" id="stopped" name="stopped"  
                 data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
                 data-target="div-notification" data-bool="True" {%if obj.stopped%}checked{%endif%} 
                 onclick="$('#div-date-stopped').toggle()"/> <span id="stopped__msg"></span>
             <label class="form-check-label" for="flexSwitchCheckDefault">{%trans "Paralizar"%}</label>
+            {%endcomment%}
+            {% if obj.stopped %}
+		        <a class="btn btn-xs btn-default ark" data-url="{%url "clients-stopped-confirm"%}" data-target-modal="common-modal" 
+                    data-obj_id="{{obj.id}}"> {% trans "Activar" %}</a>
+            {% else %}
+		        <a class="btn btn-xs btn-success ark" data-url="{%url "clients-stopped-confirm"%}" data-target-modal="common-modal" 
+                    data-obj_id="{{obj.id}}"> {% trans "Desactivar" %}</a>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -34,6 +43,16 @@
                 </select>
             </div>
         </div>
+        <div class="row mb-4 mt-2">
+            <div class="col-12">
+                <select class="form-control form-control-dark w-100 py-2" name="timetable_status" id="timetable_status">
+                    {% for item in timetable_status_list %}
+                        <option value="{{item.id}}">{{item.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
         <div class="row mb-4 mt-2">
             <div class="col-12"> {% trans "Observaciones" %}
                 <textarea class="form-control autosave" id="obs" name="obs" placeholder="Observaciones..."></textarea>

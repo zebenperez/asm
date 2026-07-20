@@ -7,7 +7,7 @@ $(document).ready(function() {
     let assignments = {}; // Almacenar asignaciones por fecha
     let URL_LOAD = "/gestion/clients/timetable/load";
     let URL_ASSIGN = "/gestion/clients/timetable/assign";
-    let URL_SAVE = "/gestion/clients/timetable/assign-save";
+    let URL_SAVE = "/gestion/clients/timetable/assign-save2";
     let URL_EDIT = "/gestion/clients/timetable/assign-edit";
     let URL_REMOVE = "/gestion/clients/timetable/assign-remove";
 
@@ -105,15 +105,37 @@ $(document).ready(function() {
         let endPrev = $('#endPrev').val();
         let status = $('#status').val();
         let allDays = $('input[id="allDays"]:checked').val();
-        //let statusClass = `status-${status}`;
-        //let statusText = getStatusText(status);
+        let monday = $('#monday').is(":checked");
+        let tuesday = $('#tuesday').is(":checked");
+        let wednesday = $('#wednesday').is(":checked");
+        let thursday = $('#thursday').is(":checked");
+        let friday = $('#friday').is(":checked");
+        let saturday = $('#saturday').is(":checked");
+        let sunday = $('#sunday').is(":checked");
 
         let obj_id = $(this).data("obj_id");
         let timetable = $(this).data("timetable");
         let dateStr = $(this).data("date");
         let empName = $(this).data("name");
         
-        datas = {"timetable":timetable,"obj_id":obj_id,"date":dateStr,"ini":startTime,"end":endTime,"ini_prev":startPrev,"end_prev":endPrev,"repeat":allDays,"status":status};
+        datas = {
+            "timetable":timetable,
+            "obj_id":obj_id,
+            "date":dateStr,
+            "ini":startTime,
+            "end":endTime,
+            "ini_prev":startPrev,
+            "end_prev":endPrev,
+            "repeat":allDays,
+            "monday":monday,
+            "tuesday":tuesday,
+            "wednesday":wednesday,
+            "thursday":thursday,
+            "friday":friday,
+            "saturday":saturday,
+            "sunday":sunday,
+            "status":status
+        };
         ajaxGet(URL_SAVE, datas, "day-cell-"+dateStr, "");
         
         currentDrop = null;
