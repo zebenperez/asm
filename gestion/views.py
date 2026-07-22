@@ -761,7 +761,7 @@ def get_edate(d, repeat):
         return d + relativedelta(day=31)
     elif repeat == "year" or repeat == "year_month_once" or repeat == "year_month_twice" or repeat == "remove":
         return d + relativedelta(month=12, day=31)
-    return d + relativedelta(day=7)
+    return d + relativedelta(days=6)
 
 @group_required("admins",)
 def clients_timetable_assign_save2(request):
