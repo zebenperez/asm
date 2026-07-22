@@ -11,31 +11,31 @@
 <div class="row m-0 p-2">
 	<div class="col-1 p-2">
         <label for="monday">Lunes</label>
-        <input type="checkbox" id="monday" class="border p-2 w-100 form-checkbox">
+        <input type="checkbox" id="monday" class="border p-2 w-100 form-checkbox" {%if week_day == 0%}checked{%endif%}>
     </div>
 	<div class="col-1 p-2">
         <label for="tuesday">Martes</label>
-        <input type="checkbox" id="tuesday" class="border p-2 w-100">
+        <input type="checkbox" id="tuesday" class="border p-2 w-100" {%if week_day == 1%}checked{%endif%}>
     </div>
 	<div class="col-1 p-2">
         <label for="wednesday">Miércoles</label>
-        <input type="checkbox" id="wednesday" class="border p-2 w-100">
+        <input type="checkbox" id="wednesday" class="border p-2 w-100" {%if week_day == 2%}checked{%endif%}>
     </div>
 	<div class="col-1 p-2">
         <label for="thursday">Jueves</label>
-        <input type="checkbox" id="thursday" class="border p-2 w-100">
+        <input type="checkbox" id="thursday" class="border p-2 w-100" {%if week_day == 3%}checked{%endif%}>
     </div>
 	<div class="col-1 p-2">
         <label for="friday">Viernes</label>
-        <input type="checkbox" id="friday" class="border p-2 w-100">
+        <input type="checkbox" id="friday" class="border p-2 w-100" {%if week_day == 4%}checked{%endif%}>
     </div>
 	<div class="col-1 p-2">
         <label for="saturday">Sábado</label>
-        <input type="checkbox" id="saturday" class="border p-2 w-100">
+        <input type="checkbox" id="saturday" class="border p-2 w-100" {%if week_day == 5%}checked{%endif%}>
     </div>
 	<div class="col-1 p-2">
         <label for="sunday">Domingo</label>
-        <input type="checkbox" id="sunday" class="border p-2 w-100">
+        <input type="checkbox" id="sunday" class="border p-2 w-100" {%if week_day == 6%}checked{%endif%}>
     </div>
 	<div class="col-2 offset-1 p-2">
         <label for="startTime">Hora de inicio:</label><br />
@@ -72,6 +72,10 @@
 	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="month" class="border p-2 w-100"> </div>
     <div class="col-11 p-2"> 
         <label for="allDays">{% trans "Repetir todo el mes" %} </label><br/></div>
+
+	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="year" class="border p-2 w-100"> </div>
+    <div class="col-11 p-2"> 
+        <label for="allDays">{% trans "Repetir todo el año" %} </label><br/></div>
 
 	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="year_month_once" class="border p-2 w-100"> </div>
 	<div class="col-11 p-2"> 
