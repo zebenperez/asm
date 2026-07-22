@@ -8,6 +8,7 @@
         data-status="status">
         {#<button class="remove-btn">×</button>#}
         <div>{{item.client.name}}</div>
+        <div>{{item.status.name}}</div>
         <div class="time-display">{{item.ini|date:'H:i:s'}} - {{item.end|date:'H:i:s'}}</div>
     </div>
 {% endfor %}

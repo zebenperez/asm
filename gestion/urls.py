@@ -37,6 +37,8 @@ urlpatterns = [
 
     path('employees/timetable/<int:obj_id>', views.employees_timetable, name='employees-timetable'),
     path('employees/timetable/load', views.employees_timetable_load, name='employees-timetable-load'),
+    path('employees/timetable/change-status', views.employees_timetable_change_status, name='employees-timetable-change-status'),
+    path('employees/timetable/set-status', views.employees_timetable_set_status, name='employees-timetable-set-status'),
 
     #---------------------- EMPLOYEE -----------------------
     path('employee/<int:obj_id>', views.employee, name='employee'),

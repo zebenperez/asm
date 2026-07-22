@@ -11,6 +11,8 @@
 			<div class="toolbar-content p-3">
 		        <h2 class="pathway">
                 	{%trans 'Empleado'%}: <span class="badge badge-secondary"> {{obj.name}}</span></h2>
+	            <a class="btn btn-sm new ark" data-url="{%url 'employees-timetable-change-status'%}" data-target-modal="common-modal"
+                    data-obj_id="{{obj.id}}"> <i class="fa fa-cog"></i> {% trans 'Cambiar estado' %}</a>
 	            <a class="btn btn-sm new" href="{%url 'employees'%}"><i class="fa fa-arrow-left"></i> {% trans 'Volver' %}</a>
         	</div>
 		</div>

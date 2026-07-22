@@ -396,6 +396,22 @@ def employees_timetable_load(request):
     #print(timetable_list)
     return render(request, "employees/timetable/employees-timetable-box.html", {"timetable_list": timetable_list})
 
+@group_required("admins",)
+def employees_timetable_change_status(request):
+    emp = get_param(request.GET, "obj_id")
+    status_list = TimetableStatus.objects.all()
+    return render(request, "employees/timetable/employees-timetable-change-status.html", {"emp": emp, "status_list": status_list})
+
+@group_required("admins",)
+def employees_timetable_set_status(request):
+    obj = get_or_none(Employee, get_param(request.POST, "employee"))
+    ini_date = get_param(request.POST, "ini_date")
+    end_date = get_param(request.POST, "end_date")
+    status = get_or_none(TimetableStatus, get_param(request.POST, "status"))
+    if obj != None and status != None and ini_date != "" and end_date != "":
+        timetables = ClientTimetable.objects.filter(employee=obj, date__range=(ini_date, end_date)).update(status=status)
+    return redirect(reverse('employees-timetable', kwargs={'obj_id': obj.id}))
+
 
 '''
     CLIENTS
@@ -669,7 +685,8 @@ def clients_timetable_assign(request):
     date = get_param(request.GET, "date")
 
     d = datetime.strptime(date, "%Y-%m-%d")
-    context = {'obj': obj, 'date': date, 'week_day': WEEK_DAYS[d.weekday()], 'status_list': TimetableStatus.objects.all(), 'new': True}
+    #context = {'obj': obj, 'date': date, 'week_day':WEEK_DAYS[d.weekday()], 'status_list': TimetableStatus.objects.all(), 'new': True}
+    context = {'obj': obj, 'date': date, 'week_day': d.weekday(), 'status_list': TimetableStatus.objects.all(), 'new': True}
     return render(request, "clients/timetable/clients-timetable-assign2.html", context)
 
 def goc_client_timetable(date, ini, end, client, emp, st, ini_prev, end_prev):
@@ -739,6 +756,13 @@ def clients_timetable_assign_save(request):
     return render(request, "clients/timetable/clients-timetable-reload.html", {})
     #return render(request, "clients/timetable/clients-timetable-box.html", {"timetable_list": timetable.get_in_same_day()})
 
+def get_edate(d, repeat):
+    if repeat == "month":
+        return d + relativedelta(day=31)
+    elif repeat == "year" or repeat == "year_month_once" or repeat == "year_month_twice" or repeat == "remove":
+        return d + relativedelta(month=12, day=31)
+    return d + relativedelta(day=7)
+
 @group_required("admins",)
 def clients_timetable_assign_save2(request):
     timetable = get_or_none(ClientTimetable, get_param(request.GET, "timetable"))
@@ -762,21 +786,15 @@ def clients_timetable_assign_save2(request):
     client = timetable.client if timetable != None else obj.client
     employee = timetable.employee if timetable != None else obj.employee
 
-    if repeat == "":
-        if timetable != None:
+    if repeat == "" and timetable != None:
             timetable.ini = ini
             timetable.end = end
             timetable.status = status
             timetable.save()
-        else:
-            for i in range(0, 6):
-                if week_days[i]:
-                    d = datetime.strptime(date, "%Y-%m-%d") + relativedelta(days=i)
-                    timetable = ClientTimetable.objects.create(date=d,ini=ini,end=end,client=client,employee=employee,status=status)
     else:
         d = datetime.strptime(date, "%Y-%m-%d")
-        keys = ["year_month_once", "year_month_twice"]
-        edate = d + relativedelta(month=12, day=31) if repeat in keys else d + relativedelta(day=31)
+        edate = get_edate(d, repeat)
+
         if repeat == "remove":
             ct = ClientTimetable.objects.filter(date__range=(d, edate), ini=ini, end=end, client=client, employee=employee)
             ct.delete()
@@ -785,7 +803,7 @@ def clients_timetable_assign_save2(request):
             current_month = d.month
             repeat_list = [0,0,0,0,0,0,0]
             while current <= edate:
-                if repeat == "month":
+                if repeat == "month" or repeat =="year" or repeat == "":
                     #print(f'Fecha {current} - {week_days[current.weekday()]}')
                     if week_days[current.weekday()]:
                         goc_client_timetable(current, ini, end, client, employee, status, ini_prev, end_prev)
@@ -813,7 +831,8 @@ def clients_timetable_assign_edit(request):
         "obj": obj, 
         "timetable": timetable, 
         "date": date, 
-        "week_day": WEEK_DAYS[timetable.date.weekday()], 
+        #"week_day": WEEK_DAYS[timetable.date.weekday()], 
+        "week_day": timetable.date.weekday(), 
         'status_list': TimetableStatus.objects.all()
     }
     return render(request, "clients/timetable/clients-timetable-assign2.html", context)
