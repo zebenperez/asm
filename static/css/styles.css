@@ -31,6 +31,11 @@ h2 {
 	font-weight: 600;
 }
 
+.items-center {
+	display:flex;
+	align-items:center;
+}
+
 .navbar-brand {
 	text-align: center;
 }
@@ -212,8 +217,8 @@ hr.orange {
 }
 
 button.btn.btn-primary.btn-sm.ark {
-	background-color: #82bc00 !important;
-	border:1px solid #82bc00 !important;
+	background-color: #6bbd00 !important;
+	border:1px solid #6bbd00 !important;
 
 }
 
@@ -241,13 +246,13 @@ button.btn.btn-outline-danger.ark:hover {
 
 button.btn.btn-primary,
 a.btn.btn-primary, a.btn.btn-secondary, a.btn.btn-primary.ark, a.btn.btn-secondary.ark {
-    background-color: #82bc00 !important;
-    border:1px solid #82bc00 !important;
+    background-color: #6bbd00 !important;
+    border:1px solid #6bbd00 !important;
     font-size:1rem !important;
 }
 button.btn.btn-primary:hover,
 a.btn.btn-primary:hover, a.btn.btn-secondary:hover, a.btn.btn-primary.ark:hover, a.btn.btn-secondary.ark:hover {
-	background-color:  rgba(0,0,0,.54) !important;
+	background-color: #58a400 !important;
 	color: white !important;
 }
 
@@ -295,6 +300,18 @@ button.btn.btn-timetable:hover {
 .btn.btn-sm.new:hover,
 .btn.btn-sm.ark.new:hover {
 	background-color: #e7f2d8;
+}
+
+.btn-info {
+    color: #000;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.btn-info:hover {
+    color: #000;
+    background-color: #31d2f2;
+    border-color: #25cff2;
 }
 
 a.btn.btn-primary.ark:hover, a.btn.btn-secondary.ark:hover {
@@ -551,13 +568,6 @@ h2.pathway.b-right  {
 	text-align: center!important; 
 }
 
-.form-control {
-	padding: 0rem 0.5em 0.1rem 0.5em;
-	font-size: 0.9em;
-	color: #333;
-	border-color: #ced4da;
-	border-width: 0px 0px 1px 0px !important;
-}
 
 .select-file {
     border:1px solid #e55000; border-radius:5px; height: 31px; font-size: 14px;
@@ -591,26 +601,39 @@ input.form-control.login {
 
 /************* Modal popup styles ***********/
 
-.modal-content {
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-radius: 0.3rem;
-	font-size: 0.95rem;
-	max-width: 1200px;
-}
+/* Header */
 
 .modal-head {
-	background-color: #ffffff;
-	box-shadow: 0 0.125rem 0.25rem rgba(2, 6, 23, 0.075);
-	font-size: 1.3rem;
-	font-weight: 600;
-	letter-spacing: 0;
-	color: #f2902d;
-	align-items: center;
+	font-size: 22px;
+	font-weight: 700;
+	color: #e35000;
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+	padding:20px 28px;
+	border-bottom:1px solid #ececec;
+	background:#fafafa;
+}
+
+.modal-content {
+	border-radius: 1.5rem !important;
+}
+
+.greybox-sm,
+label{
+	font-size:14px;
+	font-weight:600;
+	color:#475569;
 }
 
 #common-modal-body {
 	color: 666666;
     padding: 0;
+    background: white;
+    box-shadow: 0 25px 60px rgba(0,0,0,.18);
+    overflow: hidden;
+    animation: popup .25s ease;
+	border-radius: 18px !important;
 }
 
 #common-modal-body .d-flex.justify-center {
@@ -626,6 +649,19 @@ input.form-control.login {
 #common-modal-body .row.justify-center {
     padding: 1rem;
 }
+
+
+/* Footer */
+
+.modal-footer{
+	padding:24px 32px;
+	border-top:1px solid #ececec;
+	display:flex;
+	justify-content:flex-end;
+	gap:12px;
+	background:#fafafa;
+}
+
 
 h2.common-modal-head {
     font-size: 1.1rem !important;
@@ -643,13 +679,27 @@ label.label {
     color: #777;
 }
 input.input,
+input.form-control.input,
 select.input {
     position: relative;
-    padding: 0.5rem 0.5rem;
     margin-bottom: 1rem;
-    border: 1px solid #ccc !important;
-    border-radius: 0.25rem;
+    height: 48px;
+    border: 1px solid #d9dee5 !important;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 15px;
+    transition: .25s;
+    background: white;
 }
+/*
+.form-control {
+	padding: 0rem 0.5em 0.1rem 0.5em;
+	font-size: 0.9em;
+	color: #333;
+	border-color: #ced4da;
+	border-width: 0px 0px 1px 0px !important;
+}
+*/
 
 .permanent, .one-use {
     font-size: 0.8rem;
@@ -721,7 +771,7 @@ button.btn.btn-success {
 
 .fa, .fas, .far {
 	color: rgba(0,0,0,.54);
-	font-size: 13px;
+/*	font-size: 13px;*/
 }
 
 .multiselect_btn {

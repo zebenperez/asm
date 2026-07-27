@@ -38,7 +38,7 @@
                 title="{%trans "Cargar DNI"%}"><i class="fas fa-sync"></i> <small>{%trans "Copiar DNI"%}</small></button>
         </div>
     </div>
-    <div class="col-2">
+    <div class="col-2 pt-3">
         <div class="greybox-sm p-1">
             {% trans "Desactivar" %}
             <input type="checkbox" class="form-checkbox autosave" id="inactive" name="inactive" data-model-name="gestion.employee" 
@@ -128,16 +128,16 @@
 </div>
 
 <hr/>
-<strong class="m-4">{% trans "Categorías" %}</strong><br/>
-<div class="row m-4">
+<strong class="m-4 greybox-sm p-1">{% trans "Categorías" %}</strong><br/>
+<div class="row m-2">
     {% for item in type_list %}
         <div class="col-2 text-center">
             {% if item in obj.get_categories %}
-                <button class="ark btn btn-info" data-url="{% url "employees-save-cat" %}" data-target="" 
+                <button class="ark btn btn-info w-100" data-url="{% url "employees-save-cat" %}" data-target="" 
                     data-obj_id="{{obj.id}}" data-type="{{item.id}}" data-add="False" onclick="$(this).toggleClass('btn-info')">
                     {{item.name}} </button>
             {% else %}
-                <button class="ark btn" data-url="{% url "employees-save-cat" %}" data-target="" data-obj_id="{{obj.id}}" 
+                <button class="ark btn w-100" style="border:1px solid #ccc" data-url="{% url "employees-save-cat" %}" data-target="" data-obj_id="{{obj.id}}" 
                     data-type="{{item.id}}" data-add="True" onclick="$(this).toggleClass('btn-info')">{{item.name}} </button>
             {% endif  %}
         </div>
@@ -145,15 +145,15 @@
 </div>
 
 <hr/>
-<strong class="m-4">{% trans "Documentos" %}</strong><br/>
+<strong class="m-4 greybox-sm p-1">{% trans "Documentos" %}</strong><br/>
 <div class="row m-4">
     <div class="col-12">
 	    <div id="div-files"> {% include "employees/employees-form-docs.html" %} </div> </div>
     </div>
 </div>
 
-<div class="d-flex justify-content-end p-2">
-    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+<div class="modal-footer d-flex justify-content-end p-2">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
     <button type="button" class="btn btn-primary ark" data-bs-dismiss="modal" data-url="{% url "employees-list" %}"
         data-target="emp-list">{% trans "Guardar" %}</button>
     {%comment%}

@@ -199,14 +199,20 @@ class Employee(models.Model):
         #    return self.timetables.filter(client__qr_access=qr_access).order_by("client").distinct("client")
         return self.timetables.filter(date__gte=datetime.datetime.today(), client__qr_access=qr_access).order_by("client").distinct("client")
 
-    def assigned_by_type(self, ini_date, end_date, status=None):
+    def assigned_by_type(self, ini_date, end_date, status=None, client=None):
         idate = "{}".format(ini_date)
         edate = "{}".format(end_date)
 
+        #if status is not None:
+        #    item_list = self.timetables.filter(status=status, date__range=(idate, edate)).exclude(client=None)
+        #else:
+        #    item_list = self.timetables.filter(date__range=(idate, edate)).exclude(client=None)
+        kwargs = {"date__range": (idate, edate)}
         if status is not None:
-            item_list = self.timetables.filter(status=status, date__range=(idate, edate)).exclude(client=None)
-        else:
-            item_list = self.timetables.filter(date__range=(idate, edate)).exclude(client=None)
+            kwargs["status"] = status
+        if client is not None:
+            kwargs["client"] = client
+        item_list = self.timetables.filter(**kwargs).exclude(client=None)
 
         mins = 0
         for item in item_list:
@@ -286,6 +292,8 @@ class Client(models.Model):
     inactive = models.BooleanField(default=False, verbose_name=_('Desactivado'));
     stopped = models.BooleanField(default=False, verbose_name=_('Paralizado'));
     amount = models.FloatField(default=0, verbose_name=_('Cuantia'));
+    date = models.DateField(default=timezone.now, null=True, verbose_name=_('Inicio'))
+    date_inactive = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))
     exp = models.CharField(max_length=200, verbose_name = _('Número de expediente'), default="")
     code = models.CharField(max_length=200, verbose_name = _('Code'), default="")
     name = models.CharField(max_length=200, verbose_name = _('Razón Social'), default="")
@@ -294,10 +302,10 @@ class Client(models.Model):
     address = models.TextField(verbose_name = _('Dirección'), null=True, default='')
     #city = models.TextField(verbose_name = _('Municipio'), null=True, default='')
     observations = models.TextField(verbose_name = _('Observaciones'), null=True, default='')
-    date = models.DateField(default=timezone.now, null=True, verbose_name=_('Inicio'))
-    date_inactive = models.DateField(default=datetime.date(1900, 1, 1), null=True, verbose_name=_('Inicio'))
     obs_inactive = models.TextField(verbose_name = _('Observaciones inactivo'), null=True, default='')
+    obs_internal = models.TextField(verbose_name = _('Observaciones internas'), null=True, default='')
     qr = models.ImageField(upload_to=upload_form_qr, blank=True, verbose_name="QR", help_text="Select file to upload")
+
     city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     client_type = models.ForeignKey(ClientType, verbose_name=_('Tipo'), on_delete=models.SET_NULL, null=True)
     grade = models.ForeignKey(ClientGrade, verbose_name=_('Grado'), on_delete=models.SET_NULL, null=True)
@@ -409,6 +417,7 @@ class TimetableStatus(models.Model):
         verbose_name_plural = _('Estados horarios')
 
 class ClientTimetable(models.Model):
+    cover = models.BooleanField(default=False, verbose_name=_('Se cubre servicio'));
     day = models.IntegerField(verbose_name = _('Día'), default=0)
     date = models.DateField(verbose_name = _('Día'), default=timezone.now)
     ini = models.TimeField(max_length=10, verbose_name = _('Hora de inicio'), default=datetime.time(8,0,0))
@@ -424,6 +433,12 @@ class ClientTimetable(models.Model):
     def week_day(self):
         wd = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
         return wd[self.day]
+
+    @property
+    def duration(self):
+        mins = sub_hours(self.end, self.ini)
+        h, m = hours_mins(mins)
+        return f"{h} horas y {m} minutos"
 
     def get_in_same_day(self):
         return ClientTimetable.objects.filter(client=self.client, date=self.date)

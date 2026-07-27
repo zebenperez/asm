@@ -9,6 +9,7 @@
         <button class="remove-btn">×</button>
         <div>{{item.employee.name}}</div>
         <div class="time-display">{{item.ini|date:'H:i:s'}} - {{item.end|date:'H:i:s'}}</div>
+        <div class="time-display">{{item.duration}}</div>
         {#<div class="status-badge">statusText</div>#}
     </div>
 {% endfor %}

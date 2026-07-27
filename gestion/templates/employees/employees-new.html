@@ -18,8 +18,13 @@
                 placeholder="DNI..." required/> <span id="dni__msg"></span>
         </div>
     </div>
-    <div class="col-2"> <button class="btn btn-sm btn-info">{% trans "Comprobar DNI" %}</button> </div>
+    <div class="col-2 items-center pt-3"><button class="btn btn-info">{% trans "Comprobar DNI" %}</button> </div>
 </div>
+ <div class="modal-footer d-flex justify-content-end p-2">
+	 <button class="btn btn-secondary" type="button" clasis="btn btn-lg" data-bs-dismiss="modal">
+	    {% trans "Cancelar" %}</button> 
+</div>
+
 <div id="div-notification"></div>
 
 

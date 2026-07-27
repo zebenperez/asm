@@ -11,10 +11,10 @@
 <form class="form m-0" method="GET" action="{% url "clients-form-save" %}" id="form-save">
     {%csrf_token%}
     <div class="row justify-center">
-        <div class="col-6"> {% trans "NIF/NIE" %}
+        <div class="col-6 greybox-sm p-1"> {% trans "NIF/NIE" %}
             <input type="text" class="form-control autosave" id="code" name="code" value="" placeholder="Código..." /> 
         </div>
-        <div class="col-6"> {% trans "Nombre" %}
+        <div class="col-6 greybox-sm p-1"> {% trans "Nombre" %}
             <input type="text" class="form-control autosave" id="name" name="name" value="" placeholder="Nombre..." /> 
         </div>
     </div>

@@ -112,6 +112,9 @@ $(document).ready(function() {
         let friday = $('#friday').is(":checked");
         let saturday = $('#saturday').is(":checked");
         let sunday = $('#sunday').is(":checked");
+        let cover = $('#cover').is(":checked");
+        console.log("..1..");
+        console.log(cover);
 
         let obj_id = $(this).data("obj_id");
         let timetable = $(this).data("timetable");
@@ -134,6 +137,7 @@ $(document).ready(function() {
             "friday":friday,
             "saturday":saturday,
             "sunday":sunday,
+            "cover":cover,
             "status":status
         };
         ajaxGet(URL_SAVE, datas, "day-cell-"+dateStr, "");

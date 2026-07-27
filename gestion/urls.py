@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, auto_views
+from . import views, auto_views, report_views
 
 urlpatterns = [ 
     path('home', views.index, name='index'),
@@ -89,20 +89,22 @@ urlpatterns = [
     path('clients/timetable/assign-remove', views.clients_timetable_assign_remove, name='clients-timetable-assign-remove'),
 
     #---------------------- ASSISTANCES -----------------------
-    path('report', views.report, name='report'),
-    path('report/clients', views.report_clients, name='report-clients'),
-    path('report/clients/list', views.report_clients_list, name='report-clients-list'),
-    path('report/clients/search', views.report_clients_search, name='report-clients-search'),
-    path('report/assistances', views.report_assistances, name='report-assistances'),
-    path('report/assistances/list', views.report_assistances_list, name='report-assistances-list'),
-    path('report/assistances/search', views.report_assistances_search, name='report-assistances-search'),
-    path('report/export', views.report_export, name='report-export'),
-    path('report/export-emp', views.report_export_emp, name='report-export-emp'),
-    path('report/search-emp', views.report_search_emp, name='report-search-emp'),
-    path('report/search-cli', views.report_search_cli, name='report-search-cli'),
-    path('report/employees', views.report_employees, name='report-employees'),
-    path('report/employees/list', views.report_employees_list, name='report-employees-list'),
-    path('report/employees/search', views.report_employees_search, name='report-employees-search'),
+    path('report', report_views.report, name='report'),
+    path('report/clients', report_views.report_clients, name='report-clients'),
+    path('report/clients/list', report_views.report_clients_list, name='report-clients-list'),
+    path('report/clients/search', report_views.report_clients_search, name='report-clients-search'),
+    path('report/assistances', report_views.report_assistances, name='report-assistances'),
+    path('report/assistances/list', report_views.report_assistances_list, name='report-assistances-list'),
+    path('report/assistances/search', report_views.report_assistances_search, name='report-assistances-search'),
+    path('report/export', report_views.report_export, name='report-export'),
+    path('report/export-emp', report_views.report_export_emp, name='report-export-emp'),
+    path('report/search-emp', report_views.report_search_emp, name='report-search-emp'),
+    path('report/search-emp-cli', report_views.report_search_emp_cli, name='report-search-emp-cli'),
+    path('report/search-cli', report_views.report_search_cli, name='report-search-cli'),
+    path('report/employees', report_views.report_employees, name='report-employees'),
+    path('report/employees/list', report_views.report_employees_list, name='report-employees-list'),
+    path('report/employees/search', report_views.report_employees_search, name='report-employees-search'),
+    path('report/emp-cli-status', report_views.report_emp_cli_status, name='report-emp-cli-status'),
 
     #---------------------- INCIDENTS -----------------------
     path('incidents', views.incidents, name='incidents'),
