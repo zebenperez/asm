@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.conf import settings
+from django.contrib.postgres.lookups import Unaccent
 from django.http import HttpResponse
 from PIL import Image
 
@@ -68,6 +69,18 @@ def set_obj_field(obj, field, value):
     else:
         setattr(obj, field, value)
     obj.save()
+
+def find_by_field(app_name, model_name, value, field):
+    from gestion.models import Client
+    try:
+        model = apps.get_model(app_name, model_name)
+        item_list = model.objects.filter(**{field: value})
+        return item_list
+    except Exception as e:
+        print(e)
+        #logger.error("(get_object): %s" % e)
+        return []
+
 
 def get_param(dic, param, default=""):
     return dic[param] if param in dic and dic[param] != "" else default

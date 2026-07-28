@@ -19,15 +19,15 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-end p-2">
+    <div class="modal-footer d-flex justify-content-end p-2">
         {%comment%}
         <button type="button" class="btn btn-primary ark mx-2" data-bs-dismiss="modal" data-url="{% url "clients-list" %}"
             data-target="client-list">{% trans "Guardar" %}</button>
         <button class="btn btn-primary saveform" data-bs-dismiss="modal" data-form="form-save" data-target="clients-list">
             {% trans "Guardar" %}</button>
         {%endcomment%}
+        <button type="button" class="btn btn-secondary ark" data-bs-dismiss="modal"> {% trans "Cancelar" %}</button>
         <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"> {% trans "Guardar" %}</button>
-        <button type="button" class="btn btn-danger ark cancel" data-bs-dismiss="modal"> {% trans "Cancelar" %}</button>
     </div>
 </form>
 

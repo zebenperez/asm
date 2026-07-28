@@ -252,12 +252,63 @@ def report_employees_search(request, clients=""):
 '''
     Empleados - Clientes - Estados
 '''
+def get_emp_cli_status_report(request):
+    from django.db.models import Count
+
+    emp = get_session(request, "s_rep_emp_cli_status_emp")
+    cli = get_session(request, "s_rep_emp_cli_status_cli")
+    status = get_session(request, "s_rep_emp_cli_status_status")
+    i_date = get_session(request, "s_rep_emp_cli_status_idate")
+    e_date = get_session(request, "s_rep_emp_cli_status_edate")
+
+    kwargs = {}
+    if emp != "":
+        kwargs["employee__name__unaccent__icontains"] = emp
+    if cli != "":
+        kwargs["client__name__unaccent__icontains"] = cli
+    if status != "":
+        kwargs["status__id"] = status
+    if i_date != "":
+        kwargs["date__gte"] = i_date
+    if e_date != "":
+        kwargs["date__lte"] = e_date
+
+    #item_list = ClientTimetable.objects.filter(**kwargs)
+    item_list = (
+        ClientTimetable.objects.filter(**kwargs)
+        .values( "client__name", "employee__name", "status__name",)
+        .annotate(total=Count("id"))
+        .order_by("status__name", "employee__name", "client__name")
+    )
+    return item_list
+
 @group_required("admins",)
 def report_emp_cli_status(request):
     init_session_date(request, "s_rep_emp_cli_status_idate")
     init_session_date(request, "s_rep_emp_cli_status_edate")
-    set_session(request, "s_rep_emp_cli_status", "")
+    set_session(request, "s_rep_emp_cli_status_emp", "")
+    set_session(request, "s_rep_emp_cli_status_cli", "")
     context = {"items": [], 'status': TimetableStatus.objects.all()}
     return render(request, "report/report-emp-cli-status/index.html", context)
+
+@group_required("admins",)
+def report_emp_cli_status_search(request, clients=""):
+    set_session(request, "s_rep_emp_cli_status_emp", get_param(request.GET, "s_rep_emp_cli_status"))
+    set_session(request, "s_rep_emp_cli_status_cli", get_param(request.GET, "s_rep_emp_cli_status_cli"))
+    set_session(request, "s_rep_emp_cli_status_status", get_param(request.GET, "s_rep_emp_cli_status_status"))
+    set_session(request, "s_rep_emp_cli_status_idate", get_param(request.GET, "s_rep_emp_cli_status_idate"))
+    set_session(request, "s_rep_emp_cli_status_edate", get_param(request.GET, "s_rep_emp_cli_status_edate"))
+    item_list = get_emp_cli_status_report(request)
+    return render(request, "report/report-emp-cli-status/list.html", {"items": item_list, 'status': TimetableStatus.objects.all()})
+ 
+@group_required("admins",)
+def report_emp_cli_status_export(request):
+    header = ['Empleado', 'Cliente', 'Estado']
+    values = []
+    items = get_emp_cli_status_report(request)
+    for item in items:
+        row = [item["employee__name"], item["client__name"], item["status__name"]]
+        values.append(row)
+    return csv_export(header, values, "empleados")
 
 

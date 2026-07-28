@@ -18,12 +18,10 @@
             <button class="nav-link ark report-tab" data-url="{%url "report-employees"%}" data-target="report-main"
                 onclick="$('.report-tab').removeClass('active');$(this).addClass('active')"> {% trans "Trabajadores" %}</button>
         </li>
-        {%comment%}
         <li class="nav-item">
             <button class="nav-link ark report-tab" data-url="{%url "report-emp-cli-status"%}" data-target="report-main"
                 onclick="$('.report-tab').removeClass('active');$(this).addClass('active')"> {% trans "Horacio" %}</button>
         </li>
-        {%endcomment%}
     </ul>
     <div id="report-main" class="mt-4"> {% include "report/report-assistances.html" %} </div>
     {#<div id="report-main" class="mt-4"> {% include "report/report-clients.html" %} </div>#}

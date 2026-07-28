@@ -420,6 +420,32 @@ def employees_timetable_set_status(request):
         timetables = ClientTimetable.objects.filter(employee=obj, date__range=(ini_date, end_date)).update(status=status)
     return redirect(reverse('employees-timetable', kwargs={'obj_id': obj.id}))
 
+@group_required("admins",)
+def employees_timetable_clients_add(request):
+    emp = get_or_none(Employee, get_param(request.GET, "obj_id"))
+    context = {"obj": emp, "client_list": Client.objects.all()}
+    return render(request, "employees/timetable/employees-timetable-clients-add.html", context)
+
+@group_required("admins",)
+def employees_timetable_clients_save(request):
+    emp = get_or_none(Employee, get_param(request.GET, "obj_id"))
+    client_list = request.GET.getlist("values[]")
+    for cli in client_list:
+        client = get_or_none(Client, cli)
+        if client != None:
+            ClientEmployee.objects.get_or_create(client=client, employee=employee)
+    return render(request, "employees/timetable/employees-timetable-clients.html", {"obj": client})
+
+@group_required("admins",)
+def employees_timetable_clients_remove(request):
+    client = None
+    obj = get_or_none(ClientEmployee, get_param(request.GET, "obj_id"))
+    if obj != None:
+        emp = obj.employee
+        obj.delete()
+    return render(request, "employees/timetable/employees-timetable-clients.html", {"obj": emp})
+
+
 
 '''
     CLIENTS
@@ -928,7 +954,8 @@ def clients_inactive_set(request):
         obj = get_or_none(Client, get_param(request.GET, "obj_id"))
         obj.inactive = True if not obj.inactive else False
         obj.save()
-        return render(request, "clients/clients-details-inactive.html", {'obj': obj, 'today': datetime.today(),})
+        context = {'obj': obj, 'today': datetime.today(), 'itype_list': ClientInactiveType.objects.all()}
+        return render(request, "clients/clients-details-inactive.html", context)
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
 
@@ -1020,7 +1047,7 @@ def clients_stopped_remove(request):
             client = obj.client
             obj.delete()
 
-        return render(request, "clients/clients-details-stopped.html", get_stopped_context(obj))
+        return render(request, "clients/clients-details-stopped.html", get_stopped_context(client))
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
 

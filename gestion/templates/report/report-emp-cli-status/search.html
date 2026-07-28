@@ -1,70 +1,56 @@
 {% load i18n gestion_tags %}
 
-<form class="form m-0" method="GET" action="{% url "report-employees-search" %}" id="form-search">
+<form class="form m-0" method="GET" action="{% url "report-emp-cli-status-search" %}" id="form-search">
     {%csrf_token%}
 
     <div class="row"> 
         <div class="col-1 py-2"> <span>{% trans "Fecha:" %}</span> </div>
-        <div class="col-2 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2"
-            name="s_rep_emp_idate" id="s_rep_emp_idate" value="{{request.session.s_rep_emp_idate}}"/> </div>
-        <div class="col-2 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2" 
-            name="s_rep_emp_edate" id="s_rep_emp_edate" value="{{request.session.s_rep_emp_edate}}"/> </div>
-        <div class="col-1 offset-1 py-2"> <span>{% trans "Cliente:" %}</span> </div>
+        <div class="col-1 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2"
+            name="s_rep_emp_cli_status_idate" id="s_rep_emp_cli_status_idate" 
+            value="{{request.session.s_rep_emp_cli_status_idate}}"/> </div>
+        <div class="col-1 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2" 
+            name="s_rep_emp_cli_status_edate" id="s_rep_emp_cli_status_edate" 
+            value="{{request.session.s_rep_emp_cli_status_edate}}"/> </div>
+        <div class="col-1 py-2"> <span>{% trans "Cliente:" %}</span> </div>
         <div class="col-2"> 
             <input type="hidden" class="form-control form-control-dark w-100 py-2" 
-                name="s_rep_emp_cli" id="s_rep_emp_cli" placeholder="Nombre cliente" value="{{request.session.s_rep_emp_cli}}"/> 
-            <input class="form-control input autocomplete" id="rep_emp_cli" name="rep_emp_cli" placeholder="Nombre cliente"
-                value="" data-url="{%url "report-search-emp-cli"%}" data-target="report-search-emp-cli"/> 
-            <div id="report-search-emp-cli"></div>
+                name="s_rep_emp_cli_status_cli" id="s_rep_emp_cli_status_cli" placeholder="Nombre cliente" 
+                value="{{request.session.s_rep_emp_cli_status_cli}}"/> 
+            <input class="form-control input autocomplete2" id="client" name="client" placeholder="Nombre cliente"
+                value="" data-url="{%url "autocomplete_search"%}" data-target="cli-result"
+                data-model_name="gestion.client" data-input="s_rep_emp_cli_status_cli"/> 
+            <div id="cli-result"></div>
         </div>
-    </div>
-            
-    <div class="row"> 
         <div class="col-1 py-2"> <span>{% trans "Trabajador/a:" %}</span> </div>
         <div class="col-2"> 
             <input type="hidden" class="form-control form-control-dark w-100 py-2" 
-                name="s_rep_emp" id="s_rep_emp" placeholder="Nombre trabajador/a" value="{{request.session.s_rep_emp}}"/> 
-            <input class="form-control input autocomplete" id="rep_emp" name="rep_emp" placeholder="Nombre trabajador/a"
-                value="" data-url="{%url "report-search-emp"%}" data-target="report-search-emp"/> 
-            <div id="report-search-emp"></div>
+                name="s_rep_emp_cli_status_emp" id="s_rep_emp_cli_status_emp" placeholder="Nombre trabajador/a" 
+                value="{{request.session.s_rep_emp_cli_status_emp}}"/> 
+            <input class="form-control input autocomplete2" id="employee" name="employee" placeholder="Nombre cliente"
+                value="" data-url="{%url "autocomplete_search"%}" data-target="emp-result"
+                data-model_name="gestion.employee" data-input="s_rep_emp_cli_status_emp"/> 
+            <div id="emp-result"></div>
         </div>
         <div class="col-1 py-2"><span>{% trans "Estado:" %}</div>
         <div class="col-2 pt-2"> 
-            <select class="form-control" id="s_rep_emp_status" name="s_rep_emp_status">
+            <select class="form-control" id="s_rep_emp_cli_status_status" name="s_rep_emp_cli_status_status">
                 <option value="">{% trans "-- Todos --" %}</option>
                 {% for t in status %}
-                    <option value="{{t.id}}" {%if t.id == request.session.s_rep_emp_status%}selected{%endif%}>{{t.name}}</option>
+                    <option value="{{t.id}}" {%if t.id == request.session.s_rep_emp_cli_status_status%}selected{%endif%}>
+                        {{t.name}}</option>
                 {% endfor %}
-            </select>
-        </div>
-        <div class="col-1 py-2"><span>{% trans "Tipo:" %}</div>
-        <div class="col-2 pt-2"> 
-            <select class="form-control" id="s_rep_emp_type" name="s_rep_emp_type">
-                <option value="">{% trans "-- Todos --" %}</option>
-                {% for t in mp_types %}
-                    <option value="{{t.id}}" {%if t.id == request.session.s_rep_emp_type%}selected{%endif%}>{{t.name}}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-1 py-2"><span>{% trans "Activo:" %}</div>
-        <div class="col-2 pt-2">
-            <select class="form-control" id="s_rep_emp_active" name="s_rep_emp_active">
-                <option value="">{% trans "-- Todos --" %}</option>
-                <option value="1" {%if request.session.s_rep_emp_active == "1"%}selected{%endif%}>{% trans "SI" %}</option>
-                <option value="0" {%if request.session.s_rep_emp_active == "0"%}selected{%endif%}>{% trans "NO" %}</option>
             </select>
         </div>
     </div>
     <div class="row">
         <div class="col-2 offset-3 p-0 text-center">
-            <button class="btn btn-default saveform w-100" data-form="form-search" data-target="emp-list">
+            <button class="btn btn-default saveform w-100" data-form="form-search" data-target="item-list">
                 <i class="fas fa-search"></i> {% trans "Buscar" %}</button>
         </div>
         <div class="col-2 offset-2 text-center"> 
-            <a class="btn btn-xs exp w-75" href="{% url "report-export-emp" %}" title="{% trans 'Exportar a CSV' %}" target="_blank">
-                <i class="fas fa-file-csv"></i> {% trans "Exportar" %}</a>
+            <a class="btn btn-xs exp w-75" href="{% url "report-emp-cli-status-export" %}" title="{% trans 'Exportar a CSV' %}" 
+                target="_blank"> <i class="fas fa-file-csv"></i> {% trans "Exportar" %}</a>
         </div>
-
     </div>
 </form>
 

@@ -2,7 +2,7 @@
 
 <div class="row spd-tab">
     <div class="col-lg-3 offset-lg-9 col-5 offset-7 text-end">
-	<label for ="id_employee_files_{{ obj.id }}" class="btn-tools tools-primary btn-labeled btn-sm async-load">
+	<label for ="id_employee_files_{{ obj.id }}" class="btn-tools tools-primary btn-labeled async-load">
             <i class="fas fa-upload"></i> {%trans "Subir"%}&nbsp;{%trans "Archivos"%}</label>
         <input type="file" class="multiupload d-none" name="employee_file" id="id_employee_files_{{ obj.id }}" 
             data-url="{% url 'employees-doc-add' %}" data-target="div-files" data-obj-id="{{obj.id}}"

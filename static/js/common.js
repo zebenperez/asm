@@ -724,6 +724,27 @@ $(document).ready(()=>{
         e.preventDefault();
     });
 
+    $("body").on("keyup", ".autocomplete2", function(e){
+        let obj = $(this);
+        let url = obj.data("url");
+        let target = obj.data("target");
+        let name = obj.prop("name");
+        let value = obj.val();
+
+        if (value.length >= 3) {
+            let datas = {'value': value, 'current': name};
+            let args = obj.data();
+            for(var i in args)
+                if (i != "url")
+                    datas[i] = args[i]
+
+            ajaxGet(url, datas, target, '');
+            if (obj.data("show"))
+                $("#" + obj.data("show")).show();
+        }
+        e.preventDefault();
+    });
+
     $("body").on("keypress", ".ark_intro", function(e){
         var obj = $(this);
         if(e.which == 13) {

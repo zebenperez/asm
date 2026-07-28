@@ -11,10 +11,10 @@
             <label class="form-check-label" for="flexSwitchCheckDefault">{%trans "Desactivar"%}</label>
             {%endcomment%}
             {% if obj.inactive %}
-		        <a class="btn btn-xs btn-default ark" data-url="{%url "clients-inactive-set"%}" data-target="div-inactive" 
+		        <a class="btn btn-default ark" data-url="{%url "clients-inactive-set"%}" data-target="div-inactive" 
                     data-obj_id="{{obj.id}}"> {% trans "Activar" %}</a>
             {% else %}
-		        <a class="btn btn-xs btn-success ark" data-url="{%url "clients-inactive-confirm"%}" data-target-modal="common-modal" 
+		        <a class="btn btn-primary ark" data-url="{%url "clients-inactive-confirm"%}" data-target-modal="common-modal" 
                     data-obj_id="{{obj.id}}"> {% trans "Desactivar" %}</a>
             {% endif %}
         </div>

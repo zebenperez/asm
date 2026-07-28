@@ -1,3 +1,7 @@
+:root {
+    --shadow: 0 10px 30px rgba(15,23,42,.08);
+}
+
 html {
 	background-color: #f9fafb; 
 /*	letter-spacing: .0892857143em;*/
@@ -320,15 +324,15 @@ a.btn.btn-primary.ark:hover, a.btn.btn-secondary.ark:hover {
 
 button.btn.btn-primary-add,
 label.btn-tools.tools-primary {
-    border: 1px solid #f2902d;
-    color: #f2902d;
+    border: 1px solid #e35000;
+    color: #e35000;
     padding: 0.5rem;
-    font-size: 0.85em;
+/*    font-size: 0.85em;*/
 }
 button.btn.btn-primary-add:hover,
 label.btn-tools.tools-primary:hover {
     border: 1px solid #ae6317;
-    color: #ae6317;
+    color: #e35000;
 }
 
 .btn.btn-default {
@@ -494,6 +498,25 @@ span.status-info {
 	font-size: 0.95rem;
 }
 
+/* Client details */
+
+.card {
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: var(--shadow);
+	padding: 28px;
+	margin-bottom: 24px;
+}
+.card-header {
+	background: #fff !important;
+	border-bottom: 0px !important;
+	font-size: 20px;
+	font-weight: 700;
+	color: #e35000;
+}
+
+/* End client details */
+
 .dateline {
 	border: 1px solid #fff; 
 	background: #074f311c;
@@ -535,9 +558,15 @@ span.sub-h2 {
 }
 
 .badge {
-	color: #f2902d !important;
+	color: #e35000 !important;
 	font-size: 0.9rem !important;
-    text-transform: capitalize;
+	text-transform: capitalize;
+}
+.fas.fa-toggle-on,
+.fa.fa-id-badge,
+.fa.fa-file,
+.fa.fa-list-alt {
+	color: #e35000 !important;
 }
 
 h2.pathway a {
@@ -680,6 +709,7 @@ label.label {
 }
 input.input,
 input.form-control.input,
+.form-control,
 select.input {
     position: relative;
     margin-bottom: 1rem;
@@ -691,6 +721,9 @@ select.input {
     transition: .25s;
     background: white;
 }
+
+
+
 /*
 .form-control {
 	padding: 0rem 0.5em 0.1rem 0.5em;
@@ -1456,10 +1489,6 @@ a.btn.btn-outline-warning {
 	width: 96%;
 }
 
-.card-header {
-	background: #fff !important;
-	border-bottom: 0px !important;
-}
 .card-header.trial {
 	font-size: 0.8rem;
 }

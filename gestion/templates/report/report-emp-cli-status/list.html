@@ -2,36 +2,19 @@
 
 
 <div class="d-none d-lg-block"> 
-    {%comment%}
-    <div class="row py-3 m-0">
-        <div class="col-3"></div>
-        <div class="col-3"></div>
-        <div class="col-3"></div>
-        <div class="col-2"><strong>Total</strong></div>
-        <div class="col-1"><strong>{{ duration }} min</strong></div>
-    </div>
-    {%endcomment%}
-
     <div class="row main-th py-3 m-0">
-        <div class="col-3"> {% trans 'Empleado' %} </div>
-        <div class="col-3"> {% trans 'DNI' %} </div>
-        <div class="col-2"> {% trans 'Horas asignadas' %} </div>
-        <div class="col-2"> {% trans 'Horas totales' %} </div>
-        <div class="col-2"> {% trans 'Horas nóminas' %} </div>
+        <div class="col-4"> {% trans 'Empleado' %} </div>
+        <div class="col-4"> {% trans 'Client' %} </div>
+        <div class="col-4"> {% trans 'Estado' %} </div>
+        {#<div class="col-3"> {% trans 'Total' %} </div>#}
     </div>
 
     {% for item in items %}
         <div class="row list-item pt-2 pb-2 m-0 {%if item.email == ""%}alert alert-warning{%endif%}" id="row_{{item.id}}">
-            <div class="col-3">{{ item.name|default:"---" }}</div>
-            <div class="col-3">{{ item.dni|default:"---" }}</div>
-            <div class="col-2">
-                {% for s in item.status %}
-                    {% if s.client != "" %}<strong>{{s.client}}</strong>{% endif %}<br/>
-                    <strong>{{s.name}}</strong>: {{s.hours}} horas y {{s.minutes}} minutos <br/>
-                {% endfor %}
-            </div>
-            <div class="col-2">{{item.total_hours}} horas y {{item.total_minutes}} minutos</div>
-            <div class="col-2">{{item.total_hours}} horas y {{item.total_minutes}} minutos</div>
+            <div class="col-4">{{ item.employee__name|default:"---" }}</div>
+            <div class="col-4">{{ item.client__name|default:"---" }}</div>
+            <div class="col-4">{{ item.status__name|default:"---" }} </div>
+            {#<div class="col-3">{{ item.total }} </div>#}
         </div>
     {% endfor %}
 </div>

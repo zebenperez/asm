@@ -27,7 +27,7 @@
                 data-target="div-notification" placeholder="Código..." /> <span id="exp__msg"></span>
         </div>
     </div>
-    <div class="col-3 text-end my-2">{% trans "Acceso QR" %}
+    <div class="col-3 greybox-sm p-1 text-end my-2"> {% trans "Acceso QR" %}
         <input type="checkbox" class="form-check-input autosave" id="qr_access" name="qr_access"  data-model-name="gestion.client" 
             data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" data-bool="True"
             {%if obj.qr_access%}checked{%endif%}/> <span id="qr_access__msg"></span>

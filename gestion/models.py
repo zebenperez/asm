@@ -402,6 +402,27 @@ class Client(models.Model):
     def set_timetable_status_from_date(self, date, status):
         self.timetables.filter(date__gte = date).update(status=status)
 
+    def not_cover_hours(self):
+        from django.db.models import Sum, F, ExpressionWrapper, DurationField, Q
+        from django.db.models.functions import Cast
+        from datetime import timedelta
+
+        items = self.timetables.annotate(duration=ExpressionWrapper(F('end') - F('ini'), output_field=DurationField()))
+
+        totals = items.aggregate(
+            x2_time=Sum( "duration", filter=Q(status__code="x2")),
+            x1_time=Sum( "duration", filter=Q(status__code="x1")),
+            cover_time=Sum( "duration", filter=Q(cover=True))
+        )
+        print(totals)
+
+        total_real = (
+            (totals["x1_time"] or timedelta())
+            + (totals["x2_time"] or timedelta())
+            - (totals["cover_time"] or timedelta())
+        )
+        return total_real
+
     class Meta:
         verbose_name = _('Cliente')
         verbose_name_plural = _('Clientes')

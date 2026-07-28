@@ -39,6 +39,9 @@ urlpatterns = [
     path('employees/timetable/load', views.employees_timetable_load, name='employees-timetable-load'),
     path('employees/timetable/change-status', views.employees_timetable_change_status, name='employees-timetable-change-status'),
     path('employees/timetable/set-status', views.employees_timetable_set_status, name='employees-timetable-set-status'),
+    path('employees/timetable/clients-add', views.employees_timetable_clients_add, name='employees-timetable-clients-add'),
+    path('employees/timetable/clients-save', views.employees_timetable_clients_save, name='employees-timetable-clients-save'),
+    path('employees/timetable/clients-remove', views.employees_timetable_clients_remove, name='employees-timetable-clients-remove'),
 
     #---------------------- EMPLOYEE -----------------------
     path('employee/<int:obj_id>', views.employee, name='employee'),
@@ -105,6 +108,8 @@ urlpatterns = [
     path('report/employees/list', report_views.report_employees_list, name='report-employees-list'),
     path('report/employees/search', report_views.report_employees_search, name='report-employees-search'),
     path('report/emp-cli-status', report_views.report_emp_cli_status, name='report-emp-cli-status'),
+    path('report/emp-cli-status-search', report_views.report_emp_cli_status_search, name='report-emp-cli-status-search'),
+    path('report/emp-cli-status-export', report_views.report_emp_cli_status_export, name='report-emp-cli-status-export'),
 
     #---------------------- INCIDENTS -----------------------
     path('incidents', views.incidents, name='incidents'),
@@ -116,5 +121,6 @@ urlpatterns = [
     path('autosave_field/', auto_views.autosave_field, name='autosave_field'),
     path('autosave_fields/', auto_views.autosave_fields, name='autosave_fields'),
     path('autoremove_obj/', auto_views.autoremove_obj, name='autoremove_obj'),
+    path('autocomplete_search/', auto_views.autocomplete_search, name='autocomplete_search'),
 ]
 

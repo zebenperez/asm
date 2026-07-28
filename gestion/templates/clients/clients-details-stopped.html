@@ -14,7 +14,7 @@
 		        <a class="btn btn-xs btn-default ark" data-url="{%url "clients-stopped-confirm"%}" data-target-modal="common-modal" 
                     data-obj_id="{{obj.id}}"> {% trans "Activar" %}</a>
             {% else %}
-		        <a class="btn btn-xs btn-success ark" data-url="{%url "clients-stopped-confirm"%}" data-target-modal="common-modal" 
+		        <a class="btn btn-primary ark" data-url="{%url "clients-stopped-confirm"%}" data-target-modal="common-modal" 
                     data-obj_id="{{obj.id}}"> {% trans "Desactivar" %}</a>
             {% endif %}
         </div>
@@ -28,7 +28,7 @@
             <div class="col-10"> {% trans "Fecha de paralización" %} 
                 <input type="date" class="form-control" id="date" name="date" value="{{today|date:"Y-m-d"}}"/> 
             </div>
-            <div class="col-2"> 
+            <div class="col-2 items-center text-end"> 
                 <button class="btn btn-primary-add saveform" data-bs-dismiss="modal" data-form="form-save-stopped" 
                     data-target="div-stopped"> <i class="fas fa-plus"></i>  {% trans "Añadir" %}</button>
             </div>

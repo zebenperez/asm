@@ -26,7 +26,6 @@
                                 <i class="fas fa-address-card"></i></a>
                         </div>
                     </div>
-                    {%comment%}
                     <div class="row py-2" style="border-bottom: 1px solid #ccc;">
 			            <div class="col-5 text-center"> Trabajado: <br/> <strong>
                             {% get_client_worked_time obj value.0.client request.session.s_employee_idate request.session.s_employee_edate %}
@@ -36,7 +35,6 @@
                             <strong>{% get_client_work obj value.0.client request.session.s_employee_idate request.session.s_employee_edate %}</strong> 
                         </div>
                     </div>
-                    {%endcomment%}
                 </div>
             </div>
         </div>

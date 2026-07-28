@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
-from asm.commons import get_or_none_str, set_obj_field, show_exc, create_obj_str
+from asm.commons import get_or_none_str, set_obj_field, show_exc, create_obj_str, find_by_field
 
 #import logging
 #logger = logging.getLogger(__name__)
@@ -76,5 +76,23 @@ def autoremove_obj(request):
     except Exception as e:
         #logger.error("[autoremove_obj] %s" % e)
         return render(request, 'simple-error.html', {'msg': str(e)})
+
+def autocomplete_search(request):
+    try:
+        app = request.GET["model_name"].split(".")[0]
+        model = request.GET["model_name"].split(".")[1]
+        value = request.GET["value"]
+        
+        context = {
+            #"items": find_by_field(app, model, value, "name__unaccent__icontains"),
+            "items": find_by_field(app, model, value, "name__icontains"),
+            "value": value,
+            "input": request.GET.get("input", ""),
+            "target": request.GET.get("target", ""),
+            "current": request.GET.get("current", ""),
+        }
+        return render(request, "autocomplete_search.html", context)
+    except Exception as e:
+        return render(request, "error_exception.html", {'exc':show_exc(e)})
 
 

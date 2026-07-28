@@ -43,13 +43,15 @@
                 </div>
                 <br/>
                 <div class="row">
-                    <div class="col-4"><strong><i class='fas fa-map-marker orange'></i> 
+                    <div class="col-3"><strong><i class='fas fa-map-marker orange'></i> 
                         {% trans "Dirección" %}<br /></strong> {{ item.address|default:"" }}</div>
-                    <div class="col-4"><strong><i class='fas fa-map-marker orange'></i> 
+                    <div class="col-3"><strong><i class='fas fa-map-marker orange'></i> 
                         {% trans "Municipio" %}<br /></strong> {{ item.city|default:"" }}</div>
-                    <div class="col-4"><strong><i class='fas fa-map-marker orange'></i> 
+                    <div class="col-3"><strong><i class='fas fa-map-marker orange'></i> 
                         {% trans "Horas asignadas" %}<br /></strong> {% get_client_assigned_work item %}</div>
                         {#{% trans "Horas asignadas" %}<br /></strong> {{ item.assigned_work }}</div>#}
+                    <div class="col-3"><strong><i class='fas fa-map-marker orange'></i> 
+                        {% trans "Horas no cubiertas" %}<br /></strong> {{item.not_cover_hours}}</div>
                 </div>
                 <br/>
                 <div class="row">

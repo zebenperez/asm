@@ -23,10 +23,8 @@
             <div class="row">
                 <div class="col-7"><h2 class="pt-2">👥 Clientes</h2></div>
                 <div class="col-5 text-end">
-                    {%comment%}
-                    <button class="btn btn-sm new ark" data-url="{% url "clients-timetable-employees-add" %}" 
+                    <button class="btn btn-sm new ark" data-url="{% url "employess-timetable-clients-add" %}" 
                         data-target-modal="common-modal" data-obj_id="{{obj.id}}"> <i class="fas fa-plus"></i> Añadir</button>
-                    {%endcomment%}
                 </div>
             </div>
             <div id="client-list" class="client-list">{% include "employees/timetable/employees-timetable-clients.html" %}</div>
