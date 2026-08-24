@@ -35,7 +35,7 @@
 </div>
 
 <div class="row justify-center">
-    <div class="col-6 my-2">
+    <div class="col-4 my-2">
         <div class="greybox-sm p-1">
             {% trans "Nombre" %}
             <input type="text" class="form-control autosave" id="name" name="name" value="{{obj.name|default:""}}" 
@@ -43,7 +43,7 @@
                 data-target="div-notification" placeholder="Nombre..." /> <span id="name__msg"></span>
         </div>
     </div>
-    <div class="col-6 my-2">
+    <div class="col-4 my-2">
         <div class="greybox-sm p-1">
             {% trans "Grado" %}
             <select class="form-control autosave" id="grade" name="grade" data-model-name="gestion.client" data-obj-id="{{obj.id}}" 
@@ -54,6 +54,19 @@
                 {% endfor %}
             </select>
             <span id="grade__msg"></span>
+        </div>
+    </div>
+    <div class="col-4 my-2">
+        <div class="greybox-sm p-1">
+            {% trans "Pagador" %}
+            <select class="form-control autosave" id="payer" name="payer" data-model-name="gestion.client" data-obj-id="{{obj.id}}"
+                data-url="{%url "autosave_field"%}" data-target="div-notification">
+                <option value="">{% trans "Seleccione un pagador" %}</option>
+                {% for payer in payer_list %}
+                    <option value="{{payer.id}}" {%if payer.id == obj.payer.id%}selected{%endif%}>{{payer.name}}</option>
+                {% endfor %}
+            </select>
+            <span id="payer__msg"></span>
         </div>
     </div>
 
@@ -156,5 +169,4 @@
         </div>
     </div>
     {%endcomment%}
-
 

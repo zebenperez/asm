@@ -142,11 +142,11 @@ def get_employees_report(request):
     rows = (
         ClientTimetable.objects.filter(**filters)
         .values(
-            "employee_id", "employee__name", "employee__dni", "client__name",
-            "status_id", "status__name", "emp_type__name", "emp_type__payer__name",
+            "employee_id", "employee__name", "employee__dni", "client_id", "client__name",
+            "client__payer__name", "status_id", "status__name",
         )
         .annotate(minutes=Sum(duration))
-        .order_by("employee__name", "client__name", "status__name", "emp_type__payer__name")
+        .order_by("employee__name", "client__name", "status__name")
     )
 
     employees = {}
@@ -170,15 +170,18 @@ def get_employees_report(request):
         ):
             status = {
                 "client": row["client__name"],
-                "emp_type": row["emp_type__name"] or "",
-                "payer": row["emp_type__payer__name"] or "",
                 "name": row["status__name"],
                 "hours": minutes // 60,
                 "minutes": minutes % 60,
             }
             employee["status"].append(status)
             client = employee["client_map"].setdefault(
-                row["client__name"], {"name": row["client__name"], "status": []}
+                row["client_id"],
+                {
+                    "name": row["client__name"],
+                    "payer": row["client__payer__name"] or "",
+                    "status": [],
+                },
             )
             client["status"].append(status)
 

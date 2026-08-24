@@ -679,6 +679,7 @@ def clients_details(request, obj_id):
         'stype_list': ClientStoppedType.objects.all(), 
         'timetable_status_list': TimetableStatus.objects.filter(calc=False), 
         'grade_list': ClientGrade.objects.all(), 
+        'payer_list': Payer.objects.all(),
         'today': datetime.today()
     }
     print(context)

@@ -28,9 +28,8 @@
                 {% for client in item.clients %}
                     <div class="mb-3 pb-2 border-bottom">
                         <strong>{{client.name}}</strong><br/>
+                        {% if client.payer %}{% trans 'Pagador' %}: {{client.payer}}<br/>{% endif %}
                         {% for s in client.status %}
-                            {% if s.emp_type %}{% trans 'Tipo de empleado' %}: {{s.emp_type}}<br/>{% endif %}
-                            {% if s.payer %}{% trans 'Pagador' %}: {{s.payer}}<br/>{% endif %}
                             <strong>{{s.name}}</strong>: {{s.hours}} horas y {{s.minutes}} minutos <br/>
                         {% endfor %}
                     </div>

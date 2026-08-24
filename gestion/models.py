@@ -317,6 +317,7 @@ class Client(models.Model):
     city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
     client_type = models.ForeignKey(ClientType, verbose_name=_('Tipo'), on_delete=models.SET_NULL, null=True)
     grade = models.ForeignKey(ClientGrade, verbose_name=_('Grado'), on_delete=models.SET_NULL, null=True)
+    payer = models.ForeignKey(Payer, verbose_name=_('Pagador'), on_delete=models.SET_NULL, null=True, blank=True, related_name="clients")
 
     def __str__(self):
         return self.name
