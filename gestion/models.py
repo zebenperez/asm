@@ -79,9 +79,21 @@ class SelfEmployedType(models.Model):
         verbose_name_plural = _('Tipos de autónomo')
         ordering = ["name"]
 
+class Payer(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Nombre'), default="")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Pagador')
+        verbose_name_plural = _('Pagadores')
+        ordering = ["name"]
+
 class EmployeeType(models.Model):
     amount = models.FloatField(default=0, verbose_name=_('Cuantia'));
     name = models.CharField(max_length=200, verbose_name = _('Nombre'), default="")
+    payer = models.ForeignKey(Payer, verbose_name=_('Pagador'), on_delete=models.SET_NULL, null=True, blank=True, related_name="employee_types")
 
     def __str__(self):
         return self.name
@@ -203,10 +215,6 @@ class Employee(models.Model):
         idate = "{}".format(ini_date)
         edate = "{}".format(end_date)
 
-        #if status is not None:
-        #    item_list = self.timetables.filter(status=status, date__range=(idate, edate)).exclude(client=None)
-        #else:
-        #    item_list = self.timetables.filter(date__range=(idate, edate)).exclude(client=None)
         kwargs = {"date__range": (idate, edate)}
         if status is not None:
             kwargs["status"] = status
@@ -414,14 +422,16 @@ class Client(models.Model):
             x1_time=Sum( "duration", filter=Q(status__code="x1")),
             cover_time=Sum( "duration", filter=Q(cover=True))
         )
-        print(totals)
 
-        total_real = (
-            (totals["x1_time"] or timedelta())
-            + (totals["x2_time"] or timedelta())
-            - (totals["cover_time"] or timedelta())
-        )
-        return total_real
+        total_real = ((totals["x1_time"] or timedelta()) + (totals["x2_time"] or timedelta()) - (totals["cover_time"] or timedelta()))
+
+        signo = "-" if total_real < timedelta() else ""
+        td = abs(total_real)
+        horas = td.days * 24 + td.seconds // 3600
+        minutos = (td.seconds % 3600) // 60
+
+        return f"{signo}{horas}h {minutos}min"
+        #return total_real
 
     class Meta:
         verbose_name = _('Cliente')
@@ -445,6 +455,7 @@ class ClientTimetable(models.Model):
     end = models.TimeField(max_length=10, verbose_name = _('Hora de fin'), default=datetime.time(8,0,0))
     client = models.ForeignKey(Client,verbose_name=_('Cliente'),on_delete=models.SET_NULL,null=True,related_name="timetables")
     employee = models.ForeignKey(Employee,verbose_name=_('Empleado'),on_delete=models.SET_NULL,null=True,related_name="timetables")
+    emp_type = models.ForeignKey(EmployeeType,verbose_name=_('Tipo emp'),on_delete=models.SET_NULL,null=True,related_name="timetables")
     status = models.ForeignKey(TimetableStatus,verbose_name=_('Estado'),on_delete=models.SET_NULL,null=True)
 
     #def __str__(self):
@@ -588,4 +599,3 @@ class Incident(models.Model):
 
     def __str__(self):
         return self.subject
-

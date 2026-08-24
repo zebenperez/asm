@@ -4,14 +4,14 @@
     {%csrf_token%}
 
     <div class="row"> 
-        <div class="col-1 py-2"> <span>{% trans "Fecha:" %}</span> </div>
+        <div class="col-1 py-3"> <span>{% trans "Fecha:" %}</span> </div>
         <div class="col-1 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2"
             name="s_rep_emp_cli_status_idate" id="s_rep_emp_cli_status_idate" 
             value="{{request.session.s_rep_emp_cli_status_idate}}"/> </div>
         <div class="col-1 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2" 
             name="s_rep_emp_cli_status_edate" id="s_rep_emp_cli_status_edate" 
             value="{{request.session.s_rep_emp_cli_status_edate}}"/> </div>
-        <div class="col-1 py-2"> <span>{% trans "Cliente:" %}</span> </div>
+        <div class="col-1 py-3"> <span>{% trans "Cliente:" %}</span> </div>
         <div class="col-2"> 
             <input type="hidden" class="form-control form-control-dark w-100 py-2" 
                 name="s_rep_emp_cli_status_cli" id="s_rep_emp_cli_status_cli" placeholder="Nombre cliente" 
@@ -21,7 +21,7 @@
                 data-model_name="gestion.client" data-input="s_rep_emp_cli_status_cli"/> 
             <div id="cli-result"></div>
         </div>
-        <div class="col-1 py-2"> <span>{% trans "Trabajador/a:" %}</span> </div>
+        <div class="col-1 py-3"> <span>{% trans "Trabajador/a:" %}</span> </div>
         <div class="col-2"> 
             <input type="hidden" class="form-control form-control-dark w-100 py-2" 
                 name="s_rep_emp_cli_status_emp" id="s_rep_emp_cli_status_emp" placeholder="Nombre trabajador/a" 
@@ -31,7 +31,7 @@
                 data-model_name="gestion.employee" data-input="s_rep_emp_cli_status_emp"/> 
             <div id="emp-result"></div>
         </div>
-        <div class="col-1 py-2"><span>{% trans "Estado:" %}</div>
+        <div class="col-1 py-3"><span>{% trans "Estado:" %}</div>
         <div class="col-2 pt-2"> 
             <select class="form-control" id="s_rep_emp_cli_status_status" name="s_rep_emp_cli_status_status">
                 <option value="">{% trans "-- Todos --" %}</option>
@@ -45,7 +45,7 @@
     <div class="row">
         <div class="col-2 offset-3 p-0 text-center">
             <button class="btn btn-default saveform w-100" data-form="form-search" data-target="item-list">
-                <i class="fas fa-search"></i> {% trans "Buscar" %}</button>
+                <i class="fas fa-search"></i> <strong>{% trans "Buscar" %}</strong></button>
         </div>
         <div class="col-2 offset-2 text-center"> 
             <a class="btn btn-xs exp w-75" href="{% url "report-emp-cli-status-export" %}" title="{% trans 'Exportar a CSV' %}" 

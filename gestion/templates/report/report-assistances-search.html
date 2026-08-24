@@ -5,25 +5,31 @@
     <div class="row">
         <div class="col-4">
             <div class="row"> 
-                <div class="col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Fecha:" %}</span> </div>
+                <div class="col-2 py-3 text-end d-none d-lg-block"> <span>{% trans "Fecha:" %}</span> </div>
                 <div class="col-5 p-0"> <input type="date" class="autosearch form-control form-control-dark w-100 py-2"
                     name="s_rep_idate" id="s_rep_idate" value="{{request.session.s_rep_idate}}"/> </div>
                 <div class="col-5 p-0"> <input type="date" class="autosearch form-control form-control-dark w-100 py-2" 
                     name="s_rep_edate" id="s_rep_edate" value="{{request.session.s_rep_edate}}"/> </div>
             </div>
         </div>
-        <div class="col-7 b-search">
+        <div class="col-7">
             <div class="row">
-                <div class="col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Trabajador/a:" %}</span> </div>
+                <div class="col-2 py-3 text-end d-none d-lg-block"> <span>{% trans "Trabajador/a:" %}</span> </div>
                 <div class="col-3"> 
+                    {%comment%}
                     <input type="hidden" class="form-control form-control-dark w-100 py-2" 
                         name="s_rep_emp" id="s_rep_emp" placeholder="Nombre trabajador/a" value="{{request.session.s_rep_emp}}"/> 
-
                     <input class="form-control input autocomplete" id="rep_emp" name="rep_emp" placeholder="Nombre trabajador/a"
                         value="" data-url="{%url "report-search-emp"%}" data-target="report-search-emp"/> 
                     <div id="report-search-emp"></div>
+                    {%endcomment%}
+                    <input type="hidden" name="s_rep_emp" id="s_rep_emp" value="{{request.session.s_rep_emp}}"/>
+                    <input class="form-control input autocomplete2" id="employee" name="employee" placeholder="Nombre trabajador/a"
+                        value="" data-url="{%url "autocomplete_search"%}" data-target="emp-result"
+                        data-model_name="gestion.employee" data-input="s_rep_emp"/>
+                    <div id="emp-result"></div>
                 </div>
-                <div class="col-1 py-2 text-end d-none d-lg-block"> <span>{% trans "Cliente:" %}</span> </div>
+                <div class="col-1 py-3 text-end d-none d-lg-block"> <span>{% trans "Cliente:" %}</span> </div>
                 <div class="col-3"> 
                     <input type="hidden" class="form-control form-control-dark w-100 py-2" 
                         name="s_rep_cli" id="s_rep_cli" placeholder="Nombre cliente" value="{{request.session.s_rep_cli}}"/> 
@@ -32,8 +38,8 @@
                         value="" data-url="{%url "report-search-cli"%}" data-target="report-search-cli"/> 
                     <div id="report-search-cli"></div>
                 </div>
-                <div class="col-1 pt-2 text-end"><span>{% trans "QR:" %}</span></div>
-                <div class="col-2 pt-2 text-center"> 
+                <div class="col-1 py-3 text-end"><span>{% trans "QR:" %}</span></div>
+                <div class="col-2 pt-0 text-center"> 
                     <select class="form-control" id="s_rep_cli_qr" name="s_rep_cli_qr">
                         <option value="">{% trans "-- Todos --" %}</option>
                         <option value="True">{% trans "Si" %}</option>
@@ -42,7 +48,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-1 p-0">
+        <div class="col-1 pt-1 px-0">
             <button class="btn btn-default saveform w-100" data-form="form-search" data-target="emp-list">
                 <i class="fas fa-search"></i> </button>
         </div>

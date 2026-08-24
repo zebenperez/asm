@@ -113,8 +113,6 @@ $(document).ready(function() {
         let saturday = $('#saturday').is(":checked");
         let sunday = $('#sunday').is(":checked");
         let cover = $('#cover').is(":checked");
-        console.log("..1..");
-        console.log(cover);
 
         let obj_id = $(this).data("obj_id");
         let timetable = $(this).data("timetable");

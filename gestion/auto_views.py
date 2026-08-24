@@ -82,14 +82,15 @@ def autocomplete_search(request):
         app = request.GET["model_name"].split(".")[0]
         model = request.GET["model_name"].split(".")[1]
         value = request.GET["value"]
+        field = request.GET.get("field", "")
         
         context = {
-            #"items": find_by_field(app, model, value, "name__unaccent__icontains"),
             "items": find_by_field(app, model, value, "name__icontains"),
             "value": value,
             "input": request.GET.get("input", ""),
             "target": request.GET.get("target", ""),
             "current": request.GET.get("current", ""),
+            "field": "name" if field == "" else field,
         }
         return render(request, "autocomplete_search.html", context)
     except Exception as e:

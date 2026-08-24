@@ -731,16 +731,21 @@ $(document).ready(()=>{
         let name = obj.prop("name");
         let value = obj.val();
 
-        if (value.length >= 3) {
-            let datas = {'value': value, 'current': name};
-            let args = obj.data();
-            for(var i in args)
-                if (i != "url")
-                    datas[i] = args[i]
+        if (value.length == 0) {
+            $(`#${obj.data('input')}`).val("");
+        }
+        else {
+            if (value.length >= 3) {
+                let datas = {'value': value, 'current': name};
+                let args = obj.data();
+                for(var i in args)
+                    if (i != "url")
+                        datas[i] = args[i]
 
-            ajaxGet(url, datas, target, '');
-            if (obj.data("show"))
-                $("#" + obj.data("show")).show();
+                ajaxGet(url, datas, target, '');
+                if (obj.data("show"))
+                    $("#" + obj.data("show")).show();
+            }
         }
         e.preventDefault();
     });

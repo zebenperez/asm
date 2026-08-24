@@ -6,6 +6,10 @@ $(document).ready(function() {
     let currentDate = new Date();
     let assignments = {}; // Almacenar asignaciones por fecha
     let URL_LOAD = "/gestion/employees/timetable/load";
+    let URL_ASSIGN = "/gestion/employees/timetable/assign";
+    let URL_SAVE = "/gestion/employees/timetable/assign-save2";
+    let URL_EDIT = "/gestion/employees/timetable/assign-edit";
+    //let URL_REMOVE = "/gestion/clients/timetable/assign-remove";
 
     const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -41,7 +45,23 @@ $(document).ready(function() {
             `;
 
             $('#calendarGrid').append(cellHtml);
-        }
+        } 
+
+        // Reinicializar droppables
+        initializeDroppables();
+    }
+
+    // Inicializar droppablesi CLI
+    function initializeDroppables() {
+        $(".day-cell").droppable({
+            accept: ".client",
+            hoverClass: "ui-droppable-hover",
+            drop: function(event, ui) {
+                currentDrop = $(this);
+                currentClient = {"id": ui.draggable.data('id'), "name": ui.draggable.data('name'), "date": $(this).data("date")};
+                ajaxGet(URL_ASSIGN, currentClient, "", "common-modal")
+            }
+        });
     }
 
     function loadCalendar(){
@@ -56,6 +76,85 @@ $(document).ready(function() {
         return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
+    // Hacer los empleados arrastrables CLI
+    $(".employee").draggable({
+        revert: "invalid",
+        helper: "clone",
+        cursor: "move",
+        zIndex: 1000
+    });
+
+    // Confirmar asignación CLI
+    $(document).on('click', '#confirmBtn', function(e) {
+        let startTime = $('#startTime').val();
+        let endTime = $('#endTime').val();
+        let startPrev = $('#startPrev').val();
+        let endPrev = $('#endPrev').val();
+        let empType = $('#emp_type').val();
+        let status = $('#status').val();
+        let allDays = $('input[id="allDays"]:checked').val();
+        let monday = $('#monday').is(":checked");
+        let tuesday = $('#tuesday').is(":checked");
+        let wednesday = $('#wednesday').is(":checked");
+        let thursday = $('#thursday').is(":checked");
+        let friday = $('#friday').is(":checked");
+        let saturday = $('#saturday').is(":checked");
+        let sunday = $('#sunday').is(":checked");
+        let cover = $('#cover').is(":checked");
+
+        let obj_id = $(this).data("obj_id");
+        let timetable = $(this).data("timetable");
+        let dateStr = $(this).data("date");
+        let empName = $(this).data("name");
+        
+        datas = {
+            "timetable":timetable,
+            "obj_id":obj_id,
+            "date":dateStr,
+            "ini":startTime,
+            "end":endTime,
+            "ini_prev":startPrev,
+            "end_prev":endPrev,
+            "emp_type":empType,
+            "repeat":allDays,
+            "monday":monday,
+            "tuesday":tuesday,
+            "wednesday":wednesday,
+            "thursday":thursday,
+            "friday":friday,
+            "saturday":saturday,
+            "sunday":sunday,
+            "cover":cover,
+            "status":status
+        };
+        ajaxGet(URL_SAVE, datas, "day-cell-"+dateStr, "");
+        
+        currentDrop = null;
+        currentEmployee = null;
+    });
+
+    // Editar asignación al hacer clic 
+    $(document).on('click', '.assigned-client', function(e) {
+        if ($(e.target).hasClass('remove-btn')) {
+            return;
+        }
+        
+        let timetableId = $(this).data('timetable-id');
+        ajaxGet(URL_EDIT, {"id": timetableId}, "", "common-modal")
+    });
+
+
+    // Eliminar asignación
+    /*$(document).on('click', '.remove-btn', function(e) {
+        e.stopPropagation();
+        if (confirm("¿Esta seguro/a de que desea borrar este elemento?")){
+            const assignment = $(this).closest('.assigned-client');
+            const timetableId = assignment.data('timetable-id');
+            const dateStr = assignment.closest('.day-cell').data('date');
+            ajaxGet(URL_REMOVE, {"id": timetableId}, "day-cell-"+dateStr, "")
+        }
+    });*/
+
     // Navegación de meses
     $('#prevMonth').click(function() {
         currentDate.setMonth(currentDate.getMonth() - 1);
@@ -65,13 +164,13 @@ $(document).ready(function() {
 
     $('#nextMonth').click(function() {
         currentDate.setMonth(currentDate.getMonth() + 1);
-        generateCalendar($(this).data("client"), currentDate.getFullYear(), currentDate.getMonth());
+        generateCalendar($(this).data("employee"), currentDate.getFullYear(), currentDate.getMonth());
         loadCalendar();
     });
 
     $('#todayBtn').click(function() {
         currentDate = new Date();
-        generateCalendar($(this).data("client"), currentDate.getFullYear(), currentDate.getMonth());
+        generateCalendar($(this).data("employee"), currentDate.getFullYear(), currentDate.getMonth());
     });
 
     $(document).on('click', '#btn-start', function(e) {
@@ -79,5 +178,41 @@ $(document).ready(function() {
         generateCalendar($(this).data("employee"), currentDate.getFullYear(), currentDate.getMonth());
         loadCalendar();
     });
-});
 
+    /*$(document).on('click', '.btn-emp', function(e) {
+        let val = $(this).data("id");
+        let values = $('#btn-save').data('values');
+        if ($(this).hasClass('active')) {
+            values = values.filter(function(item) {return item !== val;});
+            $('#btn-save').data('values', values)
+            $(this).removeClass("active");
+        } else{
+            values.push(val);
+            $('#btn-save').data('values', values)
+            $(this).addClass("active");
+        }
+    });*/
+
+    /*$(document).on('keyup', '#search-emp', function(e) {
+        let val = $(this).val();
+        $(".divEmp").each(function(){
+            let text = normalizeText($(this).text());
+            let val_norm = normalizeText(val);
+
+            if (text.includes(val_norm))
+                $(this).show();
+            else 
+                $(this).hide();
+        });
+    });*/
+
+    $(document).on('click', '#btn-ini-drop', function(e) {
+        $(".client").draggable({
+            revert: "invalid",
+            helper: "clone",
+            cursor: "move",
+            zIndex: 1000
+        });
+        initializeDroppables();
+    });
+});

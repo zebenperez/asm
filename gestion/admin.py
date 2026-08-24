@@ -24,7 +24,10 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display = ["name", "dni", "pin"]
 
 class EmployeeTypeAdmin(admin.ModelAdmin):
-    list_display = ["name", "amount"]
+    list_display = ["name", "amount", "payer"]
+
+class PayerAdmin(admin.ModelAdmin):
+    list_display = ["name"]
 
 class IslandAdmin(admin.ModelAdmin):
     list_display = ["name",]
@@ -44,6 +47,7 @@ admin.site.register(ClientType, ClientTypeAdmin)
 admin.site.register(ClientStoppedType, ClientStoppedTypeAdmin)
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(EmployeeType, EmployeeTypeAdmin)
+admin.site.register(Payer, PayerAdmin)
 admin.site.register(Assistance)
 admin.site.register(Incident)
 admin.site.register(Island, IslandAdmin)

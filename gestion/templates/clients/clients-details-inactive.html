@@ -1,15 +1,12 @@
 {%load i18n%}
 
 <div class="row justify-center">
-    <div class="col-lg-12 col-12 my-2 text-end">
+    <div class="col-lg-6 col-6 my-2 text-start">
+	<button type="button" class="btn btn-primary-add" data-bs-toggle="collapse" data-bs-target="#historial">Ver historial</button>
+    </div>
+
+    <div class="col-lg-6 col-6 my-2 text-end">
         <div class="form-check form-switch">
-            {%comment%}
-                <input type="checkbox" class="form-check-input autosave" id="inactive" name="inactive"  
-                    data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-                    data-target="div-notification" data-bool="True" {%if obj.inactive%}checked{%endif%} 
-                    onclick="$('#div-date-inactive').toggle()"/> <span id="inactive__msg"></span>
-            <label class="form-check-label" for="flexSwitchCheckDefault">{%trans "Desactivar"%}</label>
-            {%endcomment%}
             {% if obj.inactive %}
 		        <a class="btn btn-default ark" data-url="{%url "clients-inactive-set"%}" data-target="div-inactive" 
                     data-obj_id="{{obj.id}}"> {% trans "Activar" %}</a>
@@ -20,71 +17,25 @@
         </div>
     </div>
 </div>
-<div class="{%if not obj.inactive%}hide{%endif%}" id="div-date-inactive">
-    <form class="form m-0" method="GET" action="{% url "clients-inactive-add" %}" id="form-save-inactive">
-        {%csrf_token%}
-        <input type="hidden" id="obj_id" name="obj_id" value="{{obj.id}}" />
-        <div class="row">
-            <div class="col-10"> {% trans "Fecha de desactivación" %} 
-                <input type="date" class="form-control autosave" id="date" name="date" value="{{today|date:"Y-m-d"}}"/> 
-            </div>
-            <div class="col-2"> 
-                <button type="button" class="btn btn-primary-add saveform" data-bs-dismiss="modal" data-form="form-save-inactive" 
-                    data-target="div-inactive" data-confirm="Va a añadir un motivo de baja, se borrarán los empleados asignados a partir de la fecha indicada. ¿Confirma el motivo de la baja?"> 
-                    <i class="fas fa-plus"></i>  {% trans "Añadir" %}</button>
-            </div>
-        </div>
-        <div class="row mb-4 mt-2">
-            <div class="col-12">
-                <select class="form-control form-control-dark w-100 py-2" name="itype" id="itype">
-                    <option value="">{% trans "Seleccione un motivo de la baja" %}</option>
-                    {% for item in itype_list %}
-                        <option value="{{item.id}}">{{item.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div class="row mb-4 mt-2">
-            <div class="col-12"> {% trans "Observaciones" %}
-                <textarea class="form-control autosave" id="obs" name="obs" placeholder="Observaciones..."></textarea>
-            </div>
-        </div>
-    </form>
-</div>
 
-<button type="button" class="btn btn-primary-add" data-bs-toggle="collapse" data-bs-target="#historial">Ver historial</button>
 <div id="historial" class="collapse mt-3">
- {% for item in obj.inactives.all %}
-    <div class="row">
-	<div class="col-10 mt-2"><strong> {% trans "Fecha de desactivación" %}:</strong> {{item.date}}</div>
-	<div class="col-2 text-end">
-	    <div class="tools flex space-between">
-		<a class="btn btn-xs ark delete-btn" id="" title="{% trans "Borrar" %}" 
-		    data-confirm="{% trans "Esta seguro/a de que desea borrar este elemento?" %}" 
-		    data-url="{%url "clients-inactive-remove"%}" data-target="div-inactive" data-obj_id="{{item.id}}"> 
-		    <i class="fas fa-times"></i></a>
-	    </div>
-	</div>
-	<div class="col-12"><strong>{% trans "Motivo de la baja" %}:</strong> {{item.itype.name}}</div>
-	<div class="col-12"><strong>{% trans "Observaciones" %}:</strong> {{item.obs}}</div>
-    </div>
-    <hr class="orange"/>
- {% endfor %}
-
+    {% for item in obj.inactives.all %}
+        <div class="row">
+        <div class="col-10 mt-2"><strong> {% trans "Fecha de desactivación" %}:</strong> {{item.date}}</div>
+        <div class="col-2 text-end">
+            {%comment%}
+            <div class="tools flex space-between">
+                <a class="btn btn-xs ark delete-btn" id="" title="{% trans "Borrar" %}" 
+                    data-confirm="{% trans "Esta seguro/a de que desea borrar este elemento?" %}" 
+                    data-url="{%url "clients-inactive-remove"%}" data-target="div-inactive" data-obj_id="{{item.id}}"> 
+                    <i class="fas fa-times"></i></a>
+            </div>
+            {%endcomment%}
+        </div>
+        <div class="col-12"><strong>{% trans "Motivo de la baja" %}:</strong> {{item.itype.name}}</div>
+        <div class="col-12"><strong>{% trans "Observaciones" %}:</strong> {{item.obs}}</div>
+        </div>
+        <hr class="orange"/>
+    {% endfor %}
 </div>
-    {%comment%}
-    <div class="col-12 mt2-2 mb-3"> {% trans "Fecha de desactivación" %} 
-        <input type="date" class="form-control autosave" id="date_inactive" name="date_inactive" data-model-name="gestion.client" 
-            data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" data-target="div-notification" 
-            data-value="{{obj.date_inactive}}" value="{{obj.date_inactive|date:"Y-m-d"}}"/> 
-        <span id="date_inactive__msg"></span>
-    </div>
-    <div class="col-12 my-2"> {% trans "Observaciones" %}
-        <textarea class="form-control autosave" id="obs_inactive" name="obs_inactive" title="{{obj.obs_inactive}}" 
-            data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-            data-target="div-notification" placeholder="Observaciones...">{{obj.obs_inactive|default:""}} </textarea>
-        <span id="obs_inactive__msg"></span>
-    </div>
-    {%endcomment%}
-
 

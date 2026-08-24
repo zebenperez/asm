@@ -10,7 +10,7 @@
 </div>
 <script>
     $(".item-row").click(function(){
-        $('#{{input}}').val($(this).data("name"));
+        $('#{{input}}').val($(this).data("{{field}}"));
         $('#{{current}}').val($(this).data("name"));
         $('#{{target}}').html('');
     });

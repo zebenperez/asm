@@ -1,15 +1,12 @@
 {%load i18n%}
 
 <div class="row justify-center">
-    <div class="col-lg-2 col-2 my-2">
+    <div class="col-lg-6 col-6 my-2 text-start">
+	<button type="button" class="btn btn-primary-add" data-bs-toggle="collapse" data-bs-target="#history-stopped">Ver historial</button>
+    </div>
+    <div class="col-lg-6 col-6 my-2 text-end">
+
         <div class="form-check form-switch">
-            {%comment%}
-            <input type="checkbox" class="form-check-input autosave" id="stopped" name="stopped"  
-                data-model-name="gestion.client" data-obj-id="{{obj.id}}" data-url="{%url "autosave_field"%}" 
-                data-target="div-notification" data-bool="True" {%if obj.stopped%}checked{%endif%} 
-                onclick="$('#div-date-stopped').toggle()"/> <span id="stopped__msg"></span>
-            <label class="form-check-label" for="flexSwitchCheckDefault">{%trans "Paralizar"%}</label>
-            {%endcomment%}
             {% if obj.stopped %}
 		        <a class="btn btn-xs btn-default ark" data-url="{%url "clients-stopped-confirm"%}" data-target-modal="common-modal" 
                     data-obj_id="{{obj.id}}"> {% trans "Activar" %}</a>
@@ -20,59 +17,20 @@
         </div>
     </div>
 </div>
-<div class="{%if not obj.stopped%}hide{%endif%}" id="div-date-stopped">
-    <form class="form m-0" method="GET" action="{% url "clients-stopped-add" %}" id="form-save-stopped">
-        {%csrf_token%}
-        <input type="hidden" id="obj_id" name="obj_id" value="{{obj.id}}" />
-        <div class="row">
-            <div class="col-10"> {% trans "Fecha de paralización" %} 
-                <input type="date" class="form-control" id="date" name="date" value="{{today|date:"Y-m-d"}}"/> 
-            </div>
-            <div class="col-2 items-center text-end"> 
-                <button class="btn btn-primary-add saveform" data-bs-dismiss="modal" data-form="form-save-stopped" 
-                    data-target="div-stopped"> <i class="fas fa-plus"></i>  {% trans "Añadir" %}</button>
-            </div>
-        </div>
-        <div class="row mb-4 mt-2">
-            <div class="col-12">
-                <select class="form-control form-control-dark w-100 py-2" name="stype" id="stype">
-                    <option value="">{% trans "Seleccione un motivo de la paralización" %}</option>
-                    {% for item in stype_list %}
-                        <option value="{{item.id}}">{{item.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div class="row mb-4 mt-2">
-            <div class="col-12">
-                <select class="form-control form-control-dark w-100 py-2" name="timetable_status" id="timetable_status">
-                    {% for item in timetable_status_list %}
-                        <option value="{{item.id}}">{{item.name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
 
-        <div class="row mb-4 mt-2">
-            <div class="col-12"> {% trans "Observaciones" %}
-                <textarea class="form-control autosave" id="obs" name="obs" placeholder="Observaciones..."></textarea>
-            </div>
-        </div>
-    </form>
-</div>
-
-<button type="button" class="btn btn-primary-add" data-bs-toggle="collapse" data-bs-target="#history-stopped">Ver historial</button>
 <div id="history-stopped" class="collapse mt-3">
     {% for item in obj.stoppeds.all %}
         <div class="row">
 	        <div class="col-10 mt-2"><strong> {% trans "Fecha de paralización" %}:</strong> {{item.date}}</div>
 	        <div class="col-2 text-end">
+                {%comment%}
 	            <div class="tools flex space-between">
 		            <a class="btn btn-xs ark delete-btn" id="" title="{% trans "Borrar" %}" 
 		                data-confirm="{% trans "Esta seguro/a de que desea borrar este elemento?" %}" 
 		                data-url="{%url "clients-stopped-remove"%}" data-target="div-stopped" data-obj_id="{{item.id}}"> 
 		                <i class="fas fa-times"></i></a>
 	            </div>
+                {%endcomment%}
 	        </div>
 	        <div class="col-12"><strong>{% trans "Motivo de la paralización" %}:</strong> {{item.stype.name}}</div>
 	        <div class="col-12"><strong>{% trans "Observaciones" %}:</strong> {{item.obs}}</div>

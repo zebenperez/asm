@@ -1,4 +1,4 @@
-{% load i18n static gestion_tags%}
+{% load i18n static gestion_tags %}
 
 
 {% for item in obj.clients.all %}
@@ -7,16 +7,13 @@
 	    <div class="row">
             <div class="col-10 employee-role">{#{{item.employee.employee_type.name}}#}</div>
         	<div class="col-2 pt-2">
-                {%comment%}
-			        <a class="text-end ark" data-url="{% url "clients-timetable-employees-remove" %}" data-target="employee-list" 
-		                data-obj_id="{{item.id}}" data-confirm="Esta seguro/a de que desea eliminar este usuario/a?">
-		                <i class="fas fa-trash danger"></i></a>
-                {%endcomment%}
+			    <a class="text-end ark" data-url="{% url "employees-timetable-clients-remove" %}" data-target="client-list" 
+		            data-obj_id="{{item.id}}" data-confirm="Esta seguro/a de que desea eliminar este usuario/a?">
+		            <i class="fas fa-trash danger"></i></a>
 		    </div>
 	    </div>
     </div>
 {% endfor %}
-{%comment%}
+
 <button class="hide" id="btn-ini-drop"></button>
-<script>$("#btn-ini-drop").click();</script>
-{%endcomment%}
+<script>setTimeout(()=>{$("#btn-ini-drop").click();}, 500);</script>

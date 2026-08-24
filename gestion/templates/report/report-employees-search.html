@@ -4,31 +4,32 @@
     {%csrf_token%}
 
     <div class="row"> 
-        <div class="col-1 py-2"> <span>{% trans "Fecha:" %}</span> </div>
+        <div class="col-1 py-3"> <span>{% trans "Fecha:" %}</span> </div>
         <div class="col-2 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2"
             name="s_rep_emp_idate" id="s_rep_emp_idate" value="{{request.session.s_rep_emp_idate}}"/> </div>
         <div class="col-2 p-0"> <input type="date" class="form-control form-control-dark w-100 py-2" 
             name="s_rep_emp_edate" id="s_rep_emp_edate" value="{{request.session.s_rep_emp_edate}}"/> </div>
-        <div class="col-1 offset-1 py-2"> <span>{% trans "Cliente:" %}</span> </div>
+        <div class="col-1 offset-1 py-3"> <span>{% trans "Cliente:" %}</span> </div>
         <div class="col-2"> 
-            <input type="hidden" class="form-control form-control-dark w-100 py-2" 
-                name="s_rep_emp_cli" id="s_rep_emp_cli" placeholder="Nombre cliente" value="{{request.session.s_rep_emp_cli}}"/> 
-            <input class="form-control input autocomplete" id="rep_emp_cli" name="rep_emp_cli" placeholder="Nombre cliente"
-                value="" data-url="{%url "report-search-emp-cli"%}" data-target="report-search-emp-cli"/> 
-            <div id="report-search-emp-cli"></div>
+            <input type="hidden" name="s_rep_emp_cli" id="s_rep_emp_cli" value="{{request.session.s_rep_emp_cli}}"/>
+            <input class="form-control input autocomplete2" id="client" name="client" placeholder="Nombre cliente"
+                value="" data-url="{%url "autocomplete_search"%}" data-target="cli-result"
+                data-model_name="gestion.client" data-input="s_rep_emp_cli"/>
+            <div id="cli-result"></div>
+
         </div>
     </div>
             
     <div class="row"> 
-        <div class="col-1 py-2"> <span>{% trans "Trabajador/a:" %}</span> </div>
-        <div class="col-2"> 
-            <input type="hidden" class="form-control form-control-dark w-100 py-2" 
-                name="s_rep_emp" id="s_rep_emp" placeholder="Nombre trabajador/a" value="{{request.session.s_rep_emp}}"/> 
-            <input class="form-control input autocomplete" id="rep_emp" name="rep_emp" placeholder="Nombre trabajador/a"
-                value="" data-url="{%url "report-search-emp"%}" data-target="report-search-emp"/> 
-            <div id="report-search-emp"></div>
+        <div class="col-1 py-3"> <span>{% trans "Trabajador/a:" %}</span> </div>
+        <div class="col-2 pt-2"> 
+            <input type="hidden" name="s_rep_emp" id="s_rep_emp" value="{{request.session.s_rep_emp}}"/>
+            <input class="form-control input autocomplete2" id="employee" name="employee" placeholder="Nombre trabajador/a"
+                value="" data-url="{%url "autocomplete_search"%}" data-target="emp-result"
+                data-model_name="gestion.employee" data-input="s_rep_emp"/>
+            <div id="emp-result"></div>
         </div>
-        <div class="col-1 py-2"><span>{% trans "Estado:" %}</div>
+        <div class="col-1 py-3"><span>{% trans "Estado:" %}</div>
         <div class="col-2 pt-2"> 
             <select class="form-control" id="s_rep_emp_status" name="s_rep_emp_status">
                 <option value="">{% trans "-- Todos --" %}</option>
@@ -37,16 +38,16 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-1 py-2"><span>{% trans "Tipo:" %}</div>
+        <div class="col-1 py-3"><span>{% trans "Tipo:" %}</div>
         <div class="col-2 pt-2"> 
             <select class="form-control" id="s_rep_emp_type" name="s_rep_emp_type">
                 <option value="">{% trans "-- Todos --" %}</option>
-                {% for t in mp_types %}
+                {% for t in emp_types %}
                     <option value="{{t.id}}" {%if t.id == request.session.s_rep_emp_type%}selected{%endif%}>{{t.name}}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-1 py-2"><span>{% trans "Activo:" %}</div>
+        <div class="col-1 py-3"><span>{% trans "Activo:" %}</div>
         <div class="col-2 pt-2">
             <select class="form-control" id="s_rep_emp_active" name="s_rep_emp_active">
                 <option value="">{% trans "-- Todos --" %}</option>
@@ -67,4 +68,3 @@
 
     </div>
 </form>
-

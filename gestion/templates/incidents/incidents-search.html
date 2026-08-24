@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-5">
             <div class="row"> 
-                <div class="col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Fecha:" %}</span> </div>
+                <div class="col-2 py-3 text-end d-none d-lg-block"> <span>{% trans "Fecha:" %}</span> </div>
                 <div class="col-5 p-0"> <input type="date" class="autosearch form-control form-control-dark w-100 py-2"
                     name="s_inc_idate" id="s_inc_idate" value="{{request.session.s_inc_idate}}"/> </div>
                 <div class="col-5 p-0"> <input type="date" class="autosearch form-control form-control-dark w-100 py-2" 
@@ -14,7 +14,7 @@
         </div>
         <div class="col-3">
             <div class="row"> 
-                <div class="col-2 py-2 text-end d-none d-lg-block"> <span>{% trans "Estado:" %}</span> </div>
+                <div class="col-2 py-3 text-end d-none d-lg-block"> <span>{% trans "Estado:" %}</span> </div>
                 <div class="col-5 p-0"> 
                     <select class="autosearch form-control form-control-dark w-100 py-2" name="s_inc_status" id="s_inc_status"> 
                         <option value="">{% trans "Todas" %}</option>
@@ -24,9 +24,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-3 b-search">
+        <div class="col-3">
             <div class="row">
-                <div class="col-lg-5 col-5 py-2 text-end d-none d-lg-block"> <span>{% trans "Trabajador/a:" %}</span> </div>
+                <div class="col-lg-5 col-5 py-3 text-end d-none d-lg-block"> <span>{% trans "Trabajador/a:" %}</span> </div>
                 <div class="col-lg-7 col-12">
                     <input type="text" class="autosearch form-control form-control-dark w-100 py-2" name="s_inc_emp" id="s_inc_emp" 
                         placeholder="Nombre trabajador/a" value="{{request.session.s_inc_emp}}"/>
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="col-1 p-0">
+        <div class="col-1 pt-1 px-0">
             <button class="btn btn-default saveform w-100" data-form="form-search" data-target="inc-list">
                 <i class="fas fa-search"></i> </button>
         </div>

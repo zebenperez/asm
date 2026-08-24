@@ -19,9 +19,34 @@
     {% endif %}
 </div>
 
-<div class="d-flex justify-content-end p-2">
-    <button type="button" class="btn btn-danger mx-2" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
-    <button type="button" class="btn btn-warning ark mx-2" data-bs-dismiss="modal" data-url="{% url "clients-inactive-set" %}"
-        data-target="div-inactive" data-obj_id="{{obj.id}}">{% trans "Confirmar" %}</button>
-</div>
+<div class="m-4 p-2">
+    <form class="form m-0" method="GET" action="{% url "clients-inactive-add" %}" id="form-save-inactive">
+        {%csrf_token%}
+        <input type="hidden" id="obj_id" name="obj_id" value="{{obj.id}}" />
+        <div class="row">
+            <div class="col-12"> {% trans "Fecha de desactivación" %} 
+                <input type="date" class="form-control autosave" id="date" name="date" value="{{today|date:"Y-m-d"}}"/> 
+            </div>
+            <div class="col-12">
+                <select class="form-control form-control-dark w-100 py-2" name="itype" id="itype">
+                    <option value="">{% trans "Seleccione un motivo de la baja" %}</option>
+                    {% for item in itype_list %} <option value="{{item.id}}">{{item.name}}</option> {% endfor %}
+                </select>
+            </div>
+            <div class="col-12"> {% trans "Observaciones" %}
+                <textarea class="form-control autosave" id="obs" name="obs" placeholder="Observaciones..."></textarea>
+            </div>
+        </div>
 
+        <div class="d-flex justify-content-end p-2">
+            <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+            {%comment%}
+            <button type="button" class="btn btn-warning ark mx-2" data-bs-dismiss="modal" data-url="{% url "clients-inactive-set" %}"
+                data-target="div-inactive" data-obj_id="{{obj.id}}">{% trans "Confirmar" %}</button>
+            {%endcomment%}
+                
+            <button type="button" class="btn btn-primary saveform" data-bs-dismiss="modal" data-form="form-save-inactive" 
+                data-target="div-inactive"> {% trans "Confirmar" %}</button>
+        </div>
+    </form>
+</div>

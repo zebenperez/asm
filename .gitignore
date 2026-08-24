@@ -162,5 +162,7 @@ cython_debug/
 #.idea/
 #
 **migrations**
+!gestion/migrations/
+!gestion/migrations/*.py
 media
 viewlog.sh

@@ -7,31 +7,32 @@
         <i class="fas fa-times"></i></button> </div> </div>
 </div>
 
-<div class="row m-0 p-2">
+    {%comment%}
 	<div class="col-9">
         <input type="text" class="form-control border p-2" id="search-emp" name="search_emp" placeholder="Cliente/a a buscar..."/>
     </div>
 	<div class="col-1 pt-3"><i class="fas fa-search"></i></div>
-	<div class="col-2">
+    {%endcomment%}
+<form class="form m-0" method="GET" action="{% url "employees-timetable-clients-save" %}" id="form-search">
+    {%csrf_token%}
+    <input type="hidden" name="obj_id" id="obj_id" value="{{obj.id}}"/> 
+    <input type="hidden" name="client" id="client"/> 
+    <div class="row m-0 p-2">
+        <div class="col-10">
+            <input class="form-control input autocomplete2" id="cli" name="cli" placeholder="Nombre cliente"
+                value="" data-url="{%url "autocomplete_search"%}" data-target="cli-result"
+                data-model_name="gestion.client" data-input="client" data-field="id"/> 
+            <div id="cli-result"></div>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary saveform mx-2" data-bs-dismiss="modal" data-form="form-search" data-target="client-list">
+                {%trans "Guardar"%}</button>
+        </div>
+    </div>
+</form>
+        {%comment%}
         <button type="button" id="btn-save" class="btn btn-primary ark mx-2" data-bs-dismiss="modal" 
             data-url="{% url "employees-timetable-clients-save" %}" data-target="client-list" data-obj_id="{{obj.id}}" 
             data-values="{{obj.client_id}}"> {% trans "Guardar" %}</button>
-    </div>
-</div>
-
-<div class="row justify-center">
-    {% for item in emp_list %}
-        <div class="col-3 divEmp {% if item.id in obj.employees_id %}active{% endif %}">
-            <button class="btn btn-emp w-100 my-2" data-id="{{item.id}}">{{item.name}}</button> 
-        </div>
-    {% endfor %}
-</div>
-
-{%comment%}
-<div class="d-flex justify-content-end p-2">
-    <button type="button" id="btn-save" class="btn btn-primary ark mx-2" data-bs-dismiss="modal" 
-        data-url="{% url "clients-timetable-employees-save" %}" data-target="employee-list" data-obj_id="{{obj.id}}" 
-        data-values="{{obj.employees_id}}"> {% trans "Guardar" %}</button>
-</div>
-{%endcomment%}
+        {%endcomment%}
 

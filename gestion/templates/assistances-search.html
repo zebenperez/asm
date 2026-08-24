@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-lg-5 col-6">
             <div class="row"> 
-                <div class="col-lg-4 col-4 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar otra fecha:" %}</span> </div>
+                <div class="col-lg-4 col-4 py-3 text-end d-none d-lg-block"> <span>{% trans "Buscar otra fecha:" %}</span> </div>
                 <div class="col-lg-4 col-6 p-0">
                     <input type="date" class="autosearch form-control form-control-dark w-100 py-2" name="s_idate" id="s_idate" 
                         value="{{request.session.s_idate}}"/>
@@ -16,18 +16,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 col-5 b-search">
+        <div class="col-lg-6 col-5">
             <div class="row">
-                <div class="col-lg-5 col-5 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar trabajador/a:" %}</span> </div>
+                <div class="col-lg-5 col-5 py-3 text-end d-none d-lg-block"> <span>{% trans "Buscar trabajador/a:" %}</span> </div>
                 <div class="col-lg-7 col-12">
                     <input type="text" class="autosearch form-control form-control-dark w-100 py-2" name="s_name" id="s_name" 
                         placeholder="Nombre trabajador/a" value="{{request.session.s_name}}"/>
                 </div>
             </div>
         </div>
-        <div class="col-lg-1 col-1 p-0">
+        <div class="col-lg-1 col-1 pt-1 px-0">
             <button class="btn btn-default saveform w-100" data-form="form-search" data-target="item-list">
-                <i class="fas fa-search"></i> </button>
+                <i class="fas fa-search"></i> <strong>{% trans "Buscar" %}</strong></button>
         </div>
     </div>
 </form>

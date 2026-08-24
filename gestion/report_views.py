@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import CharField
+from django.db.models import CharField, DurationField, ExpressionWrapper, F, Sum
 from django.contrib.postgres.lookups import Unaccent
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -68,48 +68,130 @@ def get_assistances_report(request):
 
     return Assistance.objects.filter(**kwargs)
 
+# Versión anterior conservada como referencia. Hacía consultas dentro de los
+# bucles de empleado, estado y cliente, por lo que el número de consultas
+# crecía rápidamente con los resultados (patrón N+1).
+#
+# def get_employees_report(request):
+#     emp = get_session(request, "s_rep_emp")
+#     cli = get_or_none(Client, get_session(request, "s_rep_emp_cli"))
+#     emp_type = get_session(request, "s_rep_emp_type")
+#     emp_status = get_session(request, "s_rep_emp_status")
+#     i_date = get_session(request, "s_rep_emp_idate")
+#     e_date = get_session(request, "s_rep_emp_edate")
+#     active = get_session(request, "s_rep_emp_active")
+#     kwargs = {}
+#     if emp != "":
+#         kwargs["name__unaccent__icontains"] = emp
+#     if emp_type != "":
+#         kwargs["employee_type"] = emp_type
+#     if active != "":
+#         kwargs["inactive"] = True if active == "0" else False
+#     res = []
+#     emp_list = Employee.objects.filter(**kwargs)
+#     status = TimetableStatus.objects.all()
+#     for emp in emp_list:
+#         res_dic = {"name": emp.name, "dni": emp.dni}
+#         append = False
+#         res_dic["status"] = []
+#         def get_payers(client, timetable_status):
+#             return ", ".join(emp.timetables.filter(date__range=(i_date, e_date), client=client, status=timetable_status, emp_type__payer__isnull=False).values_list("emp_type__payer__name", flat=True).distinct())
+#         for s in status:
+#             if emp_status == "" or emp_status == str(s.id):
+#                 if cli is None:
+#                     for item in emp.timetables.filter(date__range=(i_date, e_date)).order_by("client").distinct("client"):
+#                         hours, minutes = emp.assigned_by_type(i_date, e_date, s, item.client)
+#                         if item.client is not None and (hours > 0 or minutes > 0):
+#                             res_dic["status"].append({"client": item.client.name, "payer": get_payers(item.client, s), "name": s.name, "hours": hours, "minutes": minutes})
+#                             append = True
+#                 else:
+#                     hours, minutes = emp.assigned_by_type(i_date, e_date, s, cli)
+#                     if hours > 0 or minutes > 0:
+#                         res_dic["status"].append({"client": cli.name, "payer": get_payers(cli, s), "name": s.name, "hours": hours, "minutes": minutes})
+#                         append = True
+#         if append:
+#             res_dic["total_hours"], res_dic["total_minutes"] = emp.assigned_by_type(i_date, e_date)
+#             res.append(res_dic)
+#     return res
+
 def get_employees_report(request):
+    """Genera el informe con una única consulta agregada de horarios."""
     emp = get_session(request, "s_rep_emp")
-    cli = get_or_none(Client, get_session(request, "s_rep_emp_cli"))
+    cli_id = get_session(request, "s_rep_emp_cli")
     emp_type = get_session(request, "s_rep_emp_type")
     emp_status = get_session(request, "s_rep_emp_status")
-    #i_date = datetime.strptime("{} 00:00".format(get_session(request, "s_rep_idate")), "%Y-%m-%d %H:%M")
-    #e_date = datetime.strptime("{} 23:59".format(get_session(request, "s_rep_edate")), "%Y-%m-%d %H:%M")
     i_date = get_session(request, "s_rep_emp_idate")
     e_date = get_session(request, "s_rep_emp_edate")
     active = get_session(request, "s_rep_emp_active")
 
-    #kwargs = {"ini_date__range": (i_date, e_date)}
-    kwargs = {}
-    if emp != "":
-        kwargs["name__unaccent__icontains"] = emp
-    if emp_type != "":
-        kwargs["employee_type"] = emp_type
-    if active != "":
-        kwargs["inactive"] = True if active == "0" else False
+    filters = {
+        "date__range": (i_date, e_date),
+        "client__isnull": False,
+        "employee__isnull": False,
+    }
+    if emp:
+        filters["employee__name__unaccent__icontains"] = emp
+    if cli_id:
+        filters["client_id"] = cli_id
+    if emp_type:
+        filters["emp_type_id"] = emp_type
+    if active:
+        filters["employee__inactive"] = active == "0"
 
-    res = []
-    emp_list = Employee.objects.filter(**kwargs)
-    status = TimetableStatus.objects.all()
-    for emp in emp_list:
-        res_dic = {"name": emp.name, "dni": emp.dni}
-        append = False
-        res_dic["status"] = []
-        for s in status:
-            if (emp_status == "") or (emp_status == str(s.id)):
-                hours, minutes = emp.assigned_by_type(i_date, e_date, s, cli)
-                if hours > 0 or minutes > 0:
-                    st_name = s.name if s != None else ""
-                    cli_name = cli.name if cli != None else ""
-                    res_dic["status"].append({"client": cli_name, "name": st_name, "hours": hours, "minutes": minutes})
-                    append = True
-        if append:
-            h, m = emp.assigned_by_type(i_date, e_date)
-            res_dic["total_hours"] = h
-            res_dic["total_minutes"] = m
-            res.append(res_dic)
-    return res
-    #return Assistance.objects.filter(**kwargs)
+    duration = ExpressionWrapper(F("end") - F("ini"), output_field=DurationField())
+    rows = (
+        ClientTimetable.objects.filter(**filters)
+        .values(
+            "employee_id", "employee__name", "employee__dni", "client__name",
+            "status_id", "status__name", "emp_type__name", "emp_type__payer__name",
+        )
+        .annotate(minutes=Sum(duration))
+        .order_by("employee__name", "client__name", "status__name", "emp_type__payer__name")
+    )
+
+    employees = {}
+    for row in rows:
+        employee = employees.setdefault(
+            row["employee_id"],
+            {
+                "name": row["employee__name"],
+                "dni": row["employee__dni"],
+                "status": [],
+                "client_map": {},
+                "total_minutes": 0,
+            },
+        )
+        minutes = int(row["minutes"].total_seconds() // 60)
+        employee["total_minutes"] += minutes
+        if (
+            row["status_id"]
+            and (not emp_status or str(row["status_id"]) == emp_status)
+            and minutes > 0
+        ):
+            status = {
+                "client": row["client__name"],
+                "emp_type": row["emp_type__name"] or "",
+                "payer": row["emp_type__payer__name"] or "",
+                "name": row["status__name"],
+                "hours": minutes // 60,
+                "minutes": minutes % 60,
+            }
+            employee["status"].append(status)
+            client = employee["client_map"].setdefault(
+                row["client__name"], {"name": row["client__name"], "status": []}
+            )
+            client["status"].append(status)
+
+    result = []
+    for employee in employees.values():
+        total_minutes = employee.pop("total_minutes")
+        if not employee["status"]:
+            continue
+        employee["clients"] = list(employee.pop("client_map").values())
+        employee["total_hours"] = total_minutes // 60
+        employee["total_minutes"] = total_minutes % 60
+        result.append(employee)
+    return result
 
 @group_required("admins",)
 def report(request):
@@ -195,23 +277,23 @@ def report_export_emp(request):
             values.append(row)
     return csv_export(header, values, "empleados")
 
-@group_required("admins",)
-def report_search_emp(request):
-    try:
-        value = get_param(request.GET, "value")
-        items = Employee.objects.filter(name__unaccent__icontains=value) if value != "" else []
-        return render(request, "report/report-search-emp.html", {'items': items, 'value':value})
-    except Exception as e:
-        return render(request, "error_exception.html", {'exc':show_exc(e)})
-
-@group_required("admins",)
-def report_search_emp_cli(request):
-    try:
-        value = get_param(request.GET, "value")
-        items = Client.objects.filter(name__unaccent__icontains=value) if value != "" else []
-        return render(request, "report/report-search-emp-cli.html", {'items': items, 'value':value})
-    except Exception as e:
-        return render(request, "error_exception.html", {'exc':show_exc(e)})
+#@group_required("admins",)
+#def report_search_emp(request):
+#    try:
+#        value = get_param(request.GET, "value")
+#        items = Employee.objects.filter(name__unaccent__icontains=value) if value != "" else []
+#        return render(request, "report/report-search-emp.html", {'items': items, 'value':value})
+#    except Exception as e:
+#        return render(request, "error_exception.html", {'exc':show_exc(e)})
+#
+#@group_required("admins",)
+#def report_search_emp_cli(request):
+#    try:
+#        value = get_param(request.GET, "value")
+#        items = Client.objects.filter(name__unaccent__icontains=value) if value != "" else []
+#        return render(request, "report/report-search-emp-cli.html", {'items': items, 'value':value})
+#    except Exception as e:
+#        return render(request, "error_exception.html", {'exc':show_exc(e)})
 
 @group_required("admins",)
 def report_search_cli(request):
@@ -310,5 +392,3 @@ def report_emp_cli_status_export(request):
         row = [item["employee__name"], item["client__name"], item["status__name"]]
         values.append(row)
     return csv_export(header, values, "empleados")
-
-

@@ -423,18 +423,15 @@ def employees_timetable_set_status(request):
 @group_required("admins",)
 def employees_timetable_clients_add(request):
     emp = get_or_none(Employee, get_param(request.GET, "obj_id"))
-    context = {"obj": emp, "client_list": Client.objects.all()}
-    return render(request, "employees/timetable/employees-timetable-clients-add.html", context)
+    return render(request, "employees/timetable/employees-timetable-clients-add.html", {"obj": emp,})
 
 @group_required("admins",)
 def employees_timetable_clients_save(request):
-    emp = get_or_none(Employee, get_param(request.GET, "obj_id"))
-    client_list = request.GET.getlist("values[]")
-    for cli in client_list:
-        client = get_or_none(Client, cli)
-        if client != None:
-            ClientEmployee.objects.get_or_create(client=client, employee=employee)
-    return render(request, "employees/timetable/employees-timetable-clients.html", {"obj": client})
+    employee = get_or_none(Employee, get_param(request.GET, "obj_id"))
+    client = get_or_none(Client, get_param(request.GET, "client"))
+    if client != None and employee != None:
+        ClientEmployee.objects.get_or_create(client=client, employee=employee)
+    return render(request, "employees/timetable/employees-timetable-clients.html", {"obj": employee})
 
 @group_required("admins",)
 def employees_timetable_clients_remove(request):
@@ -445,6 +442,102 @@ def employees_timetable_clients_remove(request):
         obj.delete()
     return render(request, "employees/timetable/employees-timetable-clients.html", {"obj": emp})
 
+@group_required("admins",)
+def employees_timetable_assign(request):
+    obj = get_or_none(ClientEmployee, get_param(request.GET, "id"))
+    date = get_param(request.GET, "date")
+
+    d = datetime.strptime(date, "%Y-%m-%d")
+    context = {
+        'obj': obj,
+        'date': date,
+        'week_day': d.weekday(),
+        'status_list': TimetableStatus.objects.all(),
+        'emp_type_list': EmployeeType.objects.all(),
+        'selected_emp_type': obj.employee.employee_type if obj and obj.employee else None,
+        'new': True,
+    }
+    return render(request, "employees/timetable/employees-timetable-assign2.html", context)
+
+@group_required("admins",)
+def employees_timetable_assign_save2(request):
+    timetable = get_or_none(ClientTimetable, get_param(request.GET, "timetable"))
+    obj = get_or_none(ClientEmployee, get_param(request.GET, "obj_id"))
+    date = get_param(request.GET, "date")
+    ini = get_param(request.GET, "ini")
+    end = get_param(request.GET, "end")
+    ini_prev = get_param(request.GET, "ini_prev")
+    end_prev = get_param(request.GET, "end_prev")
+    emp_type = get_or_none(EmployeeType, get_param(request.GET, "emp_type"))
+    repeat = get_param(request.GET, "repeat")
+    monday = True if get_param(request.GET, "monday") == "true" else False
+    tuesday = True if get_param(request.GET, "tuesday") == "true" else False
+    wednesday = True if get_param(request.GET, "wednesday") == "true" else False
+    thursday = True if get_param(request.GET, "thursday") == "true" else False
+    friday = True if get_param(request.GET, "friday") == "true" else False
+    saturday = True if get_param(request.GET, "saturday") == "true" else False
+    sunday = True if get_param(request.GET, "sunday") == "true" else False
+    cover = True if get_param(request.GET, "cover") == "true" else False
+    status = get_or_none(TimetableStatus, get_param(request.GET, "status"))
+    week_days = [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+
+    client = timetable.client if timetable != None else obj.client
+    employee = timetable.employee if timetable != None else obj.employee
+
+    if repeat == "" and timetable != None:
+        timetable.ini = ini
+        timetable.end = end
+        timetable.emp_type = emp_type
+        timetable.status = status
+        timetable.cover = cover
+        timetable.save()
+    else:
+        d = datetime.strptime(date, "%Y-%m-%d")
+        edate = get_edate(d, repeat)
+
+        if repeat == "remove":
+            ct = ClientTimetable.objects.filter(date__range=(d, edate), ini=ini, end=end, client=client, employee=employee)
+            ct.delete()
+        else:
+            current = d
+            current_month = d.month
+            repeat_list = [0,0,0,0,0,0,0]
+            while current <= edate:
+                if repeat == "month" or repeat =="year" or repeat == "":
+                    #print(f'Fecha {current} - {week_days[current.weekday()]}')
+                    if week_days[current.weekday()]:
+                        goc_client_timetable(current, ini, end, client, employee, status, ini_prev, end_prev, cover, emp_type, True)
+                elif repeat == "year_month_once" or repeat == "year_month_twice":
+                    iday = current.weekday()
+                    if current.month != current_month:
+                        current_month = current.month
+                        repeat_list = [0,0,0,0,0,0,0]
+                    if week_days[iday]:
+                        repeat_list[iday] += 1
+                        if ((repeat == "year_month_once" and repeat_list[iday] == 1) 
+                            or (repeat == "year_month_twice" and (repeat_list[iday] == 1 or repeat_list[iday] == 3))):
+                            goc_client_timetable(current, ini, end, client, employee, status, ini_prev, end_prev, cover, emp_type, True)
+                current += timedelta(days=1)
+
+    return render(request, "employees/timetable/employees-timetable-reload.html", {})
+
+@group_required("admins",)
+def employees_timetable_assign_edit(request):
+    timetable = get_or_none(ClientTimetable, get_param(request.GET, "id"))
+    obj = ClientEmployee.objects.filter(client=timetable.client, employee=timetable.employee).first()
+    date = timetable.date.strftime("%Y-%m-%d")
+
+    context = {
+        "obj": obj, 
+        "timetable": timetable, 
+        "date": date, 
+        #"week_day": WEEK_DAYS[timetable.date.weekday()], 
+        "week_day": timetable.date.weekday(), 
+        'status_list': TimetableStatus.objects.all(),
+        'emp_type_list': EmployeeType.objects.all(),
+        'selected_emp_type_id': timetable.emp_type_id or timetable.employee.employee_type_id,
+    }
+    return render(request, "employees/timetable/employees-timetable-assign2.html", context)
 
 
 '''
@@ -723,12 +816,14 @@ def clients_timetable_assign(request):
     context = {'obj': obj, 'date': date, 'week_day': d.weekday(), 'status_list': TimetableStatus.objects.all(), 'new': True}
     return render(request, "clients/timetable/clients-timetable-assign2.html", context)
 
-def goc_client_timetable(date, ini, end, client, emp, st, ini_prev, end_prev, cover=False):
+def goc_client_timetable(date, ini, end, client, emp, st, ini_prev, end_prev, cover=False, emp_type=None, update_emp_type=False):
     ct = ClientTimetable.objects.filter(date=date, ini=ini_prev, end=end_prev, client=client, employee=emp).first()
     if ct == None:
-        return ClientTimetable.objects.create(date=date, ini=ini, end=end, client=client, employee=emp, status=st, cover=cover)
+        return ClientTimetable.objects.create(date=date, ini=ini, end=end, client=client, employee=emp, emp_type=emp_type, status=st, cover=cover)
     ct.ini = ini
     ct.end = end
+    if update_emp_type:
+        ct.emp_type = emp_type
     ct.status = st
     ct.cover = cover
     ct.save()
@@ -944,7 +1039,8 @@ def clients_inactive_confirm(request):
         obj = get_or_none(Client, get_param(request.GET, "obj_id"))
         emp_ids = obj.timetables.filter(date__gte=datetime.today()).values_list('employee', flat=True).distinct()
         emp_list = Employee.objects.filter(id__in = emp_ids)
-        return render(request, "clients/clients-details-inactive-confirm.html", {'obj': obj, 'emp_list': emp_list})
+        context = {'obj': obj, 'emp_list': emp_list, 'today': datetime.today(), 'itype_list': ClientInactiveType.objects.all()}
+        return render(request, "clients/clients-details-inactive-confirm.html", context)
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
 
@@ -952,7 +1048,8 @@ def clients_inactive_confirm(request):
 def clients_inactive_set(request):
     try:
         obj = get_or_none(Client, get_param(request.GET, "obj_id"))
-        obj.inactive = True if not obj.inactive else False
+        #obj.inactive = True if not obj.inactive else False
+        obj.inactive = False
         obj.save()
         context = {'obj': obj, 'today': datetime.today(), 'itype_list': ClientInactiveType.objects.all()}
         return render(request, "clients/clients-details-inactive.html", context)
@@ -968,6 +1065,8 @@ def clients_inactive_add(request):
         obs = get_param(request.GET, "obs")
         
         if obj != None:
+            obj.inactive = True
+            obj.save()
             ci = ClientInactive.objects.create(client=obj, date=date, obs=obs, itype=itype)
             obj.remove_timetable_from_date(date)
 
@@ -1000,9 +1099,15 @@ def clients_stopped_confirm(request):
     try:
         obj = get_or_none(Client, get_param(request.GET, "obj_id"))
         emp_ids = obj.timetables.filter(date__gte=datetime.today()).values_list('employee', flat=True).distinct()
-        emp_list = Employee.objects.filter(id__in = emp_ids)
-        ts_list = TimetableStatus.objects.filter()
-        return render(request, "clients/clients-details-stopped-confirm.html", {'obj': obj, 'emp_list': emp_list, 'ts_list': ts_list})
+        context = {
+            'obj': obj, 
+            'today': datetime.today(), 
+            'emp_list': Employee.objects.filter(id__in = emp_ids),
+            'ts_list': TimetableStatus.objects.filter(),
+            'stype_list': ClientStoppedType.objects.all(),
+            'timetable_status_list': TimetableStatus.objects.filter(calc=False)
+        }
+        return render(request, "clients/clients-details-stopped-confirm.html", context)
     except Exception as e:
         return render(request, 'error_exception.html', {'exc':show_exc(e)})
 
@@ -1032,6 +1137,8 @@ def clients_stopped_add(request):
         obs = get_param(request.GET, "obs")
         
         if obj != None:
+            obj.stopped = True 
+            obj.save()
             cs = ClientStopped.objects.create(client=obj, date=date, obs=obs, stype=stype)
             obj.set_timetable_status_from_date(date, ts)
 
@@ -1395,5 +1502,3 @@ def incidents_form(request):
     if obj == None:
         return render(request, "error_exception.html", {'exc': 'Object not found!'})
     return render(request, "incidents/incidents-form.html", {'obj': obj,})
-
-

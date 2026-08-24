@@ -25,14 +25,21 @@
             <div class="col-3">{{ item.name|default:"---" }}</div>
             <div class="col-3">{{ item.dni|default:"---" }}</div>
             <div class="col-2">
-                {% for s in item.status %}
-                    {% if s.client != "" %}<strong>{{s.client}}</strong>{% endif %}<br/>
-                    <strong>{{s.name}}</strong>: {{s.hours}} horas y {{s.minutes}} minutos <br/>
+                {% for client in item.clients %}
+                    <div class="mb-3 pb-2 border-bottom">
+                        <strong>{{client.name}}</strong><br/>
+                        {% for s in client.status %}
+                            {% if s.emp_type %}{% trans 'Tipo de empleado' %}: {{s.emp_type}}<br/>{% endif %}
+                            {% if s.payer %}{% trans 'Pagador' %}: {{s.payer}}<br/>{% endif %}
+                            <strong>{{s.name}}</strong>: {{s.hours}} horas y {{s.minutes}} minutos <br/>
+                        {% endfor %}
+                    </div>
                 {% endfor %}
             </div>
             <div class="col-2">{{item.total_hours}} horas y {{item.total_minutes}} minutos</div>
             <div class="col-2">{{item.total_hours}} horas y {{item.total_minutes}} minutos</div>
         </div>
+    {% empty %}
+        <div class="alert alert-info m-3"> No hay elementos para mostrar.  </div>
     {% endfor %}
 </div>
-

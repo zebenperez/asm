@@ -82,7 +82,6 @@
 }
 
 .divEmp {
-/*	border: 1px solid red;*/
 	font-size: 0.8rem;
 	align-items: center !important;
 	display: flex;
@@ -129,11 +128,8 @@ button.btn.btn-emp.w-100.my-2.active {
 }
 
 .nav-btn {
-/*    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
-/*    color: white;*/
-/*    border: none;*/
-	color: #e35000;
-	border:1px solid #e35000;
+    color: #e35000;
+    border:1px solid #e35000;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -159,7 +155,6 @@ button.btn.btn-emp.w-100.my-2.active {
 }
 
 .day-header {
-    /*background: #667eea;*/
     background: #e35000;
     color: white;
     padding: 15px;
@@ -170,7 +165,6 @@ button.btn.btn-emp.w-100.my-2.active {
 
 .day-cell {
     background: #f8f9fa;
-/*    border: 2px dashed #3b693b;*/
     border: 2px dashed #ccc;
     border-radius: 8px;
     min-height: 120px;
@@ -196,10 +190,8 @@ button.btn.btn-emp.w-100.my-2.active {
 
 .assigned-client,
 .assigned-employee {
-/*    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
-/*    color: white;*/
-	color: #e35000;
-	border: 1px solid #e35000;
+    color: #e35000;
+    border: 1px solid #e35000;
     padding: 8px;
     border-radius: 5px;
     margin-top: 5px;
@@ -360,3 +352,6 @@ button.btn.btn-emp.w-100.my-2.active {
     background: #5a6268;
 }
 
+.fas.fa-trash.danger {
+	font-size: 14px;
+}
