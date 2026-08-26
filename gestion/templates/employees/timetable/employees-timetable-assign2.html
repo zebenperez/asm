@@ -1,0 +1,116 @@
+{% load i18n static gestion_tags%}
+
+
+<div class="row modal-head m-0">
+    <div class="col-11"><i class="fas fa-users orange"></i>&nbsp; {% trans 'Horario' %} </div>
+    <div class="col-1"> <div class="d-flex justify-content-end"> 
+        <button type="button" class="btn btn-lg" data-bs-dismiss="modal" title="{% trans "Close" %}">
+        <i class="fas fa-times"></i></button> </div> </div>
+</div>
+
+<div class="row m-0 p-2">
+	<div class="col-1 p-2">
+        <label for="monday">Lunes</label>
+        <input type="checkbox" id="monday" class="border p-2 w-100 form-checkbox" {%if week_day == 0%}checked{%endif%}>
+    </div>
+	<div class="col-1 p-2">
+        <label for="tuesday">Martes</label>
+        <input type="checkbox" id="tuesday" class="border p-2 w-100" {%if week_day == 1%}checked{%endif%}>
+    </div>
+	<div class="col-1 p-2">
+        <label for="wednesday">Miércoles</label>
+        <input type="checkbox" id="wednesday" class="border p-2 w-100" {%if week_day == 2%}checked{%endif%}>
+    </div>
+	<div class="col-1 p-2">
+        <label for="thursday">Jueves</label>
+        <input type="checkbox" id="thursday" class="border p-2 w-100" {%if week_day == 3%}checked{%endif%}>
+    </div>
+	<div class="col-1 p-2">
+        <label for="friday">Viernes</label>
+        <input type="checkbox" id="friday" class="border p-2 w-100" {%if week_day == 4%}checked{%endif%}>
+    </div>
+	<div class="col-1 p-2">
+        <label for="saturday">Sábado</label>
+        <input type="checkbox" id="saturday" class="border p-2 w-100" {%if week_day == 5%}checked{%endif%}>
+    </div>
+	<div class="col-1 p-2">
+        <label for="sunday">Domingo</label>
+        <input type="checkbox" id="sunday" class="border p-2 w-100" {%if week_day == 6%}checked{%endif%}>
+    </div>
+	<div class="col-2 offset-1 p-2">
+        <label for="startTime">Hora de inicio:</label><br />
+        <input type="time" id="startTime" value="{{timetable.ini|date:"H:i"|default:"09:00"}}" class="border p-2 w-100">
+        <input type="hidden" id="startPrev" value="{{timetable.ini|date:"H:i"|default:"09:00"}}" />
+	</div>
+
+	<div class="col-2 p-2">
+		<label for="endTime">Hora de fin:</label><br />
+        <input type="time" id="endTime" value="{{timetable.end|date:"H:i"|default:"17:00"}}" class="border p-2 w-100">
+        <input type="hidden" id="endPrev" value="{{timetable.end|date:"H:i"|default:"17:00"}}" />
+	</div>
+
+	{# Se mantiene en el DOM porque calendar_emp.js necesita su valor al guardar. #}
+	<div class="col-5 p-2 d-none">
+        <label for="emp_type">Tipo de empleado: </label><br />
+		<select id="emp_type" class="border p-2 w-100 bg-white">
+            <option value="">---------</option>
+            {% for employee_type in emp_type_list %}
+                <option value="{{employee_type.id}}" {% if employee_type == timetable.emp_type %}selected{% endif %}>{{employee_type.name}}</option>
+            {% endfor %}
+		</select>
+	</div>
+
+	<div class="col-6 p-2">
+        <label for="status">Estado: </label><br />
+		<select id="status" class="border p-2 w-100 bg-white">
+            {%for st in status_list%}
+                <option value="{{st.id}}" {%if st.id == timetable.status.id%}selected{%endif%}>{{st.name}}</option>
+            {%endfor%}
+		</select>
+	</div>
+
+	<div class="col-6 p-2 text-center">
+        <label for="cover">Se cubre servicio: </label><br />
+        <input type="checkbox" id="cover" class="border mt-3" {%if timetable.cover%}checked{%endif%}>
+	</div>
+
+	<div class="col-12 px-2 pt-3 pb-1">
+		<hr class="my-0">
+	</div>
+
+    {% if new %}
+    	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="" class="border p-2 w-100" checked> </div>
+	    <div class="col-11 p-2"> <label for="allDays">{% trans "No repetir" %}</label><br /> </div>
+    {% else %}
+    	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="" class="border p-2 w-100"> </div>
+	    <div class="col-5 p-2"> <label for="allDays">{% trans "No repetir" %}</label><br /> </div>
+
+    	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="remove" class="border p-2 w-100"> </div>
+	    <div class="col-5 p-2"> <label for="allDays">{% trans "Borrar de hoy en adelante" %}</label><br /> </div>
+    {% endif  %}
+
+	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="month" class="border p-2 w-100"> </div>
+    <div class="col-11 p-2"> 
+        <label for="allDays">{% trans "Repetir todo el mes" %} </label><br/></div>
+
+	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="year" class="border p-2 w-100"> </div>
+    <div class="col-11 p-2"> 
+        <label for="allDays">{% trans "Repetir todo el año" %} </label><br/></div>
+
+	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="year_month_once" class="border p-2 w-100"> </div>
+	<div class="col-11 p-2"> 
+        <label for="allDays">{%trans "Repetir una vez al mes todo el año"%}</label><br /></div>
+
+	<div class="col-1 p-2"> <input type="radio" id="allDays" name="allDays" value="year_month_twice" class="border p-2 w-100"> </div>
+    <div class="col-11 p-2">
+        <label for="allDays">{% trans "Repetir dos veces al mes todo el año" %}</label><br/></div>
+
+	<div class="col-12 text-end mt-3">
+	    <button class="btn btn-secondary mx-2" id="cancelBtn" data-bs-dismiss="modal">Cancelar</button>
+
+	    <button class="btn btn-primary" id="confirmBtn" data-obj_id="{{obj.id}}" data-timetable="{{timetable.id}}" 
+		    data-emp="{{obj.employee.name}}" data-date="{{date}}" data-bs-dismiss="modal"> Confirmar</button>
+
+	    <button class="btn btn-primary" id="updateBtn" style="display: none;">Actualizar</button>
+	</div>
+</div>

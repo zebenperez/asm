@@ -104,17 +104,17 @@ class EmployeeType(models.Model):
         ordering = ["name"]
 
 class Employee(models.Model):
-    inactive = models.BooleanField(default=False, verbose_name=_('Desactivado'));
-    pin = models.CharField(max_length=20, verbose_name = _('PIN'), default="")
-    dni = models.CharField(max_length=20, verbose_name = _('DNI'), default="")
-    name = models.CharField(max_length=200, verbose_name = _('Razón Social'), default="")
-    phone = models.CharField(max_length=50, verbose_name = _('Teléfono de contacto'), null=True, default = '0000000000')
-    email = models.EmailField(verbose_name = _('Email de contacto'), default="", null=True)
+    inactive = models.BooleanField(default=False, verbose_name=_('Desactivado'), blank=True);
+    pin = models.CharField(max_length=20, verbose_name = _('PIN'), default="", blank=True)
+    dni = models.CharField(max_length=20, verbose_name = _('DNI'), default="", blank=True)
+    name = models.CharField(max_length=200, verbose_name = _('Razón Social'), default="", blank=True)
+    phone = models.CharField(max_length=50, verbose_name = _('Teléfono de contacto'), null=True, default = '0000000000', blank=True)
+    email = models.EmailField(verbose_name = _('Email de contacto'), default="", null=True, blank=True)
     user = models.OneToOneField(User, verbose_name='Usuario', on_delete=models.CASCADE, null=True, blank=True, related_name='employee')
-    city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True)
-    zone = models.ForeignKey(Zone, verbose_name=_('Zona'), on_delete=models.SET_NULL, null=True, related_name="employees")
-    employee_type = models.ForeignKey(EmployeeType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True,related_name="employees")
-    self_employed_type = models.ForeignKey(SelfEmployedType,verbose_name=_('Tipo de autónomo'),on_delete=models.SET_NULL,null=True)
+    city = models.ForeignKey(City, verbose_name=_('Municipio'), on_delete=models.SET_NULL, null=True, blank=True)
+    zone = models.ForeignKey(Zone, verbose_name=_('Zona'), on_delete=models.SET_NULL, null=True, related_name="employees", blank=True)
+    employee_type = models.ForeignKey(EmployeeType,verbose_name=_('Tipo'),on_delete=models.SET_NULL,null=True,related_name="employees", blank=True)
+    self_employed_type = models.ForeignKey(SelfEmployedType,verbose_name=_('Tipo de autónomo'),on_delete=models.SET_NULL,null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -196,14 +196,24 @@ class Employee(models.Model):
                 mins += 0
         return hours_mins(mins)
  
-    def clients_timetable(self, idate, edate):
+    def clients_timetable(self, idate, edate, payer_id=""):
         dic = {}
         #for item in self.timetables.all():
-        for item in self.timetables.filter(date__range = (idate, edate)):
+        filters = {"date__range": (idate, edate)}
+        if payer_id:
+            filters["client__payer_id"] = payer_id
+        for item in self.timetables.filter(**filters).select_related("client__payer"):
             if item.client != None:
                 if item.client.name not in dic.keys():
                     dic[item.client.name] = []
-                dic[item.client.name].append({"day":item.week_day,"ini":item.ini,"end":item.end,"id":item.id,"client":item.client.id})
+                dic[item.client.name].append({
+                    "day": item.week_day,
+                    "ini": item.ini,
+                    "end": item.end,
+                    "id": item.id,
+                    "client": item.client.id,
+                    "payer": item.client.payer,
+                })
         return dic
 
     def client_list(self, qr_access=False):

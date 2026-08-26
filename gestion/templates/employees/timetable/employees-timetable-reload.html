@@ -1,0 +1,7 @@
+<script>
+    $(".day-cell").each(function(){
+        let dateStr = $(this).data("date");
+        let employee = $(this).data("employee");
+        ajaxGet("/gestion/employees/timetable/load", {"employee": employee, "date": dateStr}, "day-cell-"+dateStr, "")
+    });
+</script>

@@ -118,6 +118,7 @@ def get_employees_report(request):
     """Genera el informe con una única consulta agregada de horarios."""
     emp = get_session(request, "s_rep_emp")
     cli_id = get_session(request, "s_rep_emp_cli")
+    payer_id = get_session(request, "s_rep_emp_payer")
     emp_type = get_session(request, "s_rep_emp_type")
     emp_status = get_session(request, "s_rep_emp_status")
     i_date = get_session(request, "s_rep_emp_idate")
@@ -133,6 +134,8 @@ def get_employees_report(request):
         filters["employee__name__unaccent__icontains"] = emp
     if cli_id:
         filters["client_id"] = cli_id
+    if payer_id:
+        filters["client__payer_id"] = payer_id
     if emp_type:
         filters["emp_type_id"] = emp_type
     if active:
@@ -313,7 +316,13 @@ def report_employees(request):
     init_session_date(request, "s_rep_emp_edate")
     set_session(request, "s_rep_emp", "")
     set_session(request, "s_rep_emp_type", "")
-    context = {"items": [], 'emp_types': EmployeeType.objects.all(), 'status': TimetableStatus.objects.all()}
+    set_session(request, "s_rep_emp_payer", "")
+    context = {
+        "items": [],
+        "emp_types": EmployeeType.objects.all(),
+        "status": TimetableStatus.objects.all(),
+        "payers": Payer.objects.all(),
+    }
     return render(request, "report/report-employees.html", context)
 
 @group_required("admins",)
@@ -325,6 +334,7 @@ def report_employees_list(request):
 def report_employees_search(request, clients=""):
     set_session(request, "s_rep_emp", get_param(request.GET, "s_rep_emp"))
     set_session(request, "s_rep_emp_cli", get_param(request.GET, "s_rep_emp_cli"))
+    set_session(request, "s_rep_emp_payer", get_param(request.GET, "s_rep_emp_payer"))
     set_session(request, "s_rep_emp_type", get_param(request.GET, "s_rep_emp_type"))
     set_session(request, "s_rep_emp_status", get_param(request.GET, "s_rep_emp_status"))
     set_session(request, "s_rep_emp_idate", get_param(request.GET, "s_rep_emp_idate"))

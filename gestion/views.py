@@ -1414,14 +1414,20 @@ def employee(request, obj_id):
     else:
         edate = get_session(request, "s_employee_edate")
     emp = get_or_none(Employee, obj_id)
-    client_list = emp.clients_timetable(idate, edate)
-    return render(request, "employee/clients.html", {"obj": emp, "client_list": client_list})
+    payer_id = get_session(request, "s_employee_payer")
+    client_list = emp.clients_timetable(idate, edate, payer_id)
+    return render(request, "employee/clients.html", {
+        "obj": emp,
+        "client_list": client_list,
+        "payer_list": Payer.objects.all(),
+    })
 
 @group_required("admins",)
 def employee_search(request):
     obj_id = get_param(request.GET, "obj_id")
     set_session(request, "s_employee_idate", get_param(request.GET, "s_employee_idate"))
     set_session(request, "s_employee_edate", get_param(request.GET, "s_employee_edate"))
+    set_session(request, "s_employee_payer", get_param(request.GET, "s_employee_payer"))
     return redirect(reverse('employee', kwargs={'obj_id': obj_id}))
 
 @group_required("admins",)

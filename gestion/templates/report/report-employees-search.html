@@ -18,6 +18,14 @@
             <div id="cli-result"></div>
 
         </div>
+        <div class="col-1 py-3"><span>{% trans "Activo:" %}</span></div>
+        <div class="col-2 pt-2">
+            <select class="form-control" id="s_rep_emp_active" name="s_rep_emp_active">
+                <option value="">{% trans "-- Todos --" %}</option>
+                <option value="1" {%if request.session.s_rep_emp_active == "1"%}selected{%endif%}>{% trans "SI" %}</option>
+                <option value="0" {%if request.session.s_rep_emp_active == "0"%}selected{%endif%}>{% trans "NO" %}</option>
+            </select>
+        </div>
     </div>
             
     <div class="row"> 
@@ -47,12 +55,13 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-1 py-3"><span>{% trans "Activo:" %}</div>
+        <div class="col-1 py-3"><span>{% trans "Pagador:" %}</span></div>
         <div class="col-2 pt-2">
-            <select class="form-control" id="s_rep_emp_active" name="s_rep_emp_active">
+            <select class="form-control" id="s_rep_emp_payer" name="s_rep_emp_payer">
                 <option value="">{% trans "-- Todos --" %}</option>
-                <option value="1" {%if request.session.s_rep_emp_active == "1"%}selected{%endif%}>{% trans "SI" %}</option>
-                <option value="0" {%if request.session.s_rep_emp_active == "0"%}selected{%endif%}>{% trans "NO" %}</option>
+                {% for payer in payers %}
+                    <option value="{{ payer.id }}" {% if payer.id|stringformat:"s" == request.session.s_rep_emp_payer %}selected{% endif %}>{{ payer.name }}</option>
+                {% endfor %}
             </select>
         </div>
     </div>

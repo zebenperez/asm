@@ -498,6 +498,69 @@ span.status-info {
 	font-size: 0.95rem;
 }
 
+.card.employee-client-card {
+	background: #fff;
+	border: 1px solid #c9ddec;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(33, 72, 99, 0.08);
+	color: #212529;
+	padding: 0;
+	font-size: 0.875rem;
+	overflow: hidden;
+}
+
+.employee-client-card .card-header {
+	background: transparent !important;
+	border: 0;
+	color: #212529;
+	font-size: inherit;
+	font-weight: 400;
+	padding: 0;
+}
+
+.employee-client-title {
+	background: #edf7ff;
+	color: #212529;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.employee-client-name {
+	color: #e35000;
+}
+
+.employee-client-card .employee-client-location-icon,
+.employee-client-card a {
+	color: #212529;
+}
+
+.row.mt-3 > .col-lg-4:nth-child(3n+2) .employee-client-card {
+	border-color: #cfe4d4;
+}
+
+.row.mt-3 > .col-lg-4:nth-child(3n+2) .employee-client-title {
+	background: #f1faf3;
+}
+
+.row.mt-3 > .col-lg-4:nth-child(3n+2) .employee-client-location-icon,
+.row.mt-3 > .col-lg-4:nth-child(3n+2) .employee-client-card a {
+	color: #212529;
+}
+
+.row.mt-3 > .col-lg-4:nth-child(3n) .employee-client-card {
+	border-color: #e2d4ed;
+}
+
+.row.mt-3 > .col-lg-4:nth-child(3n) .employee-client-title {
+	background: #faf4ff;
+}
+
+.row.mt-3 > .col-lg-4:nth-child(3n) .employee-client-location-icon,
+.row.mt-3 > .col-lg-4:nth-child(3n) .employee-client-card a {
+	color: #212529;
+}
+
 /* Client details */
 
 .card {

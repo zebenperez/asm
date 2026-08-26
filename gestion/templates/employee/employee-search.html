@@ -4,23 +4,29 @@
     {%csrf_token%}
     <input type="hidden" id="obj_id" name="obj_id" value="{{obj.id}}" />
     <div class="row">
-        <div class="col-6">
-            <div class="row"> 
-                <div class="col-lg-4 col-4 py-2 text-end d-none d-lg-block"> <span>{% trans "Buscar por fecha:" %}</span> </div>
-                <div class="col-lg-4 col-6 p-0">
+        <div class="col-2 py-3"> <span>{% trans "Buscar por fecha:" %}</span> </div>
+        <div class="col-2">
                     <input type="date" class="autosearch form-control form-control-dark w-100 py-2"
-                        name="s_employee_idate" id="s_employee_idate" value="{{request.session.s_employee_idate}}"/>
-                </div>
-                <div class="col-lg-4 col-6 p-0">
-                    <input type="date" class="autosearch form-control form-control-dark w-100 py-2" 
-                        name="s_employee_edate" id="s_employee_edate" value="{{request.session.s_employee_edate}}"/>
-                </div>
-            </div>
+                name="s_employee_idate" id="s_employee_idate" value="{{request.session.s_employee_idate}}"/>
+        </div>
+        <div class="col-2">
+            <input type="date" class="autosearch form-control form-control-dark w-100 py-2"
+                name="s_employee_edate" id="s_employee_edate" value="{{request.session.s_employee_edate}}"/>
+        </div>
+        <div class="col-4">
+            <select class="form-select form-control-dark w-100 py-2" name="s_employee_payer" id="s_employee_payer">
+                <option value="">{% trans "Todos los pagadores" %}</option>
+                {% for payer in payer_list %}
+                    <option value="{{ payer.id }}" {% if request.session.s_employee_payer == payer.id|stringformat:"s" %}selected{% endif %}>
+                        {{ payer.name }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
         <div class="col-1 p-0">
             <button type="submit" class="btn btn-default w-100"> <i class="fas fa-search"></i> </button>
         </div>
-        <div class="col-5 text-end p-0">
+        <div class="col-1 text-end p-0">
             <a class="btn btn-xs exp" href="{% url "employees" %}" title="{% trans 'Volver' %}" target="_blank">
                 <i class="fas fa-arrow-left"></i> {% trans "Volver" %}</a>
         </div>
