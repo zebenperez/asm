@@ -146,7 +146,7 @@ def get_employees_report(request):
         ClientTimetable.objects.filter(**filters)
         .values(
             "employee_id", "employee__name", "employee__dni", "client_id", "client__name",
-            "client__payer__name", "status_id", "status__name",
+            "client__payer__name", "status_id", "status__name", "status__calc",
         )
         .annotate(minutes=Sum(duration))
         .order_by("employee__name", "client__name", "status__name")
@@ -162,10 +162,14 @@ def get_employees_report(request):
                 "status": [],
                 "client_map": {},
                 "total_minutes": 0,
+                "payroll_minutes": 0,
             },
         )
         minutes = int(row["minutes"].total_seconds() // 60)
         employee["total_minutes"] += minutes
+        # Solo los estados que suman al cálculo computan en las horas de nómina.
+        if row["status__calc"]:
+            employee["payroll_minutes"] += minutes
         if (
             row["status_id"]
             and (not emp_status or str(row["status_id"]) == emp_status)
@@ -191,11 +195,14 @@ def get_employees_report(request):
     result = []
     for employee in employees.values():
         total_minutes = employee.pop("total_minutes")
+        payroll_minutes = employee.pop("payroll_minutes")
         if not employee["status"]:
             continue
         employee["clients"] = list(employee.pop("client_map").values())
         employee["total_hours"] = total_minutes // 60
         employee["total_minutes"] = total_minutes % 60
+        employee["payroll_hours"] = payroll_minutes // 60
+        employee["payroll_minutes"] = payroll_minutes % 60
         result.append(employee)
     return result
 
